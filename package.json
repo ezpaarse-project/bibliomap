@@ -4,6 +4,8 @@
   "description": "BiblioMap shows ezpaarse geolocalized EC's on a map",
   "scripts": {
     "start": "docker-compose up -d",
+    "start-latest": "npm run create-dc-latest && docker-compose -f ./docker-compose.latest.yml up -d",
+    "create-dc-latest": "cp docker-compose.yml docker-compose.latest.yml && sed -i \"s#\\(image: ezpaarseproject/[-a-z0-9]\\+:\\)\\([\\.a-z0-9]\\+\\)#\\1latest#g\" docker-compose.latest.yml",
     "get-version:bibliomap-harvester": "echo -n $(cd ~/bibliomap-harvester && git describe) > .BBH_V",
     "get-version:bibliomap-enricher": "echo -n $(cd ~/bibliomap-enricher && git describe) > .BBE_V",
     "get-version:bibliomap-viewer": " echo -n $(cd ~/bibliomap-viewer && git describe) > .BBV_V",

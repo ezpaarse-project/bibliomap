@@ -1,4 +1,5 @@
 .*_V
+docker-compose.latest.yml
 
 lib-cov
 *.seed
