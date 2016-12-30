@@ -31,6 +31,7 @@ Bibliomap uses these softwares:
 
 ```
 git clone git@github.com:ezpaarse-project/bibliomap.git
+cd bibliomap
 npm start
 ```
 
