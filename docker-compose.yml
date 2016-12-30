@@ -1,0 +1,78 @@
+version: '2'
+
+services:
+
+  bibliomap-viewer:
+    container_name: bibliomap-viewer
+    image: ezpaarseproject/bibliomap-viewer:2.1.0
+    environment:
+      http_proxy:  ${http_proxy}
+      https_proxy: ${https_proxy}
+      no_proxy: ${no_proxy}
+      NODE_ENV: "production"
+      DEBUG: ${DEBUG}
+    working_dir: /app
+    tty: true         # to have nice debug(...) outputs
+    stdin_open: true  # to be able to use CTRL+C to stop the debug
+    ports:
+      - 50197:50197
+      - 27779:27779
+    restart: unless-stopped
+
+  bibliomap-enricher:
+    container_name: bibliomap-enricher
+    image: ezpaarseproject/bibliomap-enricher:2.2.0
+    links:
+      - bibliomap-viewer
+      - ezpaarse
+    environment:
+      http_proxy:  ${http_proxy}
+      https_proxy: ${https_proxy}
+      no_proxy: ${no_proxy}
+      NODE_ENV: "production"
+      DEBUG: ${DEBUG}
+    working_dir: /app
+    tty: true         # to have nice debug(...) outputs
+    stdin_open: true  # to be able to use CTRL+C to stop the debug
+    restart: unless-stopped
+
+  bibliomap-harvester:
+    container_name: bibliomap-harvester
+    image: ezpaarseproject/bibliomap-harvester:1.3.1
+    links:
+      - bibliomap-enricher
+    environment:
+      http_proxy:  ${http_proxy}
+      https_proxy: ${https_proxy}
+      no_proxy: ${no_proxy}
+      NODE_ENV: "production"
+      DEBUG: ${DEBUG}
+    working_dir: /app
+    tty: true         # to have nice debug(...) outputs
+    stdin_open: true  # to be able to use CTRL+C to stop the debug
+    restart: unless-stopped
+
+  ezpaarse:
+    container_name: ezpaarse
+    image: ezpaarseproject/ezpaarse:2.9.6
+    links:
+      - ezpaarse_db
+    environment:
+      http_proxy:  ${http_proxy}
+      https_proxy: ${https_proxy}
+      no_proxy: ${no_proxy}
+      NODE_ENV: "production"
+      EZPAARSE_MONGO_URL: "mongodb://ezpaarse_db:27017/ezpaarse"
+    tty: true         # to have nice debug(...) outputs
+    stdin_open: true  # to be able to use CTRL+C to stop the container
+    ports:
+      - 59599:59599
+    depends_on:
+      - ezpaarse_db
+    restart: unless-stopped
+
+  ezpaarse_db:
+    container_name: ezpaarse_db
+    image: mongo:3.4.1
+    command: --smallfiles
+    restart: unless-stopped
