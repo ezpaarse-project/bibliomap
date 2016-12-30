@@ -50,7 +50,7 @@ services:
 
   bibliomap-harvester:
     container_name: bibliomap-harvester
-    image: ezpaarseproject/bibliomap-harvester:2.0.0
+    image: ezpaarseproject/bibliomap-harvester:2.1.0
     links:
       - bibliomap-enricher
     environment:
@@ -59,6 +59,11 @@ services:
       no_proxy: ${no_proxy}
       NODE_ENV: "production"
       DEBUG: ${DEBUG}
+      BBH_ENRICHER_HOST: "bibliomap-enricher"
+      BBH_ENRICHER_PORT: 27777
+      BBH_NO_DEMO:     "" # demo is activated
+      BBH_STREAMNAMES: "" # default streams are for the demo
+      BBH_STREAMPATHS: ""
     working_dir: /app
     tty: true         # to have nice debug(...) outputs
     stdin_open: true  # to be able to use CTRL+C to stop the debug
