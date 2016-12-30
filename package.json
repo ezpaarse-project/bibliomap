@@ -1,22 +1,18 @@
 {
   "name": "bibliomap",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "BiblioMap shows ezpaarse geolocalized EC's on a map",
   "scripts": {
     "start": "docker-compose up -d",
-    
     "get-version:bibliomap-harvester": "echo -n $(curl -s https://api.github.com/repos/ezpaarse-project/bibliomap-harvester/tags | jq -r '.[0].name') > .BBH_V",
     "get-version:bibliomap-enricher": "echo -n $(curl -s https://api.github.com/repos/ezpaarse-project/bibliomap-enricher/tags | jq -r '.[0].name') > .BBE_V",
     "get-version:bibliomap-viewer": " echo -n $(curl -s https://api.github.com/repos/ezpaarse-project/bibliomap-viewer/tags | jq -r '.[0].name') > .BBV_V",
-    "get-version:ezpaarse": "eecho -n $(curl -s https://api.github.com/repos/ezpaarse-project/ezpaarse/tags | jq -r '.[0].name') > .EZP_V",
-
+    "get-version:ezpaarse": "echo -n $(curl -s https://api.github.com/repos/ezpaarse-project/ezpaarse/tags | jq -r '.[0].name') > .EZP_V",
     "insertversion:bibliomap-viewer": "sed -i \"s#\\(image: ezpaarseproject/bibliomap-viewer:\\)\\([\\.a-z0-9]\\+\\)#\\1$(cat .BBV_V)#g\" docker-compose.yml",
     "insertversion:bibliomap-enricher": "sed -i \"s#\\(image: ezpaarseproject/bibliomap-enricher:\\)\\([\\.a-z0-9]\\+\\)#\\1$(cat .BBE_V)#g\" docker-compose.yml",
     "insertversion:bibliomap-harvester": "sed -i \"s#\\(image: ezpaarseproject/bibliomap-harvester:\\)\\([\\.a-z0-9]\\+\\)#\\1$(cat .BBH_V)#g\" docker-compose.yml",
     "insertversion:ezpaarse": "sed -i \"s#\\(image: ezpaarseproject/ezpaarse:\\)\\([\\.a-z0-9]\\+\\)#\\1$(cat .EZP_V)#g\" docker-compose.yml",
-
     "version": "npm run get-version:bibliomap-harvester && npm run get-version:bibliomap-enricher && npm run get-version:bibliomap-viewer && npm run get-version:ezpaarse && npm run insertversion:bibliomap-viewer && npm run insertversion:bibliomap-enricher && npm run insertversion:bibliomap-harvester && npm run insertversion:ezpaarse",
-  
     "postversion": "git push && git push --tags"
   },
   "repository": {
