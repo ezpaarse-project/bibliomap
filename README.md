@@ -11,6 +11,7 @@ How could it be useful ?
 
 [Demonstration on the CNRS subscribed electronic ressources usage statistics](http://bibliomap.inist.fr/)
 
+## Technical architecture
 
 Bibliomap uses these softwares:
   * [bibliomap-harvester](https://github.com/ezpaarse-project/bibliomap-harvester) for real-time listening lines of log comming from ezproxys
