@@ -36,7 +36,7 @@ Then browse to http://127.0.0.1:50197
 
 ## Upgrade
 
-To upgrade to the latest version of [bibliomap-harvester](https://github.com/ezpaarse-project/bibliomap-harvester), [bibliomap-enricher](https://github.com/ezpaarse-project/bibliomap-enricher), and [bibliomap-viewer](https://github.com/ezpaarse-project/bibliomap-viewer) in the docker-compose.yml, just run this command:
+To upgrade to the latest version of [bibliomap-harvester](https://github.com/ezpaarse-project/bibliomap-harvester), [bibliomap-enricher](https://github.com/ezpaarse-project/bibliomap-enricher), and [bibliomap-viewer](https://github.com/ezpaarse-project/bibliomap-viewer) in the docker-compose.yml, just git clone all of these in your homedirectory (~) and run this command:
 
 ```
 npm version patch
