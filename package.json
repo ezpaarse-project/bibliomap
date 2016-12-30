@@ -12,7 +12,7 @@
     "insertversion:bibliomap-enricher": "sed -i \"s#\\(image: ezpaarseproject/bibliomap-enricher:\\)\\([\\.a-z0-9]\\+\\)#\\1$(cat .BBE_V)#g\" docker-compose.yml",
     "insertversion:bibliomap-harvester": "sed -i \"s#\\(image: ezpaarseproject/bibliomap-harvester:\\)\\([\\.a-z0-9]\\+\\)#\\1$(cat .BBH_V)#g\" docker-compose.yml",
     "insertversion:ezpaarse": "sed -i \"s#\\(image: ezpaarseproject/ezpaarse:\\)\\([\\.a-z0-9]\\+\\)#\\1$(cat .EZP_V)#g\" docker-compose.yml",
-    "version": "npm run get-version:bibliomap-harvester && npm run get-version:bibliomap-enricher && npm run get-version:bibliomap-viewer && npm run get-version:ezpaarse && npm run insertversion:bibliomap-viewer && npm run insertversion:bibliomap-enricher && npm run insertversion:bibliomap-harvester && npm run insertversion:ezpaarse",
+    "version": "npm run get-version:bibliomap-harvester && npm run get-version:bibliomap-enricher && npm run get-version:bibliomap-viewer && npm run get-version:ezpaarse && npm run insertversion:bibliomap-viewer && npm run insertversion:bibliomap-enricher && npm run insertversion:bibliomap-harvester && npm run insertversion:ezpaarse && git commit docker-compose.yml",
     "postversion": "git push && git push --tags"
   },
   "repository": {
