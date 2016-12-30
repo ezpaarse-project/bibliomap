@@ -4,7 +4,8 @@ Bibliomap is a tool for real-time viewing in the browser localised usage events 
 
 How could it be useful ?
   * For real-time monitoring your ezproxy EC consultations 
-  * For the fun !
+  * For helping ezpaarse adoption in your institution.
+  * And just for fun !
 
 ![anim](https://cloud.githubusercontent.com/assets/328244/19802257/11855392-9d03-11e6-9338-e35893ecddfc.gif)
 
