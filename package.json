@@ -1,6 +1,6 @@
 {
   "name": "bibliomap",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "BiblioMap shows ezpaarse geolocalized EC's on a map",
   "scripts": {
     "start": "docker-compose up -d",
