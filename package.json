@@ -1,0 +1,30 @@
+{
+  "name": "bibliomap",
+  "version": "1.0.0",
+  "description": "BiblioMap shows ezpaarse geolocalized EC's on a map",
+  "scripts": {
+    "start": "docker-compose up -d",
+    "get-version:bibliomap-harvester": "export BBH_V=$(curl -s https://api.github.com/repos/ezpaarse-project/bibliomap-harvester/tags | jq -r '.[0].name')",
+    "get-version:bibliomap-enricher": "export BBE_V=$(curl -s https://api.github.com/repos/ezpaarse-project/bibliomap-enricher/tags | jq -r '.[0].name')",
+    "get-version:bibliomap-viewer": "export BBV_V=$(curl -s https://api.github.com/repos/ezpaarse-project/bibliomap-viewer/tags | jq -r '.[0].name')",
+    "get-version:ezpaarse": "export EZP_V=$(curl -s https://api.github.com/repos/ezpaarse-project/ezpaarse/tags | jq -r '.[0].name')",
+    "insertversion:bibliomap-viewer": "sed -i \"s#\\(image: ezpaarseproject/bibliomap-viewer:\\)\\([\\.a-z0-9]\\+\\)#\\1${BBV_V}#g\" docker-compose.yml",
+    "insertversion:bibliomap-enricher": "sed -i \"s#\\(image: ezpaarseproject/bibliomap-enricher:\\)\\([\\.a-z0-9]\\+\\)#\\1${BBV_V}#g\" docker-compose.yml",
+    "insertversion:bibliomap-harvester": "sed -i \"s#\\(image: ezpaarseproject/bibliomap-harvester:\\)\\([\\.a-z0-9]\\+\\)#\\1${BBV_V}#g\" docker-compose.yml",
+    "insertversion:ezpaarse": "sed -i \"s#\\(image: ezpaarseproject/ezpaarse:\\)\\([\\.a-z0-9]\\+\\)#\\1${EZP_V}#g\" docker-compose.yml",
+    "version": "npm run get-version:bibliomap-harvester && npm run get-version:bibliomap-enricher && npm run get-version:bibliomap-viewer && npm run get-version:ezpaarse && npm run insertversion:bibliomap-viewer && npm run insertversion:bibliomap-enricher && npm run insertversion:bibliomap-harvester && && npm run insertversion:ezpaarse && git add docker-compose.yml",
+    "postversion": "git push && git push --tags"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ezpaarse-project/bibliomap.git"
+  },
+  "author": "Stéphane Gully <stephane.gully@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ezpaarse-project/bibliomap/issues"
+  },
+  "homepage": "https://github.com/ezpaarse-project/bibliomap",
+  "dependencies": {},
+  "devDependencies": {}
+}
