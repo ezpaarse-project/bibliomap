@@ -16,7 +16,7 @@ How could it be useful ?
 Bibliomap uses these softwares:
   * [bibliomap-harvester](https://github.com/ezpaarse-project/bibliomap-harvester) for real-time listening lines of log comming from ezproxys
   * [bibliomap-enricher](https://github.com/ezpaarse-project/bibliomap-enricher) listening for bibliomap-harvester data, sending it to ezpaarse and sending the result to you this bibliomap
-  * [bibliomap-viewer](https://github.com/ezpaarse-project/bibliomap-viewer) for the front end web interface showing ezPAARSE EC's in real time
+  * [bibliomap-viewer](https://github.com/ezpaarse-project/bibliomap-viewer) for the front end web interface showing ezPAARSE EC's in real time thanks to websocket protocol
   * [Log.io](http://logio.org/) protocol for all the communication between these scripts
 
 <p align="center">
