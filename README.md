@@ -37,6 +37,9 @@ npm start
 
 Then browse to http://127.0.0.1:50197
 
+### Expo mode
+In expo mode, the description popup will automatically show and hide at determined intervals. To activate it, add `expo` or `e` in the query. By default, the popup will be shown for **1 minute**, then hidden for **10 minutes**. To define custom intervals, `expo` should take two numbers separated by a comma. The first one is the time shown, the second is the time hidden.
+
 ## Developers
 
 ### Upgrade
