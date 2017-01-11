@@ -30,7 +30,7 @@ Bibliomap uses these softwares:
 ## Installation and running a quick demo
 
 ```
-git clone git@github.com:ezpaarse-project/bibliomap.git
+git clone https://github.com/ezpaarse-project/bibliomap.git
 cd bibliomap
 npm start
 ```
@@ -45,11 +45,11 @@ In expo mode, the description popup will automatically show and hide at determin
 ## Installation for developing
 
 ```
-git clone git@github.com:ezpaarse-project/bibliomap.git
+git clone https://github.com/ezpaarse-project/bibliomap.git
 cd bibliomap
-git clone git@github.com:ezpaarse-project/bibliomap-harvester.git
-git clone git@github.com:ezpaarse-project/bibliomap-enricher.git
-git clone git@github.com:ezpaarse-project/bibliomap-viewer.git
+git clone https://github.com/ezpaarse-project/bibliomap-harvester.git
+git clone https://github.com/ezpaarse-project/bibliomap-enricher.git
+git clone https://github.com/ezpaarse-project/bibliomap-viewer.git
 npm run install
 npm run start-debug
 ```
