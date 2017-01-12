@@ -1,0 +1,79 @@
+# docker-compose.yml used to be deployed on the 
+# inist's bibliomap production server (vpbibliomap)
+# connected to the bibcnrs logs
+
+version: '2'
+
+services:
+
+  bibliomap-viewer:
+    container_name: bibliomap-viewer
+    image: ezpaarseproject/bibliomap-viewer:3.0.6
+    environment:
+      http_proxy:  ${http_proxy}
+      https_proxy: ${https_proxy}
+      no_proxy: ${no_proxy}
+      NODE_ENV: "production"
+      DEBUG: ${DEBUG}
+      BBV_INDEX: "index-cnrs.html"
+      BBV_JSFILE: "bibliomap-cnrs.js"
+      BBV_LISTEN_ENRICHER_HOST: "0.0.0.0"
+      BBV_LISTEN_ENRICHER_PORT: 27779
+      BBV_LISTEN_HOST: "0.0.0.0"
+      BBV_LISTEN_PORT: 50197 # web server
+    working_dir: /app
+    tty: true         # to have nice debug(...) outputs
+    stdin_open: true  # to be able to use CTRL+C to stop the debug
+    ports:
+      - 50197:50197
+    restart: unless-stopped
+
+  bibliomap-enricher:
+    container_name: bibliomap-enricher
+    image: ezpaarseproject/bibliomap-enricher:3.1.4
+    links:
+      - bibliomap-viewer
+      - ezpaarse
+    environment:
+      http_proxy:  ${http_proxy}
+      https_proxy: ${https_proxy}
+      no_proxy: ${no_proxy}
+      NODE_ENV: "production"
+      DEBUG: ${DEBUG}
+      BBE_EZPAARSE_URL: "http://ezpaarse:59599"
+      BBE_EZPAARSE_PREDEF: "00-fr-bibcnrs"
+      BBE_LISTEN_HARVESTER_HOST: "0.0.0.0"
+      BBE_LISTEN_HARVESTER_PORT: 27777
+      BBE_BROADCAST_VIEWER_HOST: "bibliomap-viewer"
+      BBE_BROADCAST_VIEWER_PORT: 27779
+    working_dir: /app
+    tty: true         # to have nice debug(...) outputs
+    stdin_open: true  # to be able to use CTRL+C to stop the debug
+    ports:
+      - 27777:27777   # listen logs from bibliomap-harvester installed on bibcnrs server
+    restart: unless-stopped
+
+  ezpaarse:
+    container_name: ezpaarse
+    image: ezpaarseproject/ezpaarse:2.9.6
+    links:
+      - ezpaarse_db
+    environment:
+      http_proxy:  ${http_proxy}
+      https_proxy: ${https_proxy}
+      no_proxy: ${no_proxy}
+      NODE_ENV: "production"
+      EZPAARSE_MONGO_URL: "mongodb://ezpaarse_db:27017/ezpaarse"
+    tty: true         # to have nice debug(...) outputs
+    stdin_open: true  # to be able to use CTRL+C to stop the container
+    ports:
+      - 59599:59599
+    depends_on:
+      - ezpaarse_db
+    restart: unless-stopped
+
+  ezpaarse_db:
+    container_name: ezpaarse_db
+    image: mongo:3.4.1
+    command: --smallfiles
+    restart: unless-stopped

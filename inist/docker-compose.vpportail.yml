@@ -1,0 +1,29 @@
+# docker-compose.yml to be deployed on the bibcnrs server
+# where ezproxy logs are stored.
+# It sends logs real time to bibliomap-enricher installed
+# on vpbibliomap server
+
+version: '2'
+
+services:
+
+  bibliomap-harvester:
+    container_name: bibliomap-harvester
+    image: ezpaarseproject/bibliomap-harvester:2.1.5
+    environment:
+      http_proxy:  ${http_proxy}
+      https_proxy: ${https_proxy}
+      no_proxy: ${no_proxy}
+      NODE_ENV: "production"
+      DEBUG: ${DEBUG}
+      BBH_ENRICHER_HOST: "vpbibliomap.intra.inist.fr"
+      BBH_ENRICHER_PORT: 27777
+      BBH_NO_DEMO:     "1" # demo is disabled
+      BBH_STREAMNAMES: "IN2P3 INC INEE INP INS2I INSB INSHS INSIS INSMI INSU"
+      BBH_STREAMPATHS: "/app/tmp/in2p3.log /app/tmp/inc.log /app/tmp/inee.log /app/tmp/inp.log /app/tmp/ins2i.log /app/tmp/insb.log /app/tmp/inshs.log /app/tmp/insis.log /app/tmp/insmi.log /app/tmp/insu.log"
+    volumes:
+        - ./logs:/app/tmp
+    working_dir: /app
+    tty: true         # to have nice debug(...) outputs
+    stdin_open: true  # to be able to use CTRL+C to stop the debug
+    restart: unless-stopped
