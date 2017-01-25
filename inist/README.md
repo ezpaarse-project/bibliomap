@@ -8,7 +8,7 @@ vpportail is running 10 ezproxies (for CNRS instituts IN2P3 INC INEE INP INS2I I
 
 vpbibliomap is running bibliomap-enricher, ezpaarse and bibliomap-viewer to display a nice real time dynamic map of usage event processed in live by ezpaarse.
 
-This folder containers 2 docker-compose.yml:
+This folder contains 2 docker-compose.yml:
 
-- docker-compose.vpportail.yml to be deployed on the vpportail server
-- docker-compose.vpbibliomap.yml to be deployed on the vpbibliomap server
+- vpportail/docker-compose.prod.yml to be deployed on the vpportail server
+- vpbibliomap/docker-compose.prod.yml to be deployed on the vpbibliomap server

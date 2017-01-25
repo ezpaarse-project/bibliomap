@@ -13,6 +13,7 @@ lib-cov
 pids
 logs
 results
+.vscode/
 
 npm-debug.log
 *.swp
@@ -36,3 +37,7 @@ build/Release
 .node_repl_history
 
 cache
+
+bibliomap-enricher/
+bibliomap-harvester/
+bibliomap-viewer/
