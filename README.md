@@ -72,12 +72,3 @@ To upgrade to the latest version of [bibliomap-harvester](https://github.com/ezp
 ```
 npm version patch
 ```
-
-### Running with the latest tags
-
-To start the bibliomap demo with the latest tags (you must prealably do "make build" for each [bibliomap-harvester](https://github.com/ezpaarse-project/bibliomap-harvester), [bibliomap-enricher](https://github.com/ezpaarse-project/bibliomap-enricher), [bibliomap-viewer](https://github.com/ezpaarse-project/bibliomap-viewer), and [ezPAARSE](https://github.com/ezpaarse-project/ezpaarse) modules), just type :
-```
-npm run start-latest
-```
-
-Useful for developement and debugging.

@@ -5,8 +5,6 @@
   "scripts": {
     "start": "docker-compose -f ./docker-compose.demo.yml up -d",
     "start-debug": "docker-compose -f ./docker-compose.debug.yml up -d",
-    "start-latest": "npm run create-dc-latest && docker-compose -f ./docker-compose.latest.yml up -d",
-    "create-dc-latest": "cp docker-compose.demo.yml docker-compose.latest.yml && sed -i \"s#\\(image: ezpaarseproject/[-a-z0-9]\\+:\\)\\([\\.a-z0-9]\\+\\)#\\1latest#g\" docker-compose.latest.yml",
     "install:bibliomap-harvester": "cd bibliomap-harvester && make install",
     "install:bibliomap-enricher": "cd bibliomap-enricher && make install",
     "install:bibliomap-viewer": "cd bibliomap-viewer && make install",
