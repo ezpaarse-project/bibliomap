@@ -8,7 +8,7 @@ services:
 
   bibliomap-viewer:
     container_name: bibliomap-viewer
-    image: ezpaarseproject/bibliomap-viewer:Mise à jour 0d74947..0c113e0 Fast-forward README.md | 2 +- bibliomap-cnrs.js | 48 +++++++++++++++++++++++++++++++++--------------- index-cnrs.html | 14 +++++++++----- public/css/style.css | 8 ++++++++ 4 files changed, 51 insertions(+), 21 deletions(-) 3.0.6
+    image: ezpaarseproject/bibliomap-viewer:3.0.6
     environment:
       http_proxy:  ${http_proxy}
       https_proxy: ${https_proxy}
@@ -30,7 +30,7 @@ services:
 
   bibliomap-enricher:
     container_name: bibliomap-enricher
-    image: ezpaarseproject/bibliomap-enricher:Already up-to-date. 3.1.4
+    image: ezpaarseproject/bibliomap-enricher:3.1.4
     links:
       - bibliomap-viewer
       - ezpaarse
@@ -55,7 +55,7 @@ services:
 
   ezpaarse:
     container_name: ezpaarse
-    image: ezpaarseproject/ezpaarse:Mise à jour 3277529..f796d69 Fast-forward doc/features/geolocalisation.md | 16 +++++++------- lib/hostlocalize.js | 2 -- lib/pkbvalidator.js | 49 ++++++++++++++++++++++------------------- 3 files changed, 34 insertions(+), 33 deletions(-) 2.9.6
+    image: ezpaarseproject/ezpaarse:2.9.6
     links:
       - ezpaarse_db
     environment:
