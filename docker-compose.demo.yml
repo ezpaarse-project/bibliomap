@@ -50,7 +50,7 @@ services:
 
   bibliomap-harvester:
     container_name: bibliomap-harvester
-    image: ezpaarseproject/bibliomap-harvester:2.1.6
+    image: ezpaarseproject/bibliomap-harvester:2.1.7
     links:
       - bibliomap-enricher
     environment:
