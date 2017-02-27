@@ -27,7 +27,7 @@ services:
 
   bibliomap-enricher:
     container_name: bibliomap-enricher
-    image: ezpaarseproject/bibliomap-enricher:3.1.5
+    image: ezpaarseproject/bibliomap-enricher:3.1.6
     links:
       - bibliomap-viewer
       - ezpaarse
