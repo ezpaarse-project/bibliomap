@@ -7,8 +7,8 @@ services:
       file: ./bibliomap-viewer/docker-compose.debug.yml
       service: bibliomap-viewer
     environment:
-      BBV_INDEX: "index-istex.html"
-      BBV_JSFILE: "bibliomap-istex.js"
+      BBV_INDEX: ${BBV_INDEX}
+      BBV_JSFILE: ${BBV_JSFILE}
       BBV_LISTEN_ENRICHER_HOST: "0.0.0.0"
       BBV_LISTEN_ENRICHER_PORT: 27779
       BBV_LISTEN_HOST: "0.0.0.0"
@@ -23,7 +23,7 @@ services:
       - ezpaarse
     environment:
       BBE_EZPAARSE_URL: "http://ezpaarse:59599"
-      BBE_EZPAARSE_PREDEF: "00-fr-istex"
+      BBE_EZPAARSE_PREDEF: ${BBE_EZPAARSE_PREDEF}
       BBE_LISTEN_HARVESTER_HOST: "0.0.0.0"
       BBE_LISTEN_HARVESTER_PORT: 27777
       BBE_BROADCAST_VIEWER_HOST: "bibliomap-viewer"
@@ -36,15 +36,15 @@ services:
     links:
       - bibliomap-enricher
     environment:
-      DEBUG: ${DEBUG}
       BBH_ENRICHER_HOST: "bibliomap-enricher"
       BBH_ENRICHER_PORT: 27777
-
-
+      BBH_NO_DEMO:     "" # demo is activated
+      BBH_STREAMNAMES: "" # default streams are for the demo
+      BBH_STREAMPATHS: ""
 
   ezpaarse:
     container_name: ezpaarse
-    image: ezpaarseproject/ezpaarse:2.10.0
+    image: ezpaarseproject/ezpaarse:2.9.6
     links:
       - ezpaarse_db
     environment:

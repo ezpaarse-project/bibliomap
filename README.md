@@ -13,11 +13,23 @@ How could it be useful ?
 
 ## Usage options
 
+You can chose between different configuration files which define which project ( BIBCRNS, ISTEX ) your want to start with, by setting unix environment variables.
+
+Examples :
+
+. ./setup_istex.sh
+
+OR 
+
+. ./setup_cnrs.sh
+
+
+
 ### Expo mode
 
 In expo mode, the description popup will automatically show and hide at determined intervals. To activate it, add `expo` or `e` in the querystring. By default, the popup will be shown for **1 minute**, then hidden for **10 minutes**. To define custom intervals, `expo` should take two numbers separated by a comma. The first one is the time shown, the second is the time hidden. Times are defined in **seconds**.
 
-Exemples:
+Examples:
   - http://bibliomap.inist.fr?expo (activates default expo mode: 1min shown / 10 min hidden)
   - http://bibliomap.inist.fr?e (the same but with a shortcut)  
   - http://bibliomap.inist.fr?expo=20,120 (activates customized expo mode: 20 sec shown / 120 sec hidden)  
