@@ -11,8 +11,8 @@ services:
       no_proxy: ${no_proxy}
       NODE_ENV: "production"
       DEBUG: ${DEBUG}
-      BBV_INDEX: "index-cnrs.html"
-      BBV_JSFILE: "bibliomap-cnrs.js"
+      BBV_INDEX: ${BBV_INDEX}
+      BBV_JSFILE: ${BBV_JSFILE}
       BBV_LISTEN_ENRICHER_HOST: "0.0.0.0"
       BBV_LISTEN_ENRICHER_PORT: 27779
       BBV_LISTEN_HOST: "0.0.0.0"
@@ -38,11 +38,11 @@ services:
       NODE_ENV: "production"
       DEBUG: ${DEBUG}
       BBE_EZPAARSE_URL: "http://ezpaarse:59599"
-      BBE_EZPAARSE_PREDEF: "00-fr-bibcnrs"
       BBE_LISTEN_HARVESTER_HOST: "0.0.0.0"
       BBE_LISTEN_HARVESTER_PORT: 27777
       BBE_BROADCAST_VIEWER_HOST: "bibliomap-viewer"
       BBE_BROADCAST_VIEWER_PORT: 27779
+      NODE_APP_INSTANCE: ${NODE_APP_INSTANCE}
     working_dir: /app
     tty: true         # to have nice debug(...) outputs
     stdin_open: true  # to be able to use CTRL+C to stop the debug
@@ -64,6 +64,8 @@ services:
       BBH_NO_DEMO:     "" # demo is activated
       BBH_STREAMNAMES: "" # default streams are for the demo
       BBH_STREAMPATHS: ""
+      BBH_LOG_FOLDER: ${BBH_LOG_FOLDER}
+      NODE_APP_INSTANCE: ${NODE_APP_INSTANCE}
     working_dir: /app
     tty: true         # to have nice debug(...) outputs
     stdin_open: true  # to be able to use CTRL+C to stop the debug
