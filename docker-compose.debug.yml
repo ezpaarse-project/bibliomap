@@ -7,8 +7,8 @@ services:
       file: ./bibliomap-viewer/docker-compose.debug.yml
       service: bibliomap-viewer
     environment:
-      BBV_INDEX: "index-cnrs.html"
-      BBV_JSFILE: "bibliomap-cnrs.js"
+      BBV_INDEX: ${BBV_INDEX}
+      BBV_JSFILE: ${BBV_JSFILE}
       BBV_LISTEN_ENRICHER_HOST: "0.0.0.0"
       BBV_LISTEN_ENRICHER_PORT: 27779
       BBV_LISTEN_HOST: "0.0.0.0"
@@ -23,7 +23,7 @@ services:
       - ezpaarse
     environment:
       BBE_EZPAARSE_URL: "http://ezpaarse:59599"
-      BBE_EZPAARSE_PREDEF: "00-fr-bibcnrs"
+      NODE_APP_INSTANCE: ${NODE_APP_INSTANCE}
       BBE_LISTEN_HARVESTER_HOST: "0.0.0.0"
       BBE_LISTEN_HARVESTER_PORT: 27777
       BBE_BROADCAST_VIEWER_HOST: "bibliomap-viewer"
@@ -41,6 +41,7 @@ services:
       BBH_NO_DEMO:     "" # demo is activated
       BBH_STREAMNAMES: "" # default streams are for the demo
       BBH_STREAMPATHS: ""
+      NODE_APP_INSTANCE: ${NODE_APP_INSTANCE}
 
   ezpaarse:
     container_name: ezpaarse
