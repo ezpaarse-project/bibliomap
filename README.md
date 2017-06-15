@@ -13,18 +13,6 @@ How could it be useful ?
 
 ## Usage options
 
-You can chose between different configuration files which define which project ( BIBCRNS, ISTEX ) your want to start with, by setting unix environment variables.
-
-Examples :
-
-. ./setup_istex.sh
-
-OR 
-
-. ./setup_cnrs.sh
-
-
-
 ### Expo mode
 
 In expo mode, the description popup will automatically show and hide at determined intervals. To activate it, add `expo` or `e` in the querystring. By default, the popup will be shown for **1 minute**, then hidden for **10 minutes**. To define custom intervals, `expo` should take two numbers separated by a comma. The first one is the time shown, the second is the time hidden. Times are defined in **seconds**.
@@ -50,11 +38,19 @@ Bibliomap uses these softwares:
 
   * Docker and docker-compose
 
+  * Load one configuration file which define your project settings (setup_*.sh)
+
 ## Installation and running a quick demo
 
 ```
+# Clone the repository
 git clone https://github.com/ezpaarse-project/bibliomap.git
 cd bibliomap
+
+# Load one configuration file
+. ./setup_cnrs.sh # Or . ./setup_istex.sh
+
+# Start the tool
 npm start
 ```
 
