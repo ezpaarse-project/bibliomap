@@ -38,7 +38,7 @@ Bibliomap uses these softwares:
 
   * Docker and docker-compose
 
-  * Load one configuration file which define your project settings (setup_*.sh)
+  * Load the configuration file which define your project settings (setup_*.sh)
 
 ## Installation and running a quick demo
 
@@ -61,11 +61,17 @@ Then browse to http://127.0.0.1:50197
 ## Installation for developing
 
 ```
+# Clone all the required repositories
 git clone https://github.com/ezpaarse-project/bibliomap.git
 cd bibliomap
 git clone https://github.com/ezpaarse-project/bibliomap-harvester.git
 git clone https://github.com/ezpaarse-project/bibliomap-enricher.git
 git clone https://github.com/ezpaarse-project/bibliomap-viewer.git
+
+# Load one configuration file
+. ./setup_cnrs.sh # Or . ./setup_istex.sh
+
+# Install dependencies & Start the tool
 npm run install
 npm run start-debug
 ```
