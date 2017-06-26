@@ -74,6 +74,8 @@ services:
   ezpaarse:
     container_name: ezpaarse
     image: ezpaarseproject/ezpaarse:2.11.1
+    volumes:
+      - .ezpaarse/logs:/opt/ezpaarse/logs
     links:
       - ezpaarse_db
     environment:

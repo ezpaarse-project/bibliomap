@@ -41,7 +41,7 @@ services:
       NODE_ENV: "production"
       DEBUG: ${DEBUG}
       BBE_EZPAARSE_URL: "http://ezpaarse:59599"
-      BBE_EZPAARSE_PREDEF: "00-fr-bibcnrs"
+      BBE_EZPAARSE_PREDEF: "00-fr-istex"
       BBE_LISTEN_HARVESTER_HOST: "0.0.0.0"
       BBE_LISTEN_HARVESTER_PORT: 27777
       BBE_BROADCAST_VIEWER_HOST: "bibliomap-viewer"
