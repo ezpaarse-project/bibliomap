@@ -16,14 +16,14 @@ services:
       no_proxy: ${no_proxy}
       NODE_ENV: "production"
       DEBUG: ${DEBUG}
-      BBH_ENRICHER_HOST: "vpbibliomap-istex.intra.inist.fr"
+      BBH_ENRICHER_HOST: "vp-istex-bibliomap.intra.inist.fr"
       BBH_ENRICHER_PORT: 27777
       BBH_NO_DEMO:     "1" # demo is disabled
       BBH_STREAMNAMES: "ISTEX"
       BBH_STREAMPATHS: "/app/tmp/istex-api.log"
       NODE_APP_INSTANCE: "istex"
     volumes:
-        - ./var/log:/app/tmp
+        - /applis/istex/home/var/log:/app/tmp
     working_dir: /app
     tty: true         # to have nice debug(...) outputs
     stdin_open: true  # to be able to use CTRL+C to stop the debug
