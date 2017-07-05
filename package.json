@@ -6,6 +6,7 @@
     "start": "docker-compose -f ./docker-compose.demo.yml up -d",
     "start-debug": "docker-compose -f ./docker-compose.debug.yml up -d",
     "stop-debug": "docker-compose -f ./docker-compose.debug.yml kill",
+    "pull": "git pull && cd ./bibliomap-harvester && git pull && cd ../bibliomap-enricher && git pull && cd ../bibliomap-viewer && git pull",
     "install:bibliomap-harvester": "cd bibliomap-harvester && make install",
     "install:bibliomap-enricher": "cd bibliomap-enricher && make install",
     "install:bibliomap-viewer": "cd bibliomap-viewer && make install",

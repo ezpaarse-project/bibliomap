@@ -78,6 +78,11 @@ npm run start-debug
 
 Then browse to http://127.0.0.1:50197
 
+Whenever you want you can git pull all the git repositories using one command:
+```
+npm run pull
+```
+
 
 ### Upgrade
 
