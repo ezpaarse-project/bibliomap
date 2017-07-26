@@ -42,13 +42,15 @@ Bibliomap uses these softwares:
 
 ## Installation and running a quick demo
 
-```
+```bash
 # Clone the repository
 git clone https://github.com/ezpaarse-project/bibliomap.git
 cd bibliomap
 
 # Load one configuration file
-. ./setup_cnrs.sh # Or . ./setup_istex.sh
+source ./setup_cnrs.sh 
+# Or
+source ./setup_istex.sh
 
 # Start the tool
 npm start
