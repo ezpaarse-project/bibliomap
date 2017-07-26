@@ -60,7 +60,7 @@ Then browse to http://127.0.0.1:50197
 
 ## Installation for developing
 
-```
+```bash
 # Clone all the required repositories
 git clone https://github.com/ezpaarse-project/bibliomap.git
 cd bibliomap
@@ -69,7 +69,9 @@ git clone https://github.com/ezpaarse-project/bibliomap-enricher.git
 git clone https://github.com/ezpaarse-project/bibliomap-viewer.git
 
 # Load one configuration file
-. ./setup_cnrs.sh # Or . ./setup_istex.sh
+source ./setup_cnrs.sh 
+# Or
+source ./setup_istex.sh
 
 # Install dependencies & Start the tool
 npm run install
