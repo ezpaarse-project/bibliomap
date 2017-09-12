@@ -66,6 +66,8 @@ services:
       EZPAARSE_MONGO_URL: "mongodb://ezpaarse_db:27017/ezpaarse"
     tty: true         # to have nice debug(...) outputs
     stdin_open: true  # to be able to use CTRL+C to stop the container
+    volumes:
+      - ./logs/:/opt/ezpaarse/logs # to prevent ezPAARSE from crashing because the log dir doesn't exist
     ports:
       - 59599:59599
     depends_on:
