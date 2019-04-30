@@ -30,10 +30,9 @@ services:
       BBE_BROADCAST_VIEWER_PORT: 27779
 
   bibliomap-harvester:
-    # extends:
-    #   file: ./bibliomap-harvester/docker-compose.debug.yml
-    #   service: bibliomap-harvester
-    image: ezpaarseproject/bibliomap-harvester:3.0.0
+    extends:
+      file: ./bibliomap-harvester/docker-compose.debug.yml
+      service: bibliomap-harvester
     links:
       - bibliomap-enricher
     environment:
@@ -44,6 +43,7 @@ services:
       BBH_STREAMPATHS: ""
       BBH_LOG_FOLDER: ${BBH_LOG_FOLDER}
       NODE_APP_INSTANCE: ${NODE_APP_INSTANCE}
+      BBH_DEMO_DELAY: ${BBH_DEMO_DELAY}
 
   ezpaarse:
     container_name: ezpaarse
