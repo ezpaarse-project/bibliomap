@@ -44,7 +44,7 @@ services:
       BBH_STREAMPATHS: ""
       BBH_LOG_FOLDER: ${BBH_LOG_FOLDER}
       NODE_APP_INSTANCE: ${NODE_APP_INSTANCE}
-      BBH_DEMO_DELAY: ${BBH_DEMO_DELAY}
+      BBH_LOGS_PER_SECOND: ${BBH_LOGS_PER_SECOND}
 
   ezpaarse:
     container_name: ezpaarse
