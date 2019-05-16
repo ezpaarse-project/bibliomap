@@ -28,6 +28,7 @@ services:
       BBE_LISTEN_HARVESTER_PORT: 27777
       BBE_BROADCAST_VIEWER_HOST: "bibliomap-viewer"
       BBE_BROADCAST_VIEWER_PORT: 27779
+      BBE_EZPAARSE_PREDEF: ${BBE_EZPAARSE_PREDEF}
 
   bibliomap-harvester:
     extends:
