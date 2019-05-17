@@ -1,4 +1,4 @@
-# docker-compose.yml used to be deployed on the 
+# docker-compose.yml used to be deployed on the
 # inist's bibliomap production server (vpbibliomap)
 # connected to the bibcnrs logs
 
@@ -56,7 +56,7 @@ services:
 
   ezpaarse:
     container_name: ezpaarse
-    image: ezpaarseproject/ezpaarse:2.11.1
+    image: ezpaarseproject/ezpaarse:2.14.3
     links:
       - ezpaarse_db
     environment:
