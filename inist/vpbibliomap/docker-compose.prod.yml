@@ -15,7 +15,7 @@ services:
       no_proxy: ${no_proxy}
       NODE_ENV: "production"
       DEBUG: ${DEBUG}
-      BBV_INDEX: "index-cnrs.html"
+      BBV_INDEX: "cnrs"
       BBV_JSFILE: "bibliomap-cnrs.js"
       BBV_LISTEN_ENRICHER_HOST: "0.0.0.0"
       BBV_LISTEN_ENRICHER_PORT: 27779

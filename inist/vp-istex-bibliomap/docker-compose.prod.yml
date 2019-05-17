@@ -15,7 +15,7 @@ services:
       no_proxy: ${no_proxy}
       NODE_ENV: "production"
       DEBUG: ${DEBUG}
-      BBV_INDEX: "index-istex.html"
+      BBV_INDEX: "istex"
       BBV_JSFILE: "bibliomap-istex.js"
       BBV_LISTEN_ENRICHER_HOST: "0.0.0.0"
       BBV_LISTEN_ENRICHER_PORT: 27779
