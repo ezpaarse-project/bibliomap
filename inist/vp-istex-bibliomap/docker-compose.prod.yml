@@ -56,7 +56,7 @@ services:
 
   ezpaarse:
     container_name: ezpaarse
-    image: ezpaarseproject/ezpaarse:2.14.3
+    image: ezpaarseproject/ezpaarse:3.1.0
     links:
       - ezpaarse_db
     environment:
@@ -67,6 +67,10 @@ services:
       EZPAARSE_MONGO_URL: "mongodb://ezpaarse_db:27017/ezpaarse"
     volumes:
       - "/applis/istex/home/bibliomap/logs:/opt/ezpaarse/logs"
+      - ./ezpaarse/platforms:/opt/ezpaarse/platforms
+      - ./ezpaarse/middlewares:/opt/ezpaarse/middlewares
+      - ./ezpaarse/resources:/opt/ezpaarse/resources
+      - ./ezpaarse/exclusions:/opt/ezpaarse/exclusions
     tty: true         # to have nice debug(...) outputs
     stdin_open: true  # to be able to use CTRL+C to stop the container
     ports:
@@ -78,5 +82,7 @@ services:
   ezpaarse_db:
     container_name: ezpaarse_db
     image: mongo:3.4.1
+    volumes:
+      - ./mongo/data:/data/db
     command: --smallfiles
     restart: unless-stopped
