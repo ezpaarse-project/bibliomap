@@ -8,7 +8,7 @@ services:
 
   bibliomap-viewer:
     container_name: bibliomap-viewer
-    image: ezpaarseproject/bibliomap-viewer:5.1.1
+    image: ezpaarseproject/bibliomap-viewer:5.1.2
     environment:
       http_proxy:  ${http_proxy}
       https_proxy: ${https_proxy}
@@ -55,7 +55,7 @@ services:
 
   ezpaarse:
     container_name: ezpaarse
-    image: ezpaarseproject/ezpaarse:3.1.0
+    image: ezpaarseproject/ezpaarse:
     links:
       - ezpaarse_db
     environment:
