@@ -9,7 +9,7 @@ services:
 
   bibliomap-harvester:
     container_name: bibliomap-harvester
-    image: ezpaarseproject/bibliomap-harvester:3.0.0
+    image: ezpaarseproject/bibliomap-harvester:4.0.2
     environment:
       http_proxy:  ${http_proxy}
       https_proxy: ${https_proxy}
