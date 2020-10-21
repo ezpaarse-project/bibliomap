@@ -9,7 +9,7 @@ services:
 
   bibliomap-harvester:
     container_name: bibliomap-harvester
-    image: ezpaarseproject/bibliomap-harvester:4.0.2
+    image: ezpaarseproject/bibliomap-harvester:4.0.3
     environment:
       http_proxy:  ${http_proxy}
       https_proxy: ${https_proxy}
@@ -22,7 +22,7 @@ services:
       BBH_STREAMNAMES: "IN2P3 INC INEE INP INS2I INSB INSHS INSIS INSMI INSU"
       BBH_STREAMPATHS: "/app/tmp/in2p3.log /app/tmp/inc.log /app/tmp/inee.log /app/tmp/inp.log /app/tmp/ins2i.log /app/tmp/insb.log /app/tmp/inshs.log /app/tmp/insis.log /app/tmp/insmi.log /app/tmp/insu.log"
     volumes:
-        - ./logs:/app/tmp
+        - "${BBH_EZPROXY_LOG_DIR}:/app/tmp"
     working_dir: /app
     tty: true         # to have nice debug(...) outputs
     stdin_open: true  # to be able to use CTRL+C to stop the debug
