@@ -50,7 +50,7 @@ services:
 
   bibliomap-harvester:
     container_name: bibliomap-harvester
-    image: ezpaarseproject/bibliomap-harvester:4.0.2
+    image: ezpaarseproject/bibliomap-harvester:4.0.3
     links:
       - bibliomap-enricher
     environment:
@@ -73,7 +73,7 @@ services:
 
   ezpaarse:
     container_name: ezpaarse
-    image: ezpaarseproject/ezpaarse:3.1.0
+    image: ezpaarseproject/ezpaarse:3.4.0
     volumes:
       - .ezpaarse/logs:/opt/ezpaarse/logs
     links:
