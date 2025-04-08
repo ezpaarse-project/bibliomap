@@ -1,0 +1,27 @@
+version: '2'
+
+services:
+
+  bibliomap-enricher:
+    container_name: bibliomap-enricher
+    image: ezpaarseproject/bibliomap-enricher:4.1.1
+    environment:
+      http_proxy:  ${http_proxy}
+      https_proxy: ${https_proxy}
+      no_proxy: ${no_proxy}
+      NODE_ENV: "production"
+      DEBUG: ${DEBUG}
+      BBE_EZPAARSE_URL: ${BBE_EZPAARSE_URL}
+      BBE_EZPAARSE_PREDEF: ${BBE_EZPAARSE_PREDEF}
+      BBE_LISTEN_HARVESTER_HOST: ${BBE_LISTEN_HARVESTER_HOST}
+      BBE_LISTEN_HARVESTER_PORT: ${BBE_LISTEN_HARVESTER_PORT}
+      BBE_BROADCAST_VIEWER_HOST: ${BBE_BROADCAST_VIEWER_HOST}
+      BBE_BROADCAST_VIEWER_PORT: ${BBE_BROADCAST_VIEWER_PORT}
+    working_dir: /app
+    tty: true         # to have nice debug(...) outputs
+    stdin_open: true  # to be able to use CTRL+C to stop the debug
+    # Restarts when the host server reboot
+    # or if the nodejs process crashes. NodeJS crashe
+    # appends at first startup because it needs time for mongodb
+    # to initialize. (this option replaces the usual forever or pm2 stuff)
+    restart: unless-stopped

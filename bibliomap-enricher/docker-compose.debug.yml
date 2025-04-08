@@ -1,0 +1,26 @@
+version: '2'
+
+services:
+
+  bibliomap-enricher:
+    container_name: bibliomap-enricher
+    image: node:22.14.0
+    volumes:
+      - .:/app
+    working_dir: /app
+    environment:
+      http_proxy:  ${http_proxy}
+      https_proxy: ${https_proxy}
+      no_proxy: ${no_proxy}
+      NODE_ENV: "development"
+      DEBUG: ${DEBUG}
+      BBE_EZPAARSE_URL: ${BBE_EZPAARSE_URL}
+      BBE_EZPAARSE_PREDEF: ${BBE_EZPAARSE_PREDEF}
+      BBE_LISTEN_HARVESTER_HOST: ${BBE_LISTEN_HARVESTER_HOST}
+      BBE_LISTEN_HARVESTER_PORT: ${BBE_LISTEN_HARVESTER_PORT}
+      BBE_BROADCAST_VIEWER_HOST: ${BBE_BROADCAST_VIEWER_HOST}
+      BBE_BROADCAST_VIEWER_PORT: ${BBE_BROADCAST_VIEWER_PORT}
+      BBE_LOGSTREAMS: ${BBH_LOGSTREAMS}
+    tty: true         # to have nice debug(...) outputs
+    stdin_open: true  # to be able to use CTRL+C to stop the debug
+    command: npm start

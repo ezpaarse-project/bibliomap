@@ -1,0 +1,28 @@
+version: '2'
+
+services:
+
+  bibliomap-viewer:
+    container_name: bibliomap-viewer
+    image: node:22.14.0
+    volumes:
+      - .:/app
+    working_dir: /app
+    environment:
+      http_proxy:  ${http_proxy}
+      https_proxy: ${https_proxy}
+      no_proxy: ${no_proxy}
+      NODE_ENV: "development"
+      DEBUG: ${DEBUG}
+      BBV_INDEX: ${BBV_INDEX}
+      BBV_JSFILE: ${BBV_JSFILE}
+      BBV_LISTEN_ENRICHER_HOST: ${BBV_LISTEN_ENRICHER_HOST}
+      BBV_LISTEN_ENRICHER_PORT: ${BBV_LISTEN_ENRICHER_PORT}
+      BBV_LISTEN_HOST: ${BBV_LISTEN_HOST}
+      BBV_LISTEN_PORT: ${BBV_LISTEN_PORT}
+    tty: true         # to have nice debug(...) outputs
+    stdin_open: true  # to be able to use CTRL+C to stop the debug
+    ports:
+      - 50197:50197
+      - 27779:27779
+    command: npm run dev

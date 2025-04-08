@@ -1,0 +1,59 @@
+#!/usr/bin/env node
+
+const winston = require('winston');
+const LogHarvester = require('../lib/harvester.js');
+
+process.title = 'bibliomap-harvester';
+
+const logger = winston.createLogger({
+  level: 'error',
+  format: winston.format.simple(),
+  transports: [
+    new winston.transports.Console({ format: winston.format.simple() })
+  ]
+});
+
+let config = Object.assign({ logging: logger }, require('../config.json'));
+
+try {
+  config = Object.assign(config, require('../config.local.json'));
+} catch (err) {
+  if (err.code !== 'MODULE_NOT_FOUND') {
+	  logger.error(err.message);
+  }
+}
+
+const appInstance = process.env.NODE_APP_INSTANCE;
+
+if (appInstance) {
+  try {
+    config = Object.assign(config, require(`../config-${appInstance}.json`));
+  } catch (err) {
+    if (err.code === 'MODULE_NOT_FOUND') {
+      logger.warn(`No config file found for app '${appInstance}'`);
+    } else {
+      logger.error(err.message);
+    }
+  }
+}
+
+if (process.env.BBH_ENRICHER_HOST) {
+  config.server.host = process.env.BBH_ENRICHER_HOST;
+}
+if (process.env.BBH_ENRICHER_PORT) {
+  config.server.port = process.env.BBH_ENRICHER_PORT;
+}
+
+if (process.env.BBH_STREAMNAMES && process.env.BBH_STREAMPATHS) {
+  const streamNames = process.env.BBH_STREAMNAMES.split(' ');
+  const streamPaths = process.env.BBH_STREAMPATHS.split(' ');
+
+  config.logStreams = {};
+
+  streamNames.forEach((streamName, i) => {
+    config.logStreams[streamName] = [streamPaths[i]];
+  });
+}
+
+const harvester = new LogHarvester(config);
+harvester.run();

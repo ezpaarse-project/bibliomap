@@ -1,0 +1,30 @@
+version: '2'
+
+services:
+
+  bibliomap-viewer:
+    container_name: bibliomap-viewer
+    image: ezpaarseproject/bibliomap-viewer:5.1.6
+    environment:
+      http_proxy:  ${http_proxy}
+      https_proxy: ${https_proxy}
+      no_proxy: ${no_proxy}
+      NODE_ENV: "production"
+      DEBUG: ${DEBUG}
+      BBV_INDEX: ${BBV_INDEX}
+      BBV_JSFILE: ${BBV_JSFILE}
+      BBV_LISTEN_ENRICHER_HOST: ${BBV_LISTEN_ENRICHER_HOST}
+      BBV_LISTEN_ENRICHER_PORT: ${BBV_LISTEN_ENRICHER_PORT}
+      BBV_LISTEN_HOST: ${BBV_LISTEN_HOST}
+      BBV_LISTEN_PORT: ${BBV_LISTEN_PORT}
+    working_dir: /app
+    tty: true         # to have nice debug(...) outputs
+    stdin_open: true  # to be able to use CTRL+C to stop the debug
+    ports:
+      - 50197:50197
+      - 27779:27779
+    # Restarts when the host server reboot
+    # or if the nodejs process crashes. NodeJS crashe
+    # appends at first startup because it needs time for mongodb
+    # to initialize. (this option replaces the usual forever or pm2 stuff)
+    restart: unless-stopped

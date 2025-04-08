@@ -1,0 +1,25 @@
+version: '2'
+
+services:
+
+  bibliomap-harvester:
+    container_name: bibliomap-harvester
+    image: ezpaarseproject/bibliomap-harvester:4.0.3
+    environment:
+      http_proxy:  ${http_proxy}
+      https_proxy: ${https_proxy}
+      no_proxy: ${no_proxy}
+      NODE_ENV: "production"
+      DEBUG: ${DEBUG}
+      BBH_ENRICHER_HOST: ${BBH_ENRICHER_HOST}
+      BBH_ENRICHER_PORT: ${BBH_ENRICHER_PORT}
+      BBH_STREAMNAMES: ${BBH_STREAMNAMES}
+      BBH_STREAMPATHS: ${BBH_STREAMPATHS}
+    working_dir: /app
+    tty: true         # to have nice debug(...) outputs
+    stdin_open: true  # to be able to use CTRL+C to stop the debug
+    # Restarts when the host server reboot
+    # or if the nodejs process crashes. NodeJS crashe
+    # appends at first startup because it needs time for mongodb
+    # to initialize. (this option replaces the usual forever or pm2 stuff)
+    restart: unless-stopped

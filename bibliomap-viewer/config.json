@@ -1,0 +1,14 @@
+{
+  "index": "index-cnrs.html",
+  "jsfile": "bibliomap-cnrs.js",
+  "listen": {
+    "bibliomap-enricher": {
+      "host": "0.0.0.0",
+      "port": 27779
+    },
+    "bibliomap-viewer": {
+      "host": "0.0.0.0",
+      "port": 50197
+    }
+  }
+}

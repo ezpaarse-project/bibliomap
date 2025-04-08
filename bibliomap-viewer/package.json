@@ -1,0 +1,49 @@
+{
+  "name": "bibliomap-viewer",
+  "version": "5.1.6",
+  "description": "BiblioMap (viewer) shows ezpaarse geolocalized EC's on a map",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon ./app.js -e js,html,css,twig,json",
+    "insertversion": "sed -i \"s#\\(image: ezpaarseproject/bibliomap-viewer:\\)\\([\\.a-z0-9]\\+\\)#\\1${npm_package_version}#g\" docker-compose.yml",
+    "version": "npm run insertversion && git add docker-compose.yml",
+    "postversion": "git push && git push --tags",
+    "lint": "eslint --ext .js .",
+    "precommit": "npm run lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ezpaarse-project/bibliomap-viewer.git"
+  },
+  "author": "Stéphane Gully <stephane.gully@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ezpaarse-project/bibliomap-viewer/issues"
+  },
+  "homepage": "https://github.com/ezpaarse-project/bibliomap-viewer",
+  "dependencies": {
+    "JSONStream": "^0.9.0",
+    "debug": "^2.6.0",
+    "event-stream": "^3.1.7",
+    "express": "^4.16.4",
+    "jquery": "^3.4.1",
+    "material-design-icons": "^3.0.1",
+    "materialize-css": "^1.0.0-rc.2",
+    "nconf": "^0.6.9",
+    "nodemon": "^1.18.11",
+    "request": "^2.88.0",
+    "sha256": "^0.2.0",
+    "socket.io": "^2.2.0",
+    "twig": "^1.13.3",
+    "uikit": "^3.1.6",
+    "useragent": "^2.3.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.17.2",
+    "husky": "^2.2.0",
+    "mocha": "^6.1.4"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "name": "bibliomap-harvester",
+  "version": "4.0.3",
+  "description": "Monitors and harvests ezproxy log files for bibliomap visualization.",
+  "private": true,
+  "scripts": {
+    "start": "bin/harvest",
+    "start-demo": "npm-run-all --parallel generate harvest",
+    "generate": "bin/generate",
+    "harvest": "bin/harvest",
+    "insertversion": "sed -i \"s#\\(image: ezpaarseproject/bibliomap-harvester:\\)\\([\\.a-z0-9]\\+\\)#\\1${npm_package_version}#g\" docker-compose.yml",
+    "version": "npm run insertversion && git add docker-compose.yml",
+    "postversion": "git push && git push --tags"
+  },
+  "contributors": [
+    {
+      "name": "Stéphane Gully",
+      "url": "https://github.com/kerphi"
+    }
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "npm-run-all": "^3.1.2",
+    "winston": "^3.2.1"
+  },
+  "devDependencies": {}
+}

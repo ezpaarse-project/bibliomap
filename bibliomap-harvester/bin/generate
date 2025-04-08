@@ -1,0 +1,28 @@
+#!/usr/bin/env node
+
+const path = require('path');
+const LogGenerator = require('../lib/generator.js');
+
+process.title = 'bibliomap-harvester-generator';
+
+if (!process.env.NODE_APP_INSTANCE) {
+  console.error('NODE_APP_INSTANCE not set');
+  process.exit(1);
+}
+
+const generator = new LogGenerator({
+  source: path.resolve(__dirname, '..', 'demo-logs', process.env.NODE_APP_INSTANCE),
+  destination: path.resolve(__dirname, '..', 'demo-logs', 'tmp'),
+  speed: process.env.BBH_LOGS_PER_SECOND
+});
+
+generator.run();
+console.log('Log generator is running');
+
+if (process.env.DEBUG) {
+  (function checkMemory() {
+    const memoryUsage = Math.round(process.memoryUsage().rss / 1024 / 1024 * 100) / 100;
+    console.log(`Memory usage: ${memoryUsage} MiB`);
+    setTimeout(checkMemory, 5000);
+  })();
+}
