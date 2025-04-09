@@ -8,7 +8,7 @@
     "start": "node app.js",
     "dev": "nodemon ./app.js -e js,html,css,twig,json",
     "lint": "eslint --ext .js .",
-    "precommit": "npm run lint"
+    "precommit": "npm run lint" 
   },
   "dependencies": {
     "debug": "^2.6.0",

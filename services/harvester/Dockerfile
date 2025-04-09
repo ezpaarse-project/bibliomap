@@ -1,4 +1,4 @@
-FROM node:10.15.3
+FROM node:22.14.0
 
 RUN npm config set strict-ssl false
 
