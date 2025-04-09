@@ -75,7 +75,6 @@ class LogStream extends EventEmitter {
   };
 
   _readNewLogs (path, curr, prev) {
-    console.log(84, curr, prev)
     if (curr < prev) { return; }
 
     const rstream = fs.createReadStream(path, {
@@ -115,7 +114,6 @@ class LogHarvester {
 
     this.logStreams.forEach(stream => {
       stream.watch().on('new_log', msg => {
-        console.log(112, this._connected);
         if (this._connected) {
           return this._sendLog(stream, msg);
         }
@@ -137,7 +135,6 @@ class LogHarvester {
     this.socket.connect(this.server.port, this.server.host, () => {
       console.log('Connected');
       this._connected = true;
-      console.log(134, this._connected);
       this._announce();
     });
   };

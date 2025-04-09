@@ -72,8 +72,6 @@ logIoListener.on('+node', (node, streams) => {
 logIoListener.on('+log', (streamName, node, type, log) => {
   const job = ezpaarseJobs.get(streamName);
 
-  console.log('hello')
-
   if (job) {
     job.writeStream.write(`${log}\n`);
   }
