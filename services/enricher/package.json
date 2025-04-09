@@ -1,0 +1,21 @@
+{
+  "name": "bibliomap-enricher",
+  "version": "4.1.1",
+  "description": "Listen for bibliomap-harvester data, send it to ezpaarse for enrichments and send the result to bibliomap-viewer",
+  "author": "ezTEAM <ezteam@couperin.org>",
+  "license": "CeCILL",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon -L -e .js ./app.js"
+  },
+  "dependencies": {
+    "config": "^1.25.1",
+    "debug": "^2.6.1",
+    "JSONStream": "^1.3.0",
+    "log.io-server-parser": "^0.1.2",
+    "request": "^2.79.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}

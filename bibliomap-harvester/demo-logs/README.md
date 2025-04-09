@@ -1,1 +1,0 @@
-Anonymized logs coming from bibcnrs used for bibliomap demo.

@@ -2,35 +2,19 @@
   "name": "bibliomap",
   "version": "3.1.4",
   "description": "BiblioMap shows ezpaarse geolocalized EC's on a map",
+  "author": "ezTEAM <ezteam@couperin.org>",
   "scripts": {
-    "start": "docker compose -f ./docker compose.demo.yml up -d",
-    "start-debug": "docker compose -f ./docker compose.debug.yml up -d",
-    "stop-debug": "docker compose -f ./docker compose.debug.yml kill",
-    "pull": "git pull && cd ./bibliomap-harvester && git pull && cd ../bibliomap-enricher && git pull && cd ../bibliomap-viewer && git pull",
-    "install:bibliomap-harvester": "cd bibliomap-harvester && make install",
-    "install:bibliomap-enricher": "cd bibliomap-enricher && make install",
-    "install:bibliomap-viewer": "cd bibliomap-viewer && make install",
-    "install": "npm run install:bibliomap-harvester && npm run install:bibliomap-enricher && npm run install:bibliomap-viewer",
-    "get-version:bibliomap-harvester": "echo -n $(cd ./bibliomap-harvester && git pull 1>/dev/null 2>/dev/null && git describe --tags --abbrev=0) > .BBH_V",
-    "get-version:bibliomap-enricher": "echo -n $(cd ./bibliomap-enricher && git pull 1>/dev/null 2>/dev/null && git describe --tags --abbrev=0) > .BBE_V",
-    "get-version:bibliomap-viewer": " echo -n $(cd ./bibliomap-viewer && git pull 1>/dev/null 2>/dev/null && git describe --tags --abbrev=0) > .BBV_V",
-    "get-version:ezpaarse": "echo -n $(cd ./ezpaarse && git pull 1>/dev/null 2>/dev/null && git describe --tags --abbrev=0) > .EZP_V",
-    "insertversion:bibliomap-viewer": "sed -i \"s#\\(image: ezpaarseproject/bibliomap-viewer:\\)\\([\\.a-z0-9]\\+\\)#\\1$(cat .BBV_V)#g\" docker compose.demo.yml inist/*/docker compose.prod.yml",
-    "insertversion:bibliomap-enricher": "sed -i \"s#\\(image: ezpaarseproject/bibliomap-enricher:\\)\\([\\.a-z0-9]\\+\\)#\\1$(cat .BBE_V)#g\" docker compose.demo.yml inist/*/docker compose.prod.yml",
-    "insertversion:bibliomap-harvester": "sed -i \"s#\\(image: ezpaarseproject/bibliomap-harvester:\\)\\([\\.a-z0-9]\\+\\)#\\1$(cat .BBH_V)#g\" docker compose.demo.yml inist/*/docker compose.prod.yml",
-    "insertversion:ezpaarse": "sed -i \"s#\\(image: ezpaarseproject/ezpaarse:\\)\\([\\.a-z0-9]\\+\\)#\\1$(cat .EZP_V)#g\" docker compose.demo.yml inist/*/docker compose.prod.yml",
-    "version": "npm run get-version:bibliomap-harvester && npm run get-version:bibliomap-enricher && npm run get-version:bibliomap-viewer && npm run get-version:ezpaarse && npm run insertversion:bibliomap-viewer && npm run insertversion:bibliomap-enricher && npm run insertversion:bibliomap-harvester && npm run insertversion:ezpaarse && git add docker compose.demo.yml inist/*/docker compose.prod.yml"
+    "install": "run-p -ls install:*",
+    "install:enricher": "npm --prefix services/enricher install",
+    "install:harvester": "npm --prefix services/harvester install",
+    "install:viewer": "npm --prefix services/viewer install",
+    "lint": "run-p -ls lint:*",
+    "lint:admin": "npm --prefix services/admin run lint",
+    "lint:enrich": "npm --prefix services/enrich run lint",
+    "lint:frontend": "npm --prefix services/frontend run lint"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ezpaarse-project/bibliomap.git"
-  },
-  "author": "Stéphane Gully <stephane.gully@gmail.com>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/ezpaarse-project/bibliomap/issues"
-  },
-  "homepage": "https://github.com/ezpaarse-project/bibliomap",
-  "dependencies": {},
-  "devDependencies": {}
+  "license": "CeCILL",
+  "dependencies": {
+    "npm-run-all": "^4.1.5"
+  }
 }

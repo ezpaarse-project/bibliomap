@@ -1,0 +1,27 @@
+{
+  "ezpaarse": {
+    "headers": {
+      "Accept": "application/jsonstream",
+      "Double-Click-Removal": "false",
+      "crossref-enrich": "false",
+      "ezPAARSE-Buffer-Size": 0,
+      "Istex-Buffer-Size": 1,
+      "ezPAARSE-Predefined-Settings": "00-fr-istex"
+    }
+  },
+  "broadcast": {
+    "fields": [
+      "geoip-latitude",
+      "geoip-longitude",
+      "ezproxyName",
+      "platform_name",
+      "publication_title",
+      "online_identifier",
+      "print_identifier",
+      "rtype",
+      "mime",
+      "host",
+      "sid"
+    ]
+  }
+}

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bibliomap{% if entity is defined %} - {{ entity }}{% endif %}</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="/node_modules/uikit/dist/css/uikit.min.css" />
+  <script src="/node_modules/uikit/dist/js/uikit.min.js"></script>
+  <script src="/node_modules/uikit/dist/js/uikit-icons.min.js"></script>
+</head>
+<body>
+
+  <nav class="uk-navbar-container uk-margin" uk-navbar>
+    <div class="uk-navbar-center">
+       <a class="uk-navbar-item uk-logo" href="#">Bibliomap{% if entity is defined %} - {{ entity|upper }}{% endif %}</a>
+    </div>
+  </nav>
+
+  <div class="uk-container">
+    <div class="uk-text-justify" uk-grid>
+      <div class="uk-width-1-2">  
+        <div class="uk-height-medium uk-card uk-card-default uk-card-body">
+          <div class="uk-card-badge uk-label">Français</div>
+          <h3 class="uk-card-title">Incompatibilité du navigateur</h3>
+          <p>Le navigateur utilisé pour accéder à Bibliomap n'est pas compatible avec l'application.</p>
+          <p>Nous vous conseillons d'utiliser un des navigateurs dans la liste proposée ci-dessous.</p>
+        </div>
+      </div>
+
+      <div class="uk-width-1-2">  
+        <div class="uk-height-medium uk-card uk-card-default uk-card-body">
+          <div class="uk-card-badge uk-label">English</div>
+          <h3 class="uk-card-title">Browser Incompatibility</h3>
+          <p>The browser used to access Bibliomap is not compatible with the application.</p>
+          <p>We recommend that you use one of the browsers in the list below.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="uk-text-center" uk-grid>
+      <div class="uk-width-1-1">  
+        <img src="public/images/firefox.png" width="48px">
+        <img src="public/images/chrome.png" width="48px">
+        <img src="public/images/safari-ios.png" width="48px">
+        <img src="public/images/edge.png" width="48px">
+        <img src="public/images/opera.png" width="48px">
+        <img src="public/images/brave.png" width="48px">
+        <img src="public/images/vivaldi.png" width="48px">
+      </div>
+    </div>
+</div>
+</body>
+</html>
