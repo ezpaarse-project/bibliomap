@@ -1,0 +1,22 @@
+<div class="fixed-action-btn">
+  <a class="btn-floating btn-large red">
+    <i class="large material-icons">menu</i>
+  </a>
+  <ul>
+    <li id="center"><a class="btn-floating blue tooltipped" data-position="left" data-tooltip="{{ i18n.tooltip.center }}"><i class="material-icons">gps_fixed</i></a></li>
+    {% if i18n.locale == 'fr' %}
+      {% set locale = 'en' %}
+    {% endif %}
+    {% if i18n.locale == 'en' %}
+      {% set locale = 'fr' %}
+    {% endif %}
+    {% if query %}
+      {% set localeUrl = locale ~ '&' ~ query %}
+    {% else %}
+      {% set localeUrl = locale %}
+    {% endif %}
+    <li><a class="btn-floating purple darken-3 tooltipped modal-trigger" href="?lang={{ localeUrl }}" data-position="left" data-tooltip="{{ i18n.tooltip.locale[locale] }}">{{ locale|upper }}</a></li>
+    <li id="changeMap"><a class="btn-floating green darken-3 tooltipped" data-position="left" data-tooltip= "{{ i18n.settings.map }}"><i class="material-icons">map</i></a></li>
+    <li><a class="btn-floating grey darken-3 tooltipped modal-trigger" href="#modal-settings" data-position="left" data-tooltip="{{ i18n.tooltip.settings }}"><i class="material-icons">settings</i></a></li>
+  </ul>
+</div>

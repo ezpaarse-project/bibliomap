@@ -1,0 +1,56 @@
+<div class="modal modal-fixed-footer" id="modal-settings">
+  <div class="modal-content">
+    <h4>{{ i18n.settings.title }}:</h4>
+    <div class="divider"></div>
+    <div class="row menu-option">
+      <div class="col s12 m12 l3 xl3">
+        {{ i18n.settings.displayMiniMap }}
+      </div>
+      <div class="col s12 m12 l9 xl9">
+        <div class="switch">
+          <label> 
+            Off
+            <input autocomplete="off" checked id="outside-map-switch" type="checkbox" value="off">
+            <span class="lever"></span>
+            On
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <h5>{{ i18n.settings.legendFilter }}:</h5>
+    <div class="row menu-option" id="disabled"></div>
+    <div class="row menu-option">
+      <div class="col s12">
+        <a class="waves-effect waves-light btn btn-small" id="institute-all">{{ i18n.settings.selectAll }}</a>
+        <a class="waves-effect waves-light btn btn-small" id="institute-none">{{ i18n.settings.selectNone }}</a>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="row menu-option">
+      <div class="col s12 m12 l3 xl3">
+        {{ i18n.settings.displayReviews }}
+      </div>
+      <div class="col s12 m12 l3 xl3">
+        <div class="switch">
+          <label>
+            Off
+            <input autocomplete="off" id="show-titles" type="checkbox" value="off">
+            <span class="lever"></span>
+            On
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="row menu-option" id="filterParameter">
+      <div class="divider"></div>
+      <h5>{{ i18n.settings.sortBy }} :</h5>
+      <div class="chips chips-autocomplete" id="enabled-editors"></div>
+    </div>
+
+  </div>
+  <div class="modal-footer">
+    <a class="modal-close waves-effect waves-green btn-flat" href="#!">{{ i18n.close }}</a>
+  </div>
+</div>

@@ -1,0 +1,411 @@
+html {
+  font-size: 12px;
+}
+
+html, body, .container, #bibliomap-canvas {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#bibliomap-canvas {
+  z-index: 1;
+}
+
+.outside-map {
+  display: block;
+  position: fixed;
+  top: 20px;
+  right: 45px;
+  width: 250px;
+  height: 250px;
+  z-index: 4;
+  padding: 0%;
+  margin: 0%;
+  border: 3px inset #2c3e50;
+  visibility: hidden;
+}
+
+@keyframes bounceInDown {
+  from,
+  60%,
+  75%,
+  90%,
+  to {
+
+    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -3000px, 0);
+  }
+  60% {
+    opacity: 1;
+    transform: translate3d(0, 25px, 0);
+  }
+  75% {
+    transform: translate3d(0, -10px, 0);
+  }
+  90% {
+    transform: translate3d(0, 5px, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+.bounceInDown {
+  animation: bounceInDown 2s;
+}
+
+@keyframes bounceOutRight {
+  20% {
+    opacity: 1;
+    transform: translate3d(-20px, 0, 0);
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(2000px, 0, 0);
+  }
+}
+
+.bounceOutRight {
+  animation: bounceOutRight 2s;
+}
+
+.bibliomap-collection, .bibliomap-collection-item {
+  border: none;
+  border-radius: none;
+}
+
+.bibliomap-collection-item {
+  min-height: 0 !important;
+}
+
+.bibliomap-collection-item:hover {
+  background-color: rgba(200, 200, 200)
+}
+.bibliomap-clear-circle {
+  border-radius: 0;
+}
+
+.bibliomap-counter {
+  padding: 5px 8px;
+  margin-top: 9px;
+  font-size: 1.2em;
+  border-radius: 3px;
+  background-color: #9c126d;
+  color: #fff;
+  float: right;
+}
+
+.bibliomap-institut-title {
+  margin-top: 5px;
+  display: block;
+}
+
+.bibliomap-institut-desc {
+  font-size: 10px;
+  height: 20px;
+  font-weight: 600;
+}
+
+.bibliomap-collection a {
+  color: inherit;
+}
+
+.sidenav .collection {
+  margin: 5px 0 5px 0;
+}
+
+.sidenav .divider {
+  margin: 0;
+}
+
+.label {
+  margin: 3px;
+  padding: 5px 8px;
+  font-size: 1.2em;
+  border-radius: 3px;
+  color: #fff;
+  background-color: #7f8c8d;
+  box-sizing: border-box;
+}
+
+.label-bubble {
+  font-size: 10px;
+}
+
+.rtype {
+  background-color: #16a085;
+}
+
+.html {
+  background-color: #d35400;
+}
+
+.json {
+  background-color: #3498db;
+}
+
+.rtypeMime {
+  padding: 0 0 3px 0;
+}
+
+.pdf {
+  background-color: #c0392b;
+}
+
+.close-side {
+  margin: 5px 0 0 -15px;
+  color: #000;
+}
+
+.open-side, .brand {
+  position: absolute;
+  z-index: 2;
+  text-align: center;
+  color: #000;
+  background-color: #fff;
+}
+
+.open-side {
+  width: 50px;
+  height: 50px;
+}
+
+.open-side i {
+  margin-top: 13px;
+}
+
+.brand {
+  z-index: 2;
+  position: fixed;
+  bottom: 20px;
+  right: 100px;
+  padding: 10px 10px;
+  cursor: pointer;
+  text-align: center;
+  border-radius: 5px;
+  opacity: 0.7;
+}
+
+.brand a {
+  color: inherit;
+}
+
+.brand .main {
+  font-size: 1.3em;
+  font-weight: bold;
+}
+
+.brand .sub {
+  font-size: 0.9em;
+}
+
+.top-side {
+  margin-bottom: 0;
+  line-height: 18px;
+  text-align: center;
+}
+
+.top-side img {
+  margin: 25px 0 0 0;
+}
+
+.modal {
+  max-width: 960px
+}
+
+.top-description .header {
+  font-size: 2.4rem;
+  font-weight: bold;
+  margin: 10px 0;
+  margin: 0 auto;
+  display: flex;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  flex-direction: row;
+  -webkit-flex-direction: row;
+}
+
+.top-description .header .logocnrs {
+  max-width: 25%;
+  margin-right: 10%;
+}
+
+.top-description .header .title {
+  max-width: 65%;
+  align-self: center;
+}
+
+.top-description .header .logocnrs img {
+  width: 100%;
+}
+
+.justify-align {
+  text-align: justify;
+}
+
+.logoDefault{
+  border-radius: 50%;
+  position: absolute;
+  width: 42px;
+  height: 42px;
+  overflow: hidden;
+  left: 15px;
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 1.5rem;
+}
+
+.logos {
+  display: flex;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  flex-direction: row;
+  -webkit-flex-direction: row;
+  justify-content: space-around;
+  -webkit-justify-content: space-around;
+}
+
+.twoLogos {
+  width: 35%;
+}
+
+.twoLogos img {
+  width: 100%;
+}
+
+.threeLogos {
+  width: 30%;
+  text-align: center;
+}
+
+.threeLogos img {
+  max-height: 100px;
+  width: 100%;
+}
+
+.description {
+  font-size: 1.2em;
+}
+
+.platformName {
+  font-weight: 600;
+}
+
+.menu-option {
+  vertical-align: center;
+  margin: 20px 10px;
+  font-size: 1.5em;
+}
+
+.bibliomap-pulse {
+  background-color: #c0392b;
+}
+
+.bibliomap-pulse:after {
+  box-shadow: 0 0 6px 2px #c0392b;
+  animation: pulsate 1s ease-out;
+  animation-iteration-count: infinite;
+  animation-delay: 1s;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 5px;
+}
+
+.leaflet-popup-content {
+  text-align: center;
+  margin: 5px !important;
+}
+
+.publicationTitle {
+  font-size: 1em;
+  font-weight: 450;
+  text-align: center;
+}
+
+.leaflet-popup-tip-container {
+  width: 0px;
+  height: 0px;
+  position: absolute;
+  left: 0%;
+  margin-left: 0px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.leaflet-popup-tip {
+  width: 0px;
+  height: 0px;
+  padding: 0px;
+  margin: 0px auto 0;
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+.leaflet-popup-content {
+  margin: 7px 7px;
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.leaflet-popup {
+  bottom: -20px !important;
+}
+
+.live {
+  position: absolute;
+  color: red;
+  bottom: 0;
+  z-index: 99;
+}
+
+.liveWithLegend {
+  margin: 0 0 20px 330px;
+}
+
+.liveWithoutLegend {
+  margin: 0 0 20px 30px;
+}
+
+.live .liveText {
+  font-size: 20px;
+  text-transform: uppercase;
+  font-weight: bold;
+  color: #c0392b;
+  text-shadow: 0px 0px 20px red;
+  float: right;
+  margin: -5px 0 0 5px;
+}
+
+.live .liveCircle {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: red;
+  display: inline-block;
+  animation: ripple 0.7s linear infinite;
+  margin-right: 10px;
+}
+
+@keyframes ripple {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.3),
+                0 0 0 1px rgba(255, 0, 0, 0.3),
+                0 0 0 5px rgba(255, 0, 0, 0.3),
+                0 0 0 10px rgba(255, 0, 0, 0.3);
+  }
+  100% {
+    box-shadow: 0 0 0 1px rgba(255, 0, 0, 0.3),
+                0 0 0 5px rgba(255, 0, 0, 0.3),
+                0 0 0 10px rgba(255, 0, 0, 0.3),
+                0 0 0 15px rgba(255, 0, 0, 0);
+  }
+}

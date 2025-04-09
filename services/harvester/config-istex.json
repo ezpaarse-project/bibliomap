@@ -1,0 +1,5 @@
+{
+  "logStreams": {
+    "ISTEX": [ "./demo-logs/tmp/istex.log" ]
+  }
+}
