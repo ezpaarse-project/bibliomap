@@ -4,18 +4,19 @@
 
 // Increase max concurrent connections (defaults to 5)
 require('http').globalAgent.maxSockets = 20;
+const EnrichedCsvReader = require('./enriched-csv-reader');
 
-const config        = require('config');
+const config = require('config');
 const LogIoListener = require('log.io-server-parser');
-const request       = require('request').defaults({ proxy: null });
-const PassThrough   = require('stream').PassThrough;
-const JSONStream    = require('JSONStream');
-const net           = require('net');
-const debug         = require('debug')('bibliomap-enricher');
+const request = require('request').defaults({ proxy: null });
+const PassThrough = require('stream').PassThrough;
+const JSONStream = require('JSONStream');
+const net = require('net');
+const debug = require('debug')('bibliomap-enricher');
 
-const ezpaarseJobs      = new Map();
-const viewerConfig      = config.broadcast['bibliomap-viewer'];
-const viewerUrl         = `${viewerConfig.host}: ${viewerConfig.port}`;
+const ezpaarseJobs = new Map();
+const viewerConfig = config.broadcast['bibliomap-viewer'];
+const viewerUrl = `${viewerConfig.host}: ${viewerConfig.port}`;
 const broadcastedFields = config.broadcast.fields;
 
 /**
@@ -46,7 +47,10 @@ viewer.on('close', () => {
  * Listen events coming from bibliomap-harvester
  * then forward it to ezpaarse jobs
  */
-const logIoListener = new LogIoListener(config.listen['bibliomap-harvester']);
+
+console.log("EnrichedCsvReader:", EnrichedCsvReader);
+const logIoListener = new EnrichedCsvReader(config.listen['bibliomap-harvester']) // new LogIoListener(config.listen['bibliomap-harvester']);
+//const logIoListener = new LogIoListener(config.listen['bibliomap-harvester']);
 
 logIoListener.listen(() => {
   printLog(`Waiting for harvester at ${JSON.stringify(config.listen['bibliomap-harvester'])}`);

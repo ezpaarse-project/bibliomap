@@ -31,6 +31,7 @@
     "url": "https://github.com/ezpaarse-project/bibliomap/issues"
   },
   "homepage": "https://github.com/ezpaarse-project/bibliomap",
-  "dependencies": {},
-  "devDependencies": {}
+  "dependencies": {
+    "csv-parse": "^5.6.0"
+  }
 }
