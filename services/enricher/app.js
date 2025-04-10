@@ -47,8 +47,7 @@ viewer.on('close', () => {
  * Listen events coming from harvester
  * then forward it to ezpaarse jobs
  */
-
-console.log("EnrichedCsvReader:", EnrichedCsvReader);
+console.log('config:', config.listen.harvester);
 const logIoListener = new EnrichedCsvReader(config.listen.harvester) // new LogIoListener(config.listen['bibliomap-harvester']);
 //const logIoListener = new LogIoListener(config.listen['bibliomap-harvester']);
 
