@@ -65,7 +65,7 @@ services:
       BBH_STREAMPATHS: ""
       BBH_LOG_FOLDER: demo-logs/cnrs
       NODE_APP_INSTANCE: cnrs
-      BBH_LOGS_PER_SECOND: 5
+      BBH_LOGS_PER_SECOND: 1
     develop:
       watch:
         - action: sync+restart

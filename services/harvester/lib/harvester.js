@@ -152,6 +152,7 @@ class LogHarvester {
   };
 
   _send (mtype, ...args) {
+    console.log("send:", `${mtype}|${args.join('|')}${this.delim}`);
     return this.socket.write(`${mtype}|${args.join('|')}${this.delim}`);
   };
 };

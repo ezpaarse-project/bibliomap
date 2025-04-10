@@ -2,17 +2,14 @@
 // +log biblioinserm bibliomap info 16.2.255.24 - 13BBIU1158 [01/Aug/2013:16:56:36 +0100] "GET http://onlinelibrary.wiley.com:80/doi/10.1111/dme.12357/pdf HTTP/1.1" 200 13639
 'use strict';
 
-// Increase max concurrent connections (defaults to 5)
-require('http').globalAgent.maxSockets = 20;
-const EnrichedCsvReader = require('./enriched-csv-reader');
-
-const config = require('config');
-const LogIoListener = require('log.io-server-parser');
-const request = require('request').defaults({ proxy: null });
-const PassThrough = require('stream').PassThrough;
-const JSONStream = require('JSONStream');
-const net = require('net');
-const debug = require('debug')('bibliomap-enricher');
+import config from 'config';
+import LogIoListener from 'log.io-server-parser';
+import SelectedLogsReader from './selected-logs-reader.js';
+import request from 'request';
+import { PassThrough } from 'stream';
+import JSONStream from 'JSONStream';
+import net from 'net';
+import debug from 'debug';
 
 const ezpaarseJobs = new Map();
 const viewerConfig = config.broadcast.viewer;
@@ -48,8 +45,8 @@ viewer.on('close', () => {
  * then forward it to ezpaarse jobs
  */
 console.log('config:', config.listen.harvester);
-const logIoListener = new EnrichedCsvReader(config.listen.harvester) // new LogIoListener(config.listen['bibliomap-harvester']);
-//const logIoListener = new LogIoListener(config.listen['bibliomap-harvester']);
+const logIoListener = new SelectedLogsReader(config.listen.harvester);
+// const logIoListener = new LogIoListener(config.listen.harvester);
 
 logIoListener.listen(() => {
   console.log(`Waiting for harvester at ${JSON.stringify(config.listen.harvester)}`);
@@ -69,11 +66,13 @@ logIoListener.on('+node', (node, streams) => {
 });
 
 logIoListener.on('+log', (streamName, node, type, log) => {
-  const job = ezpaarseJobs.get(streamName);
 
-  if (job) {
-    job.writeStream.write(`${log}\n`);
+  if (!ezpaarseJobs.get(streamName)) {
+    createJob(streamName);
   }
+
+  const job = ezpaarseJobs.get(streamName);
+  job.writeStream.write(`${log}\n`);
 });
 
 /**
