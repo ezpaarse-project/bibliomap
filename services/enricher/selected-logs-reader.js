@@ -18,7 +18,6 @@ class SelectedLogsReader extends EventEmitter {
   listen = async (cb) => {
     // Path.resolve __dirname
     const filePath = './examples/insb.log';
-    const streamName = 'INSB';
 
     this.server = net.createServer();
 
@@ -35,9 +34,10 @@ class SelectedLogsReader extends EventEmitter {
     let loading = true;
     let dayStart; let dayEnd;
 
+    // To replace with env variables
     const multiplier = 4;
     const baseTime = 1000;
-    const startAtFirstLog = false;
+    const startAtFirstLog = true;
 
     rl.on('line', async (line) => {
       if (!line) return;
@@ -48,7 +48,7 @@ class SelectedLogsReader extends EventEmitter {
 
       const response = await fetch(config.ezpaarse.url, {
         method: 'POST',
-        headers: { // CANNOT SEEM TO USE THE HEADERS FROM THE CONFIG! HELP!!!
+        headers: { //FIXME 2025-04-14 CANNOT SEEM TO USE THE HEADERS FROM THE CONFIG! HELP!!!
           Accept: 'application/jsonstream',
           'Double-Click-Removal': 'false',
           'crossref-enrich': 'false',
@@ -65,9 +65,18 @@ class SelectedLogsReader extends EventEmitter {
 
       else if (responseText) {
         const json = JSON.parse(responseText.trim());
+        console.log("JSON:", json);
         const date = new Date(json.datetime);
+        const log = {
+          'geoip-latitude': json['geoip-latitude'], 
+          'geoip-longitude': json['geoip-longitude'], 
+          ezproxyName: json['bib-groups'].toUpperCase(),
+          platform_name: json.platform_name,
+          rtype: json.rtype,
+          mime: json.mime
+        };
         if (!firstLogDate) firstLogDate = date;
-        lineQueue.push({ date: date, line: line });
+        lineQueue.push({ date: date, log: log, line: line });
       }
 
       paarseQueue = paarseQueue.filter(l => l !== line);
@@ -110,16 +119,22 @@ class SelectedLogsReader extends EventEmitter {
 
       if (line.date.getTime() <= timer) {
         console.log("[debug] line date:", line.date);
-        this.parseLine(lineQueue.shift().line, streamName);
+        this.parseLine(lineQueue.shift().log);
+        // this.parseNonexportedLine(lineQueue.shift().line);
       }
     }, baseTime / multiplier);
 
     return cb();
   }
 
-  parseLine = (line, streamName) => {
+  parseLine = (log) => {
+    if (!log) return;
+    this.emit('+exported_log', log.ezproxyName, 'bibliomap', 'info', log);
+  }
+
+  parseNonexportedLine = (line) => {
     if (!line) return;
-    this.emit('+log', streamName.toUpperCase(), 'bibliomap', 'info', line.trim());
+    this.emit('+log', 'INSB', 'bibliomap', 'info', line);
   }
 }
 

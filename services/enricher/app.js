@@ -75,6 +75,17 @@ logIoListener.on('+log', (streamName, node, type, log) => {
   job.writeStream.write(`${log}\n`);
 });
 
+logIoListener.on("+exported_log", (streamName, node, type, log) => {
+
+  if (!ezpaarseJobs.get(streamName)) {
+    createJob(streamName);
+  }
+
+  console.log('LOG:', log);
+
+  viewer.write(`${JSON.stringify(log)}\n`);
+})
+
 /**
  * Create the ezpaarse jobs and respawn
  * crashed or terminated jobs each N seconds
@@ -120,6 +131,7 @@ function createJob(streamName) {
         broadcastedFields.forEach(f => {
           if (data[f]) { exported[f] = data[f]; }
         });
+        console.log("exported:", exported);
         viewer.write(`${JSON.stringify(exported)}\n`);
       }
 
