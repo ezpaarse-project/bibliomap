@@ -16,6 +16,7 @@ class SelectedLogsReader extends EventEmitter {
     this.startAtFirstLog = true;
     this.multiplier = 4;
     this.filePath = './examples/insb.log';
+    this.fileType = this.filePath.split('.').pop();
     this.lineQueue = [];
     this.paarseQueue = [];
 
@@ -24,11 +25,12 @@ class SelectedLogsReader extends EventEmitter {
   }
 
   listen = async (cb) => {
-    // Path.resolve __dirname
+
+    const typeFunctions = { 'log': this.initLogFileReader, 'csv': this.initCSVFileReader };
 
     this.server = net.createServer();
 
-    this.initLogFileReader();
+    typeFunctions[this.fileType].call(this);
 
     this.initInterval(1000 / this.multiplier)
 
@@ -81,7 +83,7 @@ class SelectedLogsReader extends EventEmitter {
     this.emit('+exported_log', log.ezproxyName, 'bibliomap', 'info', log);
   }
 
-  initLogFileReader(){
+  initLogFileReader() {
     this.stream = fs.createReadStream(this.filePath, { encoding: 'utf-8', highWaterMark: 2048 });
 
     const rl = readline.createInterface({
@@ -124,11 +126,14 @@ class SelectedLogsReader extends EventEmitter {
         if (this.loading) this.initPlayer(date);
         this.lineQueue.push({ date: date, log: log, line: line });
       }
-
       this.paarseQueue = this.paarseQueue.filter(l => l !== line);
     });
   }
-  
+
+  initCSVFileReader() {
+    
+  }
+
 }
 
 export default SelectedLogsReader;
