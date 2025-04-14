@@ -6,6 +6,7 @@ import request from 'request';
 import { PassThrough } from 'stream';
 import config from 'config';
 import JSONStream from 'JSONStream';
+import { DateTime } from 'luxon';
 
 class SelectedLogsReader extends EventEmitter {
   constructor(options) {
@@ -32,10 +33,11 @@ class SelectedLogsReader extends EventEmitter {
     let timer = 0;
     let firstLogDate;
     let loading = true;
+    let dayStart; let dayEnd;
 
-    const multiplier = 10;
+    const multiplier = 1;
     const baseTime = 1000;
-    const startAtFirstLog = true;
+    const startAtFirstLog = false;
 
     rl.on('line', async (line) => {
       if (line) {
@@ -78,12 +80,25 @@ class SelectedLogsReader extends EventEmitter {
       else stream.resume();
       if (!firstLogDate) return;
 
-      if (loading){
+      if (loading) {
+
+        dayStart = DateTime.fromJSDate(new Date(firstLogDate.getTime()))
+          .setZone('Europe/Paris')
+          .startOf('day')
+          .toMillis();
+
+        dayEnd = DateTime.fromJSDate(new Date(firstLogDate.getTime()))
+          .setZone('Europe/Paris')
+          .endOf('day')
+          .toMillis();
+
         loading = false;
         timer = firstLogDate.getTime();
-        if (!startAtFirstLog) timer = (new Date(timer).setHours(0, 0, 0, 0)); // Set to the beginning of the day
+        if (!startAtFirstLog) {
+          timer = dayStart;
+        }
       }
-      
+
       timer += baseTime;
       console.log("[debug] timer:", new Date(timer));
 
