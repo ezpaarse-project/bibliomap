@@ -35,68 +35,71 @@ class SelectedLogsReader extends EventEmitter {
     let loading = true;
     let dayStart; let dayEnd;
 
-    const multiplier = 1;
+    const multiplier = 4;
     const baseTime = 1000;
     const startAtFirstLog = false;
 
     rl.on('line', async (line) => {
-      if (line) {
-        paarseQueue.push(line);
+      if (!line) return;
+      paarseQueue.push(line);
 
-        if (Math.max(lineQueue.length, paarseQueue.length) > 2) stream.pause();
-        else stream.resume();
+      if (Math.max(lineQueue.length, paarseQueue.length) > 2) stream.pause();
+      else stream.resume();
 
-        const response = await fetch(config.ezpaarse.url, {
-          method: 'POST',
-          headers: { // CANNOT SEEM TO USE THE HEADERS FROM THE CONFIG! HELP!!!
-            Accept: 'application/jsonstream',
-            'Double-Click-Removal': 'false',
-            'crossref-enrich': 'false',
-            'ezPAARSE-Predefined-Settings': 'bibliomap'
-          },
-          body: line
-        });
+      const response = await fetch(config.ezpaarse.url, {
+        method: 'POST',
+        headers: { // CANNOT SEEM TO USE THE HEADERS FROM THE CONFIG! HELP!!!
+          Accept: 'application/jsonstream',
+          'Double-Click-Removal': 'false',
+          'crossref-enrich': 'false',
+          'ezPAARSE-Predefined-Settings': 'bibliomap'
+        },
+        body: line
+      });
 
-        const responseText = await response.text();
+      const responseText = await response.text();
 
-        if (!response.ok) {
-          console.error("ERROR:", response.status, response.statusText);
-        }
-
-        else if (responseText) {
-          const json = JSON.parse(responseText.trim());
-          const date = new Date(json.datetime);
-          if (!firstLogDate) firstLogDate = date;
-          lineQueue.push({ date: date, line: line });
-        }
-
-        paarseQueue = paarseQueue.filter(l => l !== line);
+      if (!response.ok) {
+        console.error("ERROR:", response.status, response.statusText);
       }
+
+      else if (responseText) {
+        const json = JSON.parse(responseText.trim());
+        const date = new Date(json.datetime);
+        if (!firstLogDate) firstLogDate = date;
+        lineQueue.push({ date: date, line: line });
+      }
+
+      paarseQueue = paarseQueue.filter(l => l !== line);
     });
 
+    function initPlayer() {
+      dayStart = DateTime.fromJSDate(new Date(firstLogDate.getTime()))
+        .setZone('Europe/Paris')
+        .startOf('day')
+        .toMillis();
+
+      dayEnd = DateTime.fromJSDate(new Date(firstLogDate.getTime()))
+        .setZone('Europe/Paris')
+        .endOf('day')
+        .toMillis();
+
+      loading = false;
+      timer = firstLogDate.getTime();
+      if (!startAtFirstLog) {
+        timer = dayStart;
+      }
+    }
+
     const interval = setInterval(() => {
+      if (timer >= dayEnd) return;
       if (loading) console.log("[debug] loading");
       if (Math.max(lineQueue.length, paarseQueue.length) > 2) stream.pause();
       else stream.resume();
       if (!firstLogDate) return;
 
       if (loading) {
-
-        dayStart = DateTime.fromJSDate(new Date(firstLogDate.getTime()))
-          .setZone('Europe/Paris')
-          .startOf('day')
-          .toMillis();
-
-        dayEnd = DateTime.fromJSDate(new Date(firstLogDate.getTime()))
-          .setZone('Europe/Paris')
-          .endOf('day')
-          .toMillis();
-
-        loading = false;
-        timer = firstLogDate.getTime();
-        if (!startAtFirstLog) {
-          timer = dayStart;
-        }
+        initPlayer();
       }
 
       timer += baseTime;
