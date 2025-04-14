@@ -81,8 +81,6 @@ logIoListener.on("+exported_log", (streamName, node, type, log) => {
     createJob(streamName);
   }
 
-  console.log('LOG:', log);
-
   viewer.write(`${JSON.stringify(log)}\n`);
 })
 
