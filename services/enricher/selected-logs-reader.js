@@ -69,12 +69,16 @@ class SelectedLogsReader extends EventEmitter {
       console.log("[debug] timer:", new Date(this.timer));
 
       if (!this.lineQueue.length) return;
+
+      this.lineQueue = this.lineQueue.sort((a, b) => a.date.getTime() - b.date.getTime());
+
       const line = this.lineQueue[0];
 
       if (line.date.getTime() <= this.timer) {
         console.log("[debug] line date:", line.date);
         this.parseLine(this.lineQueue.shift().log);
       }
+      
     }, timeout);
   }
 
@@ -131,7 +135,7 @@ class SelectedLogsReader extends EventEmitter {
   }
 
   initCSVFileReader() {
-    
+
   }
 
 }
