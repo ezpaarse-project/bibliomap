@@ -2,10 +2,7 @@ import { EventEmitter } from 'events';
 import fs from 'fs';
 import net from 'net';
 import readline from 'readline';
-import request from 'request';
-import { PassThrough } from 'stream';
 import config from 'config';
-import JSONStream from 'JSONStream';
 import { DateTime } from 'luxon';
 
 class SelectedLogsReader extends EventEmitter {
@@ -30,7 +27,6 @@ class SelectedLogsReader extends EventEmitter {
     const lineQueue = [];
     let paarseQueue = [];
     let timer = 0;
-    let firstLogDate;
     let loading = true;
     let dayStart; let dayEnd;
 
@@ -65,7 +61,6 @@ class SelectedLogsReader extends EventEmitter {
 
       else if (responseText) {
         const json = JSON.parse(responseText.trim());
-        console.log("JSON:", json);
         const date = new Date(json.datetime);
         const log = {
           'geoip-latitude': json['geoip-latitude'], 
@@ -75,14 +70,14 @@ class SelectedLogsReader extends EventEmitter {
           rtype: json.rtype,
           mime: json.mime
         };
-        if (!firstLogDate) firstLogDate = date;
+        if (loading) initPlayer(date);
         lineQueue.push({ date: date, log: log, line: line });
       }
 
       paarseQueue = paarseQueue.filter(l => l !== line);
     });
 
-    function initPlayer() {
+    function initPlayer(firstLogDate) {
       dayStart = DateTime.fromJSDate(new Date(firstLogDate.getTime()))
         .setZone('Europe/Paris')
         .startOf('day')
@@ -102,14 +97,9 @@ class SelectedLogsReader extends EventEmitter {
 
     const interval = setInterval(() => {
       if (timer >= dayEnd) return;
-      if (loading) console.log("[debug] loading");
       if (Math.max(lineQueue.length, paarseQueue.length) > 2) stream.pause();
       else stream.resume();
-      if (!firstLogDate) return;
-
-      if (loading) {
-        initPlayer();
-      }
+      if (loading) return console.log("[debug] loading");
 
       timer += baseTime;
       console.log("[debug] timer:", new Date(timer));

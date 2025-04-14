@@ -131,7 +131,6 @@ function createJob(streamName) {
         broadcastedFields.forEach(f => {
           if (data[f]) { exported[f] = data[f]; }
         });
-        console.log("exported:", exported);
         viewer.write(`${JSON.stringify(exported)}\n`);
       }
 
