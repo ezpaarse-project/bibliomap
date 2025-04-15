@@ -81,6 +81,13 @@ class SelectedLogsReader extends EventEmitter {
     return setInterval(() => {
       
       if (this.timer >= this.dayEnd) return; // Stop when the day is over
+
+      if(this.loading) {
+        if(!this.lineQueue.every(q => !q.length)){
+          this.initTimer(this.lineQueue.flat().reduce((a, b) => a.date.getTime() < b.date.getTime() ? a : b))
+        }
+        return;
+      };
       
       this.updateTimer();
 
@@ -88,8 +95,6 @@ class SelectedLogsReader extends EventEmitter {
 
         if (Math.max(this.lineQueue[file].length, this.paarseQueue[file].length) > 5) this.streams[file].pause();
         else this.streams[file].resume();
-
-        if(this.loading) return;
 
         if (!this.lineQueue[file].length) return;
 
@@ -154,7 +159,7 @@ class SelectedLogsReader extends EventEmitter {
           rtype: json.rtype,
           mime: json.mime
         };
-        if (this.loading) this.initTimer(date); //TODO: Improve for multi-file
+        //if (this.loading) this.initTimer(date); //TODO: Improve for multi-file
         this.lineQueue[file].push({ date: date, log: log, line: line });
       }
     });
