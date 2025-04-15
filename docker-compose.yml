@@ -3,7 +3,10 @@ version: "3.3"
 services:
 
   viewer:
-    image: node:22.13.1
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    build: 
+      context: ./services/viewer
     container_name: bibliomap-viewer-dev
     environment:
       NODE_ENV: "development"
@@ -13,17 +16,24 @@ services:
       BBV_LISTEN_ENRICHER_PORT: 27779
       BBV_LISTEN_HOST: "0.0.0.0"
       BBV_LISTEN_PORT: 50197 # web server
-    working_dir: /usr/src/app
-    volumes:
-      - ./services/viewer:/usr/src/app
-    command: "npm run dev"
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./services/viewer
+          target: /app
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: ./services/viewer/package.json
+    command: "npm start"
     ports:
       - 50197:50197
       - 27779:27779
     restart: unless-stopped
 
   enricher:
-    image: node:22.13.1
+    build:
+      context: ./services/enricher
     container_name: bibliomap-enricher-dev
     environment:
       NODE_APP_INSTANCE: ${NODE_APP_INSTANCE}
@@ -33,14 +43,21 @@ services:
       BBE_BROADCAST_VIEWER_HOST: "viewer"
       BBE_BROADCAST_VIEWER_PORT: 27779
       BBE_EZPAARSE_PREDEF: bibliomap
-    working_dir: /usr/src/app
-    volumes:
-      - ./services/enricher:/usr/src/app
-    command: "npm run dev"
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./services/enricher
+          target: /app
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: ./services/enricher/package.json
+    command: "npm start"
     restart: unless-stopped
 
   harvester:
-    image: node:22.13.1
+    build: 
+      context: ./services/harvester
     container_name: bibliomap-harvester-dev
     environment:
       BBH_ENRICHER_HOST: "enricher"
@@ -50,10 +67,18 @@ services:
       BBH_STREAMPATHS: ""
       BBH_LOG_FOLDER: demo-logs/cnrs
       NODE_APP_INSTANCE: cnrs
-      BBH_LOGS_PER_SECOND: 5
-    working_dir: /usr/src/app
+      BBH_LOGS_PER_SECOND: 1
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./services/harvester
+          target: /app
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: ./services/harvester/package.json
     volumes:
-      - ./services/harvester:/usr/src/app
+      - ./services/harvester/demo-logs/:/app/demo-logs
     command: "npm run dev"
     restart: unless-stopped
 
