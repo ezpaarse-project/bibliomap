@@ -1,2 +1,3 @@
 .ezpaarse/
 node_modules/
+build.sh
