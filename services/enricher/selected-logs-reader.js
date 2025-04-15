@@ -11,13 +11,13 @@ class SelectedLogsReader extends EventEmitter {
     super();
     this.options = options;
     this.options.port = options?.port || 28777;
-    this.timer; this.dayStart; this.dayEnd;
+    this.timer; this.dayStart; this.dayEnd; this.startTimerAt;
 
     // TODO: replace with env variables
-    this.startAtFirstLog = true;
+    this.startTime = undefined; //"19:00:15+01:00";
     this.multiplier = 4;
     this.filePath = './examples/insb.csv';
-    
+
     this.fileType = this.filePath.split('.').pop();
     this.lineQueue = [];
     this.paarseQueue = [];
@@ -28,11 +28,12 @@ class SelectedLogsReader extends EventEmitter {
 
   listen = async (cb) => {
 
-    const typeFunctions = { 'log': this.initLogFileReader, 'csv': this.initCSVFileReader };
-
     this.server = net.createServer();
 
-    typeFunctions[this.fileType].call(this);
+    this.stream = { 
+      'log': this.initLogFileReader, 
+      'csv': this.initCSVFileReader 
+    }[this.fileType].call(this);
 
     this.initInterval(1000 / this.multiplier)
 
@@ -52,9 +53,15 @@ class SelectedLogsReader extends EventEmitter {
 
     this.loading = false;
     this.timer = firstLogDate.getTime();
-    if (!this.startAtFirstLog) {
-      this.timer = dayStart;
+    
+    if (this.startTime) {
+      this.startTimerAt = this.dayStart + new Date(`1970-01-01T${this.startTime}`).getTime();
     }
+    else {
+      this.startTimerAt = this.dayStart;
+    }
+
+    this.timer = this.startTimerAt;
   }
 
   initInterval(timeout) {
@@ -90,10 +97,10 @@ class SelectedLogsReader extends EventEmitter {
   }
 
   initLogFileReader() {
-    this.stream = fs.createReadStream(this.filePath, { encoding: 'utf-8', highWaterMark: 2048 });
+    const logStream = fs.createReadStream(this.filePath, { encoding: 'utf-8', highWaterMark: 2048 });
 
     const rl = readline.createInterface({
-      input: this.stream,
+      input: logStream,
     });
     this.timer = 0;
 
@@ -114,6 +121,8 @@ class SelectedLogsReader extends EventEmitter {
 
       const responseText = await response.text();
 
+      this.paarseQueue = this.paarseQueue.filter(l => l !== line);
+
       if (!response.ok) {
         console.error("ERROR:", response.status, response.statusText);
       }
@@ -121,6 +130,7 @@ class SelectedLogsReader extends EventEmitter {
       else if (responseText) {
         const json = JSON.parse(responseText.trim());
         const date = new Date(json.datetime);
+        if(date.getTime() < this.startTimerAt) return;
         const log = {
           'geoip-latitude': json['geoip-latitude'],
           'geoip-longitude': json['geoip-longitude'],
@@ -132,14 +142,15 @@ class SelectedLogsReader extends EventEmitter {
         if (this.loading) this.initPlayer(date);
         this.lineQueue.push({ date: date, log: log, line: line });
       }
-      this.paarseQueue = this.paarseQueue.filter(l => l !== line);
     });
+    return logStream;
   }
 
   initCSVFileReader() {
-    this.stream = fs.createReadStream(this.filePath, { encoding: 'utf-8', highWaterMark: 2048 })
+    return fs.createReadStream(this.filePath, { encoding: 'utf-8', highWaterMark: 2048 })
     .pipe(parse({columns: true, delimiter: ';'}))
     .on('data', (row) => {
+      if((new Date(row.datetime)).getTime() < this.startTimerAt) return;
       if (this.loading){
         this.initPlayer(new Date(row.datetime));
       }
