@@ -43,6 +43,9 @@ services:
       BBE_BROADCAST_VIEWER_HOST: "viewer"
       BBE_BROADCAST_VIEWER_PORT: 27779
       BBE_EZPAARSE_PREDEF: bibliomap
+      REPLAY_FILE_PATHS: ${REPLAY_FILE_PATHS}
+      REPLAY_START_TIME: ${REPLAY_START_TIME}
+      REPLAY_MULTIPLIER: ${REPLAY_MULTIPLIER}
     develop:
       watch:
         - action: sync+restart

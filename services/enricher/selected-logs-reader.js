@@ -4,7 +4,7 @@ import net from 'net';
 import readline from 'readline';
 import config from 'config';
 import { DateTime } from 'luxon';
-import {parse} from 'csv-parse';
+import { parse } from 'csv-parse';
 
 class SelectedLogsReader extends EventEmitter {
   constructor(options) {
@@ -14,15 +14,14 @@ class SelectedLogsReader extends EventEmitter {
     this.timer; this.dayStart; this.dayEnd; this.startTimerAt;
 
     // TODO: replace with env variables
-    this.startTime = undefined; //"19:00:15+01:00";
-    this.multiplier = 4;
-    this.filePath = './examples/insb.csv';
+    this.replayStartTime = process.env.REPLAY_START_TIME;
+    this.replayMultiplier = process.env.REPLAY_MULTIPLIER || 1;
+    this.replayFiles = process.env.REPLAY_FILE_PATHS ? (process.env.REPLAY_FILE_PATHS).split(',').map(p => `./replay_files/${p.trim()}`) : ['./examples/insb.log'];
 
-    this.fileType = this.filePath.split('.').pop();
     this.lineQueue = [];
     this.paarseQueue = [];
 
-    this.stream;
+    this.streams = [];
     this.loading = true;
   }
 
@@ -30,17 +29,22 @@ class SelectedLogsReader extends EventEmitter {
 
     this.server = net.createServer();
 
-    this.stream = { 
-      'log': this.initLogFileReader, 
-      'csv': this.initCSVFileReader 
-    }[this.fileType].call(this);
+    this.replayFiles.forEach(file => {
+      this.streams[file] = {
+        'log': this.initLogFileReader,
+        'csv': this.initCSVFileReader
+      }[file.slice(-3)].call(this, file);
 
-    this.initInterval(1000 / this.multiplier)
+      this.lineQueue[file] = [];
+      this.paarseQueue[file] = [];
+    })
+
+    this.initInterval(1000 / this.replayMultiplier)
 
     return cb();
   }
 
-  initPlayer(firstLogDate) {
+  initTimer(firstLogDate) {
     this.dayStart = DateTime.fromJSDate(new Date(firstLogDate.getTime()))
       .setZone('Europe/Paris')
       .startOf('day')
@@ -53,9 +57,9 @@ class SelectedLogsReader extends EventEmitter {
 
     this.loading = false;
     this.timer = firstLogDate.getTime();
-    
-    if (this.startTime) {
-      this.startTimerAt = this.dayStart + new Date(`1970-01-01T${this.startTime}`).getTime();
+
+    if (this.replayStartTime) {
+      this.startTimerAt = this.dayStart + new Date(`1970-01-01T${this.replayStartTime}`).getTime();
     }
     else {
       this.startTimerAt = this.dayStart;
@@ -64,30 +68,41 @@ class SelectedLogsReader extends EventEmitter {
     this.timer = this.startTimerAt;
   }
 
+  updateTimer(){
+    if (this.loading) {
+      console.log("[debug] loading");
+      return;
+    }
+    this.timer += 1000;
+    console.log("[debug] timer:", new Date(this.timer));
+  }
+
   initInterval(timeout) {
     return setInterval(() => {
-      if (this.timer >= this.dayEnd) return;
-      if (Math.max(this.lineQueue.length, this.paarseQueue.length) > 2) this.stream.pause();
-      else this.stream.resume();
-      if (this.loading) {
-        console.log("[debug] loading");
-        return;
-      }
-
-      this.timer += 1000;
-      console.log("[debug] timer:", new Date(this.timer));
-
-      if (!this.lineQueue.length) return;
-
-      this.lineQueue = this.lineQueue.sort((a, b) => a.date.getTime() - b.date.getTime());
-
-      const line = this.lineQueue[0];
-
-      if (line.date.getTime() <= this.timer) {
-        console.log("[debug] line date:", line.date);
-        this.parseLine(this.lineQueue.shift().log);
-      }
       
+      if (this.timer >= this.dayEnd) return; // Stop when the day is over
+      
+      this.updateTimer();
+
+      this.replayFiles.forEach(file => {
+
+        if (Math.max(this.lineQueue[file].length, this.paarseQueue[file].length) > 5) this.streams[file].pause();
+        else this.streams[file].resume();
+
+        if(this.loading) return;
+
+        if (!this.lineQueue[file].length) return;
+
+        this.lineQueue[file] = this.lineQueue[file].sort((a, b) => a.date.getTime() - b.date.getTime());
+
+        const line = this.lineQueue[file][0];
+
+        if (line.date.getTime() <= this.timer) {
+          console.log("[debug] line date:", line.date);
+          this.parseLine(this.lineQueue[file].shift().log);
+        }
+      })
+
     }, timeout);
   }
 
@@ -96,8 +111,8 @@ class SelectedLogsReader extends EventEmitter {
     this.emit('+exported_log', log.ezproxyName, 'bibliomap', 'info', log);
   }
 
-  initLogFileReader() {
-    const logStream = fs.createReadStream(this.filePath, { encoding: 'utf-8', highWaterMark: 2048 });
+  initLogFileReader(file) {
+    const logStream = fs.createReadStream(file, { encoding: 'utf-8', highWaterMark: 2048 });
 
     const rl = readline.createInterface({
       input: logStream,
@@ -106,7 +121,7 @@ class SelectedLogsReader extends EventEmitter {
 
     rl.on('line', async (line) => {
       if (!line) return;
-      this.paarseQueue.push(line);
+      this.paarseQueue[file].push(line);
 
       const response = await fetch(config.ezpaarse.url, {
         method: 'POST',
@@ -121,7 +136,7 @@ class SelectedLogsReader extends EventEmitter {
 
       const responseText = await response.text();
 
-      this.paarseQueue = this.paarseQueue.filter(l => l !== line);
+      this.paarseQueue[file] = this.paarseQueue[file].filter(l => l !== line);
 
       if (!response.ok) {
         console.error("ERROR:", response.status, response.statusText);
@@ -130,7 +145,7 @@ class SelectedLogsReader extends EventEmitter {
       else if (responseText) {
         const json = JSON.parse(responseText.trim());
         const date = new Date(json.datetime);
-        if(date.getTime() < this.startTimerAt) return;
+        if (date.getTime() < this.startTimerAt) return;
         const log = {
           'geoip-latitude': json['geoip-latitude'],
           'geoip-longitude': json['geoip-longitude'],
@@ -139,30 +154,32 @@ class SelectedLogsReader extends EventEmitter {
           rtype: json.rtype,
           mime: json.mime
         };
-        if (this.loading) this.initPlayer(date);
-        this.lineQueue.push({ date: date, log: log, line: line });
+        if (this.loading) this.initTimer(date); //TODO: Improve for multi-file
+        this.lineQueue[file].push({ date: date, log: log, line: line });
       }
     });
     return logStream;
   }
 
-  initCSVFileReader() {
-    return fs.createReadStream(this.filePath, { encoding: 'utf-8', highWaterMark: 2048 })
-    .pipe(parse({columns: true, delimiter: ';'}))
-    .on('data', (row) => {
-      if((new Date(row.datetime)).getTime() < this.startTimerAt) return;
-      if (this.loading){
-        this.initPlayer(new Date(row.datetime));
-      }
-      this.lineQueue.push({ date: new Date(row.datetime), log: {
-        'geoip-latitude': row['geoip-latitude'],
-          'geoip-longitude': row['geoip-longitude'],
-          ezproxyName: row['bib-groups'].toUpperCase(),
-          platform_name: row.platform_name,
-          rtype: row.rtype,
-          mime: row.mime
-      } });
-    })
+  initCSVFileReader(file) {
+    return fs.createReadStream(file, { encoding: 'utf-8', highWaterMark: 2048 })
+      .pipe(parse({ columns: true, delimiter: ';' }))
+      .on('data', (row) => {
+        if ((new Date(row.datetime)).getTime() < this.startTimerAt) return;
+        if (this.loading) {
+          this.initTimer(new Date(row.datetime));
+        }
+        this.lineQueue[file].push({
+          date: new Date(row.datetime), log: {
+            'geoip-latitude': row['geoip-latitude'],
+            'geoip-longitude': row['geoip-longitude'],
+            ezproxyName: row['bib-groups'].toUpperCase(),
+            platform_name: row.platform_name,
+            rtype: row.rtype,
+            mime: row.mime
+          }
+        });
+      })
   }
 }
 
