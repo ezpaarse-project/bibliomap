@@ -4,6 +4,7 @@ import net from 'net';
 import readline from 'readline';
 import config from 'config';
 import { DateTime } from 'luxon';
+import {parse} from 'csv-parse';
 
 class SelectedLogsReader extends EventEmitter {
   constructor(options) {
@@ -15,7 +16,8 @@ class SelectedLogsReader extends EventEmitter {
     // TODO: replace with env variables
     this.startAtFirstLog = true;
     this.multiplier = 4;
-    this.filePath = './examples/insb.log';
+    this.filePath = './examples/insb.csv';
+    
     this.fileType = this.filePath.split('.').pop();
     this.lineQueue = [];
     this.paarseQueue = [];
@@ -135,9 +137,22 @@ class SelectedLogsReader extends EventEmitter {
   }
 
   initCSVFileReader() {
-
+    this.stream = fs.createReadStream(this.filePath, { encoding: 'utf-8', highWaterMark: 2048 })
+    .pipe(parse({columns: true, delimiter: ';'}))
+    .on('data', (row) => {
+      if (this.loading){
+        this.initPlayer(new Date(row.datetime));
+      }
+      this.lineQueue.push({ date: new Date(row.datetime), log: {
+        'geoip-latitude': row['geoip-latitude'],
+          'geoip-longitude': row['geoip-longitude'],
+          ezproxyName: row['bib-groups'].toUpperCase(),
+          platform_name: row.platform_name,
+          rtype: row.rtype,
+          mime: row.mime
+      } });
+    })
   }
-
 }
 
 export default SelectedLogsReader;

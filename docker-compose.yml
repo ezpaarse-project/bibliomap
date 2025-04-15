@@ -15,7 +15,7 @@ services:
       BBV_LISTEN_ENRICHER_HOST: "0.0.0.0"
       BBV_LISTEN_ENRICHER_PORT: 27779
       BBV_LISTEN_HOST: "0.0.0.0"
-      BBV_LISTEN_PORT: 50198 # web server
+      BBV_LISTEN_PORT: 50197 # web server
     develop:
       watch:
         - action: sync+restart
@@ -27,7 +27,7 @@ services:
           path: ./services/viewer/package.json
     command: "npm start"
     ports:
-      - 50198:50198
+      - 50197:50197
       - 27779:27779
     restart: unless-stopped
 
