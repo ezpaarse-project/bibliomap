@@ -58,14 +58,8 @@ class SelectedLogsReader extends EventEmitter {
       .toMillis();
 
     this.loading = false;
-    this.timer = firstLogDate.getTime();
 
-    if (this.replayStartTime) {
-      this.startTimerAt = this.dayStart + new Date(`1970-01-01T${this.replayStartTime}`).getTime();
-    }
-    else {
-      this.startTimerAt = this.dayStart;
-    }
+    this.startTimerAt = this.dayStart + (this.replayStartTime ? new Date(`1970-01-01T${this.replayStartTime}`).getTime() : 0)
 
     this.timer = this.startTimerAt;
   }
@@ -100,15 +94,9 @@ class SelectedLogsReader extends EventEmitter {
         return;
       };
 
-      // console.log('FIRST LIST:', this.lineQueue['extracted/vpportail.insu.ezproxy.2020.03.08.ec.csv'])
-
       this.updateTimer();
 
       this.replayFiles.forEach(file => {
-
-        // console.log('file', file)
-
-        if(!this.lineQueue[file]) this.lineQueue[file] = [];
 
         if (Math.max(this.lineQueue[file].length, this.paarseQueue[file].length) > 5) this.streams[file].pause();
         else this.streams[file].resume();
@@ -119,14 +107,10 @@ class SelectedLogsReader extends EventEmitter {
 
         const line = this.lineQueue[file][0];
         
-        if (line.date.getTime() < this.startTimerAt){
-          this.lineQueue[file].shift();
-          return;
-        }
+        if (line.date.getTime() < this.startTimerAt) return this.lineQueue[file].shift();
 
         if (line.date.getTime() <= this.timer) {
-          console.log("[debug] line date:", line.date, '<=', new Date(this.timer));
-          console.log('START TIME:', new Date(this.dayStart), new Date(this.startTimerAt));
+          console.log("[debug] line date:", line.date);
           this.parseLine(this.lineQueue[file].shift().log);
         }
       })
@@ -149,7 +133,6 @@ class SelectedLogsReader extends EventEmitter {
     const rl = readline.createInterface({
       input: logStream,
     });
-    this.timer = 0;
 
     rl.on('line', async (line) => {
       if (!line) return;
