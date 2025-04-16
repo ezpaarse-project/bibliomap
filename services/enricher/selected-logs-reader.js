@@ -15,7 +15,6 @@ class SelectedLogsReader extends EventEmitter {
     this.options.port = options?.port || 28777;
     this.timer; this.dayStart; this.dayEnd; this.startTimerAt;
 
-    // TODO: replace with env variables
     this.replayStartTime = process.env.REPLAY_START_TIME;
     this.replayMultiplier = process.env.REPLAY_MULTIPLIER || 1;
     this.replayFiles = process.env.REPLAY_FILE_PATHS ? (process.env.REPLAY_FILE_PATHS).split(',').map(p => path.join('./replay_files/', p)) : ['./examples/insb.log'];

@@ -45,8 +45,7 @@ viewer.on('close', () => {
  * then forward it to ezpaarse jobs
  */
 console.log('config:', config.listen.harvester);
-const logIoListener = new SelectedLogsReader(config.listen.harvester);
-// const logIoListener = new LogIoListener(config.listen.harvester);
+const logIoListener = process.env.REPLAY_MODE ? new SelectedLogsReader(config.listen.harvester) : new LogIoListener(config.listen.harvester);
 
 logIoListener.listen(() => {
   console.log(`Waiting for harvester at ${JSON.stringify(config.listen.harvester)}`);
