@@ -95,3 +95,27 @@ To upgrade to the latest version of [bibliomap-harvester](https://github.com/ezp
 ```
 npm version patch
 ```
+
+### BiblioMap Player
+
+BiblioMap now has a replay mode: provide it with log files and it will play in real time. The replay mode features a time multiplier, which makes it times faster to have a quicker preview of what happened during that day.
+
+__How to use the replay mode?__
+
+You will need to specify some special variables in your configuration file: 
+
+```bash
+export REPLAY_FILE_PATHS='example.csv'
+export REPLAY_START_TIME="06:00:00"
+export REPLAY_MULTIPLIER=2
+export REPLAY_MODE=true
+```
+
+* __REPLAY_FILE_PATHS__: Paths of the files you want to play. 
+    - __All files should be from the same day__.
+    - The list must be separated with commas.
+    - The player can read log files (.log), EC files (.csv) and works with compressed  files (.gz).
+* __REPLAY_START_TIME__: The time at which you want the player to start at. It must be using the __standard ISO 8601 format__.
+* __REPLAY_MULTIPLIER__: How many times faster you want the player to be. __WARNING__: A multiplier too big can make the program or the browser crash.
+* __REPLAY_MODE__: Boolean specifying if BiblioMap should be in replay mode. To not use the player mode, making it undefined works as well as setting it to false.
+
