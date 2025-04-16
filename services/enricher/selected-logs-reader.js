@@ -17,7 +17,7 @@ class SelectedLogsReader extends EventEmitter {
 
     this.replayStartTime = process.env.REPLAY_START_TIME;
     this.replayMultiplier = process.env.REPLAY_MULTIPLIER || 1;
-    this.replayFiles = process.env.REPLAY_FILE_PATHS ? (process.env.REPLAY_FILE_PATHS).split(',').map(p => path.join('./replay_files/', p)) : ['./examples/insb.log'];
+    this.replayFiles = (process.env.REPLAY_FILE_PATHS).split(',').map(p => path.join('./replay_files/', p));
 
     this.lineQueue = [];
     this.paarseQueue = [];
