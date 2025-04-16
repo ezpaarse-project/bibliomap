@@ -46,6 +46,7 @@ services:
       REPLAY_FILE_PATHS: ${REPLAY_FILE_PATHS}
       REPLAY_START_TIME: ${REPLAY_START_TIME}
       REPLAY_MULTIPLIER: ${REPLAY_MULTIPLIER}
+      REPLAY_MODE: ${REPLAY_MODE}
     develop:
       watch:
         - action: sync+restart

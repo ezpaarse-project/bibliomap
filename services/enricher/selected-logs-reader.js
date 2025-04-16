@@ -5,6 +5,8 @@ import readline from 'readline';
 import config from 'config';
 import { DateTime } from 'luxon';
 import { parse } from 'csv-parse';
+import zlib from 'zlib';
+import path from 'path';
 
 class SelectedLogsReader extends EventEmitter {
   constructor(options) {
@@ -16,13 +18,20 @@ class SelectedLogsReader extends EventEmitter {
     // TODO: replace with env variables
     this.replayStartTime = process.env.REPLAY_START_TIME;
     this.replayMultiplier = process.env.REPLAY_MULTIPLIER || 1;
-    this.replayFiles = process.env.REPLAY_FILE_PATHS ? (process.env.REPLAY_FILE_PATHS).split(',').map(p => `./replay_files/${p.trim()}`) : ['./examples/insb.log'];
+    this.replayFiles = process.env.REPLAY_FILE_PATHS ? (process.env.REPLAY_FILE_PATHS).split(',').map(p => path.join('./replay_files/', p)) : ['./examples/insb.log'];
 
     this.lineQueue = [];
     this.paarseQueue = [];
+    this.gzQueue = [];
 
     this.streams = [];
     this.loading = true;
+
+    this.readers = {
+      'log': this.initLogFileReader,
+      'csv': this.initCSVFileReader,
+      'gz': this.initGZFileReader
+    }
   }
 
   listen = async (cb) => {
@@ -30,13 +39,7 @@ class SelectedLogsReader extends EventEmitter {
     this.server = net.createServer();
 
     this.replayFiles.forEach(file => {
-      this.streams[file] = {
-        'log': this.initLogFileReader,
-        'csv': this.initCSVFileReader
-      }[file.slice(-3)].call(this, file);
-
-      this.lineQueue[file] = [];
-      this.paarseQueue[file] = [];
+      this.streams[file] = this.readers[file.split('.').pop()].call(this, file);
     })
 
     this.initInterval(1000 / this.replayMultiplier)
@@ -68,7 +71,7 @@ class SelectedLogsReader extends EventEmitter {
     this.timer = this.startTimerAt;
   }
 
-  updateTimer(){
+  updateTimer() {
     if (this.loading) {
       console.log("[debug] loading");
       return;
@@ -79,19 +82,34 @@ class SelectedLogsReader extends EventEmitter {
 
   initInterval(timeout) {
     return setInterval(() => {
-      
-      if (this.timer >= this.dayEnd) return; // Stop when the day is over
 
-      if(this.loading) {
-        if(!this.lineQueue.every(q => !q.length)){
-          this.initTimer(this.lineQueue.flat().reduce((a, b) => a.date.getTime() < b.date.getTime() ? a : b))
+      if (this.timer >= this.dayEnd || this.gzQueue.length) return;
+
+      if (this.loading) {
+
+        const allItems = Object.values(this.lineQueue)
+        .flat()
+        .filter(item => item && item.date);
+
+        if (allItems.length) {
+          this.initTimer(
+            allItems.reduce((a, b) =>
+              a.date.getTime() < b.date.getTime() ? a : b
+            ).date
+          )
         }
         return;
       };
-      
+
+      // console.log('FIRST LIST:', this.lineQueue['extracted/vpportail.insu.ezproxy.2020.03.08.ec.csv'])
+
       this.updateTimer();
 
       this.replayFiles.forEach(file => {
+
+        // console.log('file', file)
+
+        if(!this.lineQueue[file]) this.lineQueue[file] = [];
 
         if (Math.max(this.lineQueue[file].length, this.paarseQueue[file].length) > 5) this.streams[file].pause();
         else this.streams[file].resume();
@@ -101,9 +119,15 @@ class SelectedLogsReader extends EventEmitter {
         this.lineQueue[file] = this.lineQueue[file].sort((a, b) => a.date.getTime() - b.date.getTime());
 
         const line = this.lineQueue[file][0];
+        
+        if (line.date.getTime() < this.startTimerAt){
+          this.lineQueue[file].shift();
+          return;
+        }
 
         if (line.date.getTime() <= this.timer) {
-          console.log("[debug] line date:", line.date);
+          console.log("[debug] line date:", line.date, '<=', new Date(this.timer));
+          console.log('START TIME:', new Date(this.dayStart), new Date(this.startTimerAt));
           this.parseLine(this.lineQueue[file].shift().log);
         }
       })
@@ -117,6 +141,10 @@ class SelectedLogsReader extends EventEmitter {
   }
 
   initLogFileReader(file) {
+
+    this.lineQueue[file] = [];
+    this.paarseQueue[file] = [];
+
     const logStream = fs.createReadStream(file, { encoding: 'utf-8', highWaterMark: 2048 });
 
     const rl = readline.createInterface({
@@ -159,7 +187,6 @@ class SelectedLogsReader extends EventEmitter {
           rtype: json.rtype,
           mime: json.mime
         };
-        //if (this.loading) this.initTimer(date); //TODO: Improve for multi-file
         this.lineQueue[file].push({ date: date, log: log, line: line });
       }
     });
@@ -167,13 +194,14 @@ class SelectedLogsReader extends EventEmitter {
   }
 
   initCSVFileReader(file) {
+
+    this.lineQueue[file] = [];
+    this.paarseQueue[file] = [];
+
     return fs.createReadStream(file, { encoding: 'utf-8', highWaterMark: 2048 })
       .pipe(parse({ columns: true, delimiter: ';' }))
       .on('data', (row) => {
         if ((new Date(row.datetime)).getTime() < this.startTimerAt) return;
-        if (this.loading) {
-          this.initTimer(new Date(row.datetime));
-        }
         this.lineQueue[file].push({
           date: new Date(row.datetime), log: {
             'geoip-latitude': row['geoip-latitude'],
@@ -185,6 +213,23 @@ class SelectedLogsReader extends EventEmitter {
           }
         });
       })
+  }
+
+  initGZFileReader(file) {
+    this.gzQueue.push(file);
+    this.replayFiles = this.replayFiles.filter(f => f !== file);
+    const input = fs.createReadStream(file);
+    fs.mkdirSync('./extracted', { recursive: true });
+    const outputPath = path.join('./extracted', path.basename(file, '.gz'))
+    const output = fs.createWriteStream(outputPath);
+
+    input.pipe(zlib.createGunzip())
+      .pipe(output)
+      .on('finish', () => {
+        this.streams[outputPath] = this.readers[outputPath.split('.').pop()].call(this, outputPath);
+        this.gzQueue = this.gzQueue.filter(p => p !== file);
+        this.replayFiles.push(outputPath);
+      });
   }
 }
 
