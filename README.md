@@ -119,3 +119,7 @@ export REPLAY_MODE=true
 * __REPLAY_MULTIPLIER__: How many times faster you want the player to be. __WARNING__: A multiplier too big can make the program or the browser crash.
 * __REPLAY_MODE__: Boolean specifying if BiblioMap should be in replay mode. To not use the player mode, making it undefined works as well as setting it to false.
 
+After writing these variables in the file, you should source it:
+```bash
+source ./setup_example.sh
+```
