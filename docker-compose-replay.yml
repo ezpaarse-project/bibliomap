@@ -36,32 +36,12 @@ services:
       REPLAY_FILE_PATHS: ${REPLAY_FILE_PATHS}
       REPLAY_START_TIME: ${REPLAY_START_TIME}
       REPLAY_MULTIPLIER: ${REPLAY_MULTIPLIER}
-      REPLAY_MODE: ""
+      REPLAY_MODE: ${REPLAY_MODE}
     command: "npm run dev"
     working_dir: /usr/src/app
     volumes: 
       - ./services/enricher:/usr/src/app
     restart: unless-stopped
-
-  harvester:
-    build: 
-      context: ./services/harvester
-    container_name: bibliomap-harvester-dev
-    environment:
-      BBH_ENRICHER_HOST: "enricher"
-      BBH_ENRICHER_PORT: 27777
-      BBH_NO_DEMO:     "" # demo is activated
-      BBH_STREAMNAMES: "" # default streams are for the demo
-      BBH_STREAMPATHS: ""
-      BBH_LOG_FOLDER: demo-logs/cnrs
-      NODE_APP_INSTANCE: cnrs
-      BBH_LOGS_PER_SECOND: 10
-    command: "npm run dev"
-    working_dir: /usr/src/app
-    volumes:
-      - ./services/harvester:/usr/src/app
-    restart: unless-stopped
-  
   ezpaarse:
     container_name: bibliomap-ezpaarse-dev
     image: ezpaarseproject/ezpaarse:3.4.0
