@@ -1,3 +1,4 @@
 .ezpaarse/
 node_modules/
 build.sh
+setup_replay.sh

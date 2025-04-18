@@ -36,7 +36,7 @@ class SelectedLogsReader extends EventEmitter {
     this.server = net.createServer();
 
     this.replayFiles.forEach((file) => {
-      this.streams[file] = this.readers[file.split('.').pop()].call(this, file);
+      this.streams[file] = this.readers[file.split('.').pop()].call(this, file, fs.createReadStream(file));
     });
 
     this.initInterval(1000 / this.replayMultiplier);
@@ -120,14 +120,12 @@ class SelectedLogsReader extends EventEmitter {
     this.emit('+exported_log', log.ezproxyName, 'bibliomap', 'info', log);
   }
 
-  initLogFileReader(file) {
+  initLogFileReader(file, stream) {
     this.lineQueue[file] = [];
     this.paarseQueue[file] = [];
 
-    const logStream = fs.createReadStream(file, { encoding: 'utf-8', highWaterMark: 2048 });
-
     const rl = readline.createInterface({
-      input: logStream,
+      input: stream,
     });
 
     rl.on('line', async (line) => {
@@ -166,14 +164,14 @@ class SelectedLogsReader extends EventEmitter {
         this.lineQueue[file].push({ date, log, line });
       }
     });
-    return logStream;
+    return stream;
   }
 
-  initCSVFileReader(file) {
+  initCSVFileReader(file, stream) {
     this.lineQueue[file] = [];
     this.paarseQueue[file] = [];
 
-    return fs.createReadStream(file, { encoding: 'utf-8', highWaterMark: 2048 })
+    return stream
       .pipe(parse({ columns: true, delimiter: ';' }))
       .on('data', (row) => {
         if ((new Date(row.datetime)).getTime() < this.startTimerAt) return;
@@ -191,21 +189,11 @@ class SelectedLogsReader extends EventEmitter {
       });
   }
 
-  initGZFileReader(file) {
-    this.gzQueue.push(file);
+  initGZFileReader(file, stream) {
     this.replayFiles = this.replayFiles.filter((f) => f !== file);
-    const input = fs.createReadStream(file);
-    fs.mkdirSync('./data/extracted', { recursive: true });
-    const outputPath = path.join('./data/extracted', path.basename(file, '.gz'));
-    const output = fs.createWriteStream(outputPath);
+    const unzippedName = path.basename(file, '.gz');
 
-    input.pipe(zlib.createGunzip())
-      .pipe(output)
-      .on('finish', () => {
-        this.streams[outputPath] = this.readers[outputPath.split('.').pop()].call(this, outputPath);
-        this.gzQueue = this.gzQueue.filter((p) => p !== file);
-        this.replayFiles.push(outputPath);
-      });
+    return this.readers[unzippedName.split('.').pop()].call(this, unzippedName, stream.pipe(zlib.createGunzip()));
   }
 }
 
