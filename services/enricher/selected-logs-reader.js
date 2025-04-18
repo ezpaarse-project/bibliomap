@@ -3,7 +3,9 @@ import fs from 'fs';
 import net from 'net';
 import readline from 'readline';
 import config from 'config';
-import { DateTime } from 'luxon';
+// import { DateTime } from 'luxon';
+import { startOfDay, endOfDay } from 'date-fns';
+import { TZDate } from '@date-fns/tz';
 import { parse } from 'csv-parse';
 import zlib from 'zlib';
 import path from 'path';
@@ -45,15 +47,8 @@ class SelectedLogsReader extends EventEmitter {
   }
 
   initTimer(firstLogDate) {
-    this.dayStart = DateTime.fromJSDate(new Date(firstLogDate.getTime()))
-      .setZone('Europe/Paris')
-      .startOf('day')
-      .toMillis();
-
-    this.dayEnd = DateTime.fromJSDate(new Date(firstLogDate.getTime()))
-      .setZone('Europe/Paris')
-      .endOf('day')
-      .toMillis();
+    this.dayStart = startOfDay(TZDate.tz('Europe/Paris', firstLogDate)).getTime();
+    this.dayEnd = endOfDay(TZDate.tz('Europe/Paris', firstLogDate)).getTime();
 
     this.loading = false;
 

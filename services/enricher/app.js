@@ -3,9 +3,6 @@ import config from 'config';
 import LogIoListener from 'log.io-server-parser';
 import net from 'net';
 import SelectedLogsReader from './selected-logs-reader.js';
-import util from 'util';
-
-console.log('HEADERS:\n', util.inspect(config.ezpaarse.headers));
 
 const viewerConfig = config.broadcast.viewer;
 const viewerUrl = `${viewerConfig.host}: ${viewerConfig.port}`;
