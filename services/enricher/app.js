@@ -1,15 +1,10 @@
-// log.io protocol example
-// +log biblioinserm bibliomap info 16.2.255.24 - 13BBIU1158 [01/Aug/2013:16:56:36 +0100] "GET http://onlinelibrary.wiley.com:80/doi/10.1111/dme.12357/pdf HTTP/1.1" 200 13639
-'use strict';
-
 import config from 'config';
 import LogIoListener from 'log.io-server-parser';
-import SelectedLogsReader from './selected-logs-reader.js';
 import request from 'request';
 import { PassThrough } from 'stream';
 import JSONStream from 'JSONStream';
 import net from 'net';
-import debug from 'debug';
+import SelectedLogsReader from './selected-logs-reader.js';
 
 const ezpaarseJobs = new Map();
 const viewerConfig = config.broadcast.viewer;
@@ -27,7 +22,7 @@ viewer.on('connect', () => {
   viewer.connected = true;
 });
 
-viewer.on('error', err => {
+viewer.on('error', (err) => {
   console.log(`Viewer connection got error: ${err}`);
 });
 
@@ -45,13 +40,16 @@ viewer.on('close', () => {
  * then forward it to ezpaarse jobs
  */
 console.log('config:', config.listen.harvester);
-const logIoListener = process.env.REPLAY_MODE ? new SelectedLogsReader(config.listen.harvester) : new LogIoListener(config.listen.harvester);
+
+const logIoListener = process.env.REPLAY_MODE
+  ? new SelectedLogsReader(config.listen.harvester)
+  : new LogIoListener(config.listen.harvester);
 
 logIoListener.listen(() => {
   console.log(`Waiting for harvester at ${JSON.stringify(config.listen.harvester)}`);
 });
 
-logIoListener.server.on('connection', socket => {
+logIoListener.server.on('connection', (socket) => {
   console.log('Harvester connected');
 
   socket.on('close', () => {
@@ -59,37 +57,13 @@ logIoListener.server.on('connection', socket => {
   });
 });
 
-logIoListener.on('+node', (node, streams) => {
-  // Create one ezPAARSE job for each stream
-  streams.forEach(createJob);
-});
-
-logIoListener.on('+log', (streamName, node, type, log) => {
-
-  if (!ezpaarseJobs.get(streamName)) {
-    createJob(streamName);
-  }
-
-  const job = ezpaarseJobs.get(streamName);
-  job.writeStream.write(`${log}\n`);
-});
-
-logIoListener.on("+exported_log", (streamName, node, type, log) => {
-
-  if (!ezpaarseJobs.get(streamName)) {
-    createJob(streamName);
-  }
-
-  viewer.write(`${JSON.stringify(log)}\n`);
-})
-
 /**
  * Create the ezpaarse jobs and respawn
  * crashed or terminated jobs each N seconds
  */
 function createJob(streamName) {
   if (ezpaarseJobs.has(streamName)) {
-    return debug(`${streamName} already exists`);
+    return console.debug(`${streamName} already exists`);
   }
 
   console.log(`Creating an ezPAARSE job for ${streamName} at ${config.ezpaarse.url}`);
@@ -97,9 +71,9 @@ function createJob(streamName) {
   const job = {
     request: request.post({
       url: config.ezpaarse.url,
-      headers: config.ezpaarse.headers
+      headers: config.ezpaarse.headers,
     }),
-    writeStream: new PassThrough()
+    writeStream: new PassThrough(),
   };
 
   ezpaarseJobs.set(streamName, job);
@@ -107,40 +81,33 @@ function createJob(streamName) {
   job.writeStream.pipe(job.request);
   job.request
     .pipe(JSONStream.parse())
-    .on('data', data => {
+    .on('data', (data) => {
+      const d = data;
       const msg = [
         `[${data.datetime}]`,
-        data.login,
-        data.platform,
-        data.platform_name,
-        data.rtype,
-        data.mime,
-        data.print_identifier || '-',
-        data.online_identifier || '-',
-        data.doi || '-',
-        data.url
+        d.login,
+        d.platform,
+        d.platform_name,
+        d.rtype,
+        d.mime,
+        d.print_identifier || '-',
+        d.online_identifier || '-',
+        d.doi || '-',
+        d.url,
       ].join(' ');
 
-      data.ezproxyName = streamName;
+      d.ezproxyName = streamName;
 
       if (viewer && viewer.connected) {
         const exported = {};
-        broadcastedFields.forEach(f => {
+        broadcastedFields.forEach((f) => {
           if (data[f]) { exported[f] = data[f]; }
         });
         viewer.write(`${JSON.stringify(exported)}\n`);
       }
 
-      debug(`+log|${streamName}-ezpaarse|bibliolog|info|${msg}`);
+      console.debug(`+log|${streamName}-ezpaarse|bibliolog|info|${msg}`);
     });
-
-  // check the ezpaarse connection is not closed
-  job.request.on('error', err => { restartJob(err); });
-  job.request.on('close', () => { restartJob(); });
-  job.request.on('end', () => { restartJob(); });
-  job.request.on('response', response => {
-    console.log(`Job ${response.headers['job-id']} initiated for ${streamName}`);
-  });
 
   function restartJob(err) {
     if (job.restarted) { return; }
@@ -154,10 +121,42 @@ function createJob(streamName) {
     job.restarted = true;
     ezpaarseJobs.delete(streamName);
 
-    debug(`Creating a new job for ${streamName} in ${config.autoConnectDelay}ms`);
+    console.debug(`Creating a new job for ${streamName} in ${config.autoConnectDelay}ms`);
 
     setTimeout(() => {
       createJob(streamName);
     }, config.autoConnectDelay);
   }
+
+  // check the ezpaarse connection is not closed
+  job.request.on('error', (err) => { restartJob(err); });
+  job.request.on('close', () => { restartJob(); });
+  job.request.on('end', () => { restartJob(); });
+  job.request.on('response', (response) => {
+    console.log(`Job ${response.headers['job-id']} initiated for ${streamName}`);
+  });
+
+  return true;
 }
+
+logIoListener.on('+node', (node, streams) => {
+  // Create one ezPAARSE job for each stream
+  streams.forEach(createJob);
+});
+
+logIoListener.on('+log', (streamName, node, type, log) => {
+  if (!ezpaarseJobs.get(streamName)) {
+    createJob(streamName);
+  }
+
+  const job = ezpaarseJobs.get(streamName);
+  job.writeStream.write(`${log}\n`);
+});
+
+logIoListener.on('+exported_log', (streamName, node, type, log) => {
+  if (!ezpaarseJobs.get(streamName)) {
+    createJob(streamName);
+  }
+
+  viewer.write(`${JSON.stringify(log)}\n`);
+});

@@ -13,7 +13,6 @@ class SelectedLogsReader extends EventEmitter {
     super();
     this.options = options;
     this.options.port = options?.port || 28777;
-    this.timer; this.dayStart; this.dayEnd; this.startTimerAt;
 
     this.replayStartTime = process.env.REPLAY_START_TIME;
     this.replayMultiplier = process.env.REPLAY_MULTIPLIER || 1;
@@ -92,16 +91,21 @@ class SelectedLogsReader extends EventEmitter {
       this.updateTimer();
 
       this.replayFiles.forEach((file) => {
-        if (Math.max(this.lineQueue[file].length, this.paarseQueue[file].length) > 5) this.streams[file].pause();
-        else this.streams[file].resume();
+        if (Math.max(this.lineQueue[file].length, this.paarseQueue[file].length) > 5) {
+          this.streams[file].pause();
+        } else this.streams[file].resume();
 
         if (!this.lineQueue[file].length) return;
 
-        this.lineQueue[file] = this.lineQueue[file].sort((a, b) => a.date.getTime() - b.date.getTime());
+        this.lineQueue[file] = this.lineQueue[file]
+          .sort((a, b) => a.date.getTime() - b.date.getTime());
 
         const line = this.lineQueue[file][0];
 
-        if (line.date.getTime() < this.startTimerAt) return this.lineQueue[file].shift();
+        if (line.date.getTime() < this.startTimerAt) {
+          this.lineQueue[file].shift();
+          return;
+        }
 
         if (line.date.getTime() <= this.timer) {
           console.log('[debug] line date:', line.date);
