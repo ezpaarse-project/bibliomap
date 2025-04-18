@@ -112,6 +112,7 @@ export REPLAY_MODE=true
 ```
 
 * __REPLAY_FILE_PATHS__: Paths of the files you want to play. 
+    - Files should be located at __bibliomap/sevices/enricher/data/replay_files__.
     - __All files should be from the same day__.
     - The list must be separated with commas.
     - The player can read log files (.log), EC files (.csv) and works with compressed  files (.gz).

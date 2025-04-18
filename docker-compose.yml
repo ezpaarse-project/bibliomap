@@ -42,6 +42,8 @@ services:
     volumes: 
       - ./services/enricher:/usr/src/app
     restart: unless-stopped
+    depends_on:
+      - ezpaarse
 
   harvester:
     build: 
