@@ -36,7 +36,7 @@ class SelectedLogsReader extends EventEmitter {
     this.server = net.createServer();
 
     this.replayFiles.forEach((file) => {
-      this.streams[file] = this.readers[file.split('.').pop()].call(this, file, fs.createReadStream(file));
+      this.readers[file.split('.').pop()].call(this, file, fs.createReadStream(file));
     });
 
     this.initInterval(1000 / this.replayMultiplier);
@@ -164,14 +164,14 @@ class SelectedLogsReader extends EventEmitter {
         this.lineQueue[file].push({ date, log, line });
       }
     });
-    return stream;
+    this.streams[file] = stream;
   }
 
   initCSVFileReader(file, stream) {
     this.lineQueue[file] = [];
     this.paarseQueue[file] = [];
 
-    return stream
+    this.streams[file] = stream
       .pipe(parse({ columns: true, delimiter: ';' }))
       .on('data', (row) => {
         if ((new Date(row.datetime)).getTime() < this.startTimerAt) return;
@@ -193,7 +193,7 @@ class SelectedLogsReader extends EventEmitter {
     this.replayFiles = this.replayFiles.filter((f) => f !== file);
     const unzippedName = path.basename(file, '.gz');
 
-    return this.readers[unzippedName.split('.').pop()].call(this, unzippedName, stream.pipe(zlib.createGunzip()));
+    this.readers[unzippedName.split('.').pop()].call(this, unzippedName, stream.pipe(zlib.createGunzip()));
   }
 }
 
