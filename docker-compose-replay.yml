@@ -34,10 +34,11 @@ services:
       BBE_BROADCAST_VIEWER_PORT: 27779
       BBE_EZPAARSE_PREDEF: bibliomap
       REPLAY_FILE_PATHS: ${REPLAY_FILE_PATHS}
+      REPLAY_START_DAY: ${REPLAY_START_DAY}
       REPLAY_START_TIME: ${REPLAY_START_TIME}
       REPLAY_MULTIPLIER: ${REPLAY_MULTIPLIER}
       REPLAY_MODE: ${REPLAY_MODE}
-      DURATION: ${DURATION}
+      DURATION: ${REPLAY_DURATION}
     command: "npm run dev"
     working_dir: /usr/src/app
     volumes: 

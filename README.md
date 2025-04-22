@@ -106,10 +106,11 @@ You will need to specify some special variables in your configuration file:
 
 ```bash
 export REPLAY_FILE_PATHS='example.csv'
+export REPLAY_FIRST_DATE="2020-03-08"
 export REPLAY_START_TIME="06:00:00"
 export REPLAY_MULTIPLIER=2
 export REPLAY_MODE=true
-export DURATION=1
+export REPLAY_DURATION=1
 ```
 
 * __REPLAY_FILE_PATHS__: Paths of the files you want to play. 
@@ -117,10 +118,11 @@ export DURATION=1
     - __All files should be from the same day__.
     - The list must be separated with commas.
     - The player can read log files (.log), EC files (.csv) and works with compressed  files (.gz).
-* __REPLAY_START_TIME__: The time at which you want the player to start at. It must be using the __standard ISO 8601 format__.
+* __REPLAY_START_DATE__: The date at which you want the player to start at. It must be using the __standard ISO 8601 format__. Starts the day of the first log if undefined.
+* __REPLAY_START_TIME__: The time at which you want the player to start at. It must be using the __standard ISO 8601 format__. Starts at midnight if undefined.
 * __REPLAY_MULTIPLIER__: How many times faster you want the player to be. __WARNING__: A multiplier too big can make the program or the browser crash.
 * __REPLAY_MODE__: Boolean specifying if BiblioMap should be in replay mode. To not use the player mode, making it undefined works as well as setting it to false.
-* __DURATION__: The number of days of the replay (1 if undefined).
+* __REPLAY_DURATION__: The number of days of the replay (1 if undefined).
 
 After writing these variables in the file, you should source it:
 ```bash

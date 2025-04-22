@@ -8,6 +8,7 @@ import { TZDate } from '@date-fns/tz';
 import { parse } from 'csv-parse';
 import zlib from 'zlib';
 import path from 'path';
+import { env } from 'process';
 
 async function readFirstDatetimeLog(stream) {
   let result;
@@ -97,8 +98,11 @@ class SelectedLogsReader extends EventEmitter {
   async listen(cb) {
     this.server = net.createServer();
 
-    const firstDateTime = await this.readFirstDatetime();
-    this.initTimer(firstDateTime);
+    this.initTimer(
+      env.REPLAY_FIRST_DATE
+        ? new Date(env.REPLAY_FIRST_DATE)
+        : await this.readFirstDatetime(),
+    );
 
     this.replayFiles.forEach((file) => {
       this.readers[file.split('.').pop()].call(this, file, fs.createReadStream(file));
