@@ -1,14 +1,72 @@
-import { EventEmitter } from 'events';
+import { EventEmitter, once } from 'events';
 import fs from 'fs';
 import net from 'net';
 import readline from 'readline';
 import config from 'config';
-// import { DateTime } from 'luxon';
-import { startOfDay, endOfDay } from 'date-fns';
+import { startOfDay, endOfDay, addDays } from 'date-fns';
 import { TZDate } from '@date-fns/tz';
 import { parse } from 'csv-parse';
 import zlib from 'zlib';
 import path from 'path';
+
+async function readFirstDatetimeLog(stream) {
+  let result;
+
+  const rl = readline.createInterface({
+    input: stream,
+  });
+
+  for await (const line of rl) {
+    if (!line) return null;
+
+    let response;
+    try {
+      response = await fetch(config.ezpaarse.url, {
+        method: 'POST',
+        headers: { // FIXME 2025-04-14 CANNOT SEEM TO USE THE HEADERS FROM THE CONFIG! HELP!!!
+          Accept: 'application/jsonstream',
+          'Double-Click-Removal': 'false',
+          'crossref-enrich': 'false',
+          'ezPAARSE-Predefined-Settings': 'bibliomap',
+        },
+        body: line,
+      });
+    } catch (err) {
+      console.error('[ezPAARSE] Cannot send line to ezPAARSE');
+      console.error(err);
+      return null;
+    }
+
+    const responseText = await response.text();
+
+    if (!response.ok) {
+      console.error('ERROR:', response.status, response.statusText);
+    } else if (responseText) {
+      console.log('HERE');
+      const json = JSON.parse(responseText.trim());
+      if (json.datetime) {
+        console.log('DATE', json.datetime);
+        rl.close();
+        result = new Date(json.datetime).getTime();
+        break;
+      }
+    }
+  }
+  return result;
+}
+
+async function readFirstDatetimeCsv(stream) {
+  const parser = stream.pipe(parse({ columns: true, delimiter: ';' }));
+
+  const [row] = await once(parser, 'data');
+  const firstDate = new Date(row.datetime).getTime();
+
+  return firstDate;
+}
+
+async function handleGzFile(stream) {
+  return stream.pipe(zlib.createGunzip());
+}
 
 class SelectedLogsReader extends EventEmitter {
   constructor(options) {
@@ -37,6 +95,9 @@ class SelectedLogsReader extends EventEmitter {
   async listen(cb) {
     this.server = net.createServer();
 
+    const firstDateTime = await this.readFirstDatetime();
+    this.initTimer(firstDateTime);
+
     this.replayFiles.forEach((file) => {
       this.readers[file.split('.').pop()].call(this, file, fs.createReadStream(file));
     });
@@ -46,9 +107,13 @@ class SelectedLogsReader extends EventEmitter {
     return cb();
   }
 
-  initTimer(firstLogDate) {
+  initTimer(firstLogDate, lastLogDate) {
     this.dayStart = startOfDay(TZDate.tz('Europe/Paris', firstLogDate)).getTime();
-    this.dayEnd = endOfDay(TZDate.tz('Europe/Paris', firstLogDate)).getTime();
+    const lastLogDay = endOfDay(TZDate.tz('Europe/Paris', lastLogDate || firstLogDate)).getTime();
+    if (this.duration) {
+      this.dayEnd = endOfDay(addDays(TZDate.tz('Europe/Paris', firstLogDate), this.duration)).getTime();
+      if (lastLogDate < this.dayEnd) this.dayEnd = lastLogDay;
+    }
 
     this.loading = false;
 
@@ -70,18 +135,7 @@ class SelectedLogsReader extends EventEmitter {
     return setInterval(() => {
       if (this.timer >= this.dayEnd || this.gzQueue.length) return;
 
-      if (this.loading) {
-        const allItems = Object.values(this.lineQueue)
-          .flat()
-          .filter((item) => item && item.date);
-
-        if (allItems.length) {
-          this.initTimer(
-            allItems.reduce((a, b) => (a.date.getTime() < b.date.getTime() ? a : b)).date,
-          );
-        }
-        return;
-      }
+      if (this.loading) return;
 
       this.updateTimer();
 
@@ -127,16 +181,24 @@ class SelectedLogsReader extends EventEmitter {
       if (!line) return;
       this.paarseQueue[file].push(line);
 
-      const response = await fetch(config.ezpaarse.url, {
-        method: 'POST',
-        headers: { // FIXME 2025-04-14 CANNOT SEEM TO USE THE HEADERS FROM THE CONFIG! HELP!!!
-          Accept: 'application/jsonstream',
-          'Double-Click-Removal': 'false',
-          'crossref-enrich': 'false',
-          'ezPAARSE-Predefined-Settings': 'bibliomap',
-        },
-        body: line,
-      });
+      let response;
+
+      try {
+        response = await fetch(config.ezpaarse.url, {
+          method: 'POST',
+          headers: { // FIXME 2025-04-14 CANNOT SEEM TO USE THE HEADERS FROM THE CONFIG! HELP!!!
+            Accept: 'application/jsonstream',
+            'Double-Click-Removal': 'false',
+            'crossref-enrich': 'false',
+            'ezPAARSE-Predefined-Settings': 'bibliomap',
+          },
+          body: line,
+        });
+      } catch (err) {
+        console.error('[ezPAARSE] Cannot send line to ezPAARSE');
+        console.error(err);
+        return;
+      }
 
       const responseText = await response.text();
 
@@ -189,6 +251,33 @@ class SelectedLogsReader extends EventEmitter {
     const unzippedName = path.basename(file, '.gz');
 
     this.readers[unzippedName.split('.').pop()].call(this, unzippedName, stream.pipe(zlib.createGunzip()));
+  }
+
+  async readFirstDatetime() {
+    const firstLineReaders = {
+      log: readFirstDatetimeLog,
+      csv: readFirstDatetimeCsv,
+    };
+
+    const dates = [];
+
+    for (const file of this.replayFiles) {
+      const ext = file.split('.').pop();
+
+      if (ext === 'gz') {
+        const basefile = file.split('.').slice(0, -1).join('.');
+        const baseExt = basefile.split('.').pop();
+        const stream = await handleGzFile(fs.createReadStream(file));
+        const date = await firstLineReaders[baseExt].call(this, stream);
+        dates.push(date);
+      } else {
+        const stream = fs.createReadStream(file);
+        const date = await firstLineReaders[ext].call(this, stream);
+        dates.push(new Date(date));
+      }
+    }
+
+    return Math.min(...dates);
   }
 }
 

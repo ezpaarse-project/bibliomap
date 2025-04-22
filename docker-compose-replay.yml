@@ -42,11 +42,12 @@ services:
     volumes: 
       - ./services/enricher:/usr/src/app
     restart: unless-stopped
+    depends_on:
+      ezpaarse:
+        condition: service_healthy
   ezpaarse:
     container_name: bibliomap-ezpaarse-dev
     image: ezpaarseproject/ezpaarse:3.4.0
-    links:
-      - ezpaarse_db
     environment:
       http_proxy:  ${http_proxy}
       https_proxy: ${https_proxy}
@@ -57,6 +58,15 @@ services:
       - 59599:59599
     depends_on:
       - ezpaarse_db
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -Y off --no-verbose --tries=1 --spider http://localhost:59599 || exit 1"
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
     #restart: unless-stopped
 
   ezpaarse_db:
