@@ -77,6 +77,8 @@ class SelectedLogsReader extends EventEmitter {
     this.replayStartTime = process.env.REPLAY_START_TIME;
     this.replayMultiplier = process.env.REPLAY_MULTIPLIER || 1;
     this.replayFiles = (process.env.REPLAY_FILE_PATHS).split(',').map((p) => path.join('./data/replay_files/', p));
+    this.duration = process.env.REPLAY_DURATION || 1;
+    if (this.duration < 1) this.duration = 1;
 
     this.lineQueue = [];
     this.paarseQueue = [];
@@ -107,13 +109,9 @@ class SelectedLogsReader extends EventEmitter {
     return cb();
   }
 
-  initTimer(firstLogDate, lastLogDate) {
+  initTimer(firstLogDate) {
     this.dayStart = startOfDay(TZDate.tz('Europe/Paris', firstLogDate)).getTime();
-    const lastLogDay = endOfDay(TZDate.tz('Europe/Paris', lastLogDate || firstLogDate)).getTime();
-    if (this.duration) {
-      this.dayEnd = endOfDay(addDays(TZDate.tz('Europe/Paris', firstLogDate), this.duration)).getTime();
-      if (lastLogDate < this.dayEnd) this.dayEnd = lastLogDay;
-    }
+    this.dayEnd = endOfDay(addDays(TZDate.tz('Europe/Paris', firstLogDate), this.duration - 1)).getTime();
 
     this.loading = false;
 

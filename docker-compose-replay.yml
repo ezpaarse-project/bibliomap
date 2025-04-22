@@ -37,6 +37,7 @@ services:
       REPLAY_START_TIME: ${REPLAY_START_TIME}
       REPLAY_MULTIPLIER: ${REPLAY_MULTIPLIER}
       REPLAY_MODE: ${REPLAY_MODE}
+      DURATION: ${DURATION}
     command: "npm run dev"
     working_dir: /usr/src/app
     volumes: 
