@@ -109,6 +109,7 @@ export REPLAY_FILE_PATHS='example.csv'
 export REPLAY_START_TIME="06:00:00"
 export REPLAY_MULTIPLIER=2
 export REPLAY_MODE=true
+export DURATION=1
 ```
 
 * __REPLAY_FILE_PATHS__: Paths of the files you want to play. 
@@ -119,6 +120,7 @@ export REPLAY_MODE=true
 * __REPLAY_START_TIME__: The time at which you want the player to start at. It must be using the __standard ISO 8601 format__.
 * __REPLAY_MULTIPLIER__: How many times faster you want the player to be. __WARNING__: A multiplier too big can make the program or the browser crash.
 * __REPLAY_MODE__: Boolean specifying if BiblioMap should be in replay mode. To not use the player mode, making it undefined works as well as setting it to false.
+* __DURATION__: The number of days of the replay (1 if undefined).
 
 After writing these variables in the file, you should source it:
 ```bash
