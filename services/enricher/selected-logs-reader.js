@@ -43,10 +43,8 @@ async function readFirstDatetimeLog(stream) {
     if (!response.ok) {
       console.error('ERROR:', response.status, response.statusText);
     } else if (responseText) {
-      console.log('HERE');
       const json = JSON.parse(responseText.trim());
       if (json.datetime) {
-        console.log('DATE', json.datetime);
         rl.close();
         result = new Date(json.datetime).getTime();
         break;
@@ -99,8 +97,8 @@ class SelectedLogsReader extends EventEmitter {
     this.server = net.createServer();
 
     this.initTimer(
-      env.REPLAY_FIRST_DATE
-        ? new Date(env.REPLAY_FIRST_DATE)
+      env.REPLAY_START_DAY
+        ? new Date(env.REPLAY_START_DAY)
         : await this.readFirstDatetime(),
     );
 
