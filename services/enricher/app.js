@@ -3,6 +3,7 @@ import config from 'config';
 import LogIoListener from 'log.io-server-parser';
 import net from 'net';
 import SelectedLogsReader from './selected-logs-reader.js';
+import PaarseQueue from './paarse_queue.js';
 
 const viewerConfig = config.broadcast.viewer;
 const viewerUrl = `${viewerConfig.host}: ${viewerConfig.port}`;
@@ -53,50 +54,31 @@ logIoListener.server.on('connection', (socket) => {
   });
 });
 
-let cooldown = false;
+const queues = {};
 
 logIoListener.on('+log', async (streamName, node, type, log) => {
-  console.log('+log');
-  if (cooldown) return;
+  if (!queues[streamName]) {
+    queues[streamName] = new PaarseQueue(
+      (data) => {
+        const ec = {
+          'geoip-latitude': data['geoip-latitude'],
+          'geoip-longitude': data['geoip-longitude'],
+          ezproxyName: streamName,
+          platform_name: data.platform_name,
+          rtype: data.rtype,
+          mime: data.mime,
+        };
 
-  let response;
+        if (!Object.values(ec).reduce((a, b) => a && b, true)) return;
 
-  try {
-    response = await fetch(config.ezpaarse.url, {
-      method: 'POST',
-      headers: { // FIXME 2025-04-14 CANNOT SEEM TO USE THE HEADERS FROM THE CONFIG! HELP!!!
-        Accept: 'application/jsonstream',
-        'Double-Click-Removal': 'false',
-        'crossref-enrich': 'false',
-        'ezPAARSE-Predefined-Settings': 'bibliomap',
+        viewer.write(`${JSON.stringify(ec)}\n`);
       },
-      body: log,
-    });
-  } catch (err) {
-    console.error(err);
-    cooldown = true;
-    setTimeout(() => { cooldown = false; }, 1000);
-    return;
+      () => {
+        queues[streamName] = null;
+      },
+    );
   }
-
-  const text = await response.text();
-
-  if (!text) return;
-
-  const json = JSON.parse(text);
-
-  const ec = {
-    'geoip-latitude': json['geoip-latitude'],
-    'geoip-longitude': json['geoip-longitude'],
-    ezproxyName: streamName,
-    platform_name: json.platform_name,
-    rtype: json.rtype,
-    mime: json.mime,
-  };
-
-  if (!Object.values(ec).reduce((a, b) => a && b, true)) return;
-
-  viewer.write(`${JSON.stringify(ec)}\n`);
+  queues[streamName].push(log);
 });
 
 logIoListener.on('+exported_log', (streamName, node, type, log) => {

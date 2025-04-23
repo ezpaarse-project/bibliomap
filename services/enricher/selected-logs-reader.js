@@ -78,7 +78,6 @@ class SelectedLogsReader extends EventEmitter {
 
       if (this.loading) {
         if (this.logReaders.every((reader) => reader.firstLog)) {
-          console.log('FIRST LOG DATE', this.logReaders[0].firstLog.date);
           this.initTimer(this.logReaders
             .reduce((acc, reader) => Math.min(acc, reader.firstLog.date.getTime()), Infinity));
         } else return;

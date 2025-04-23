@@ -1,6 +1,6 @@
-import config from 'config';
 import { parse } from 'csv-parse';
 import readline from 'readline';
+import PaarseQueue from './paarse_queue.js';
 
 class SingleLogReader {
   constructor(file, stream) {
@@ -9,7 +9,6 @@ class SingleLogReader {
     this.type = file.split('.').pop();
 
     this.lineQueue = [];
-    this.paarseQueue = [];
 
     this.parsing = false;
     this.eof = false;
@@ -50,6 +49,25 @@ class SingleLogReader {
       });
   }
 
+  pushToQueue(line) {
+    if (!this.paarseQueue) {
+      this.paarseQueue = new PaarseQueue(
+        (data) => {
+          const log = {
+            date: new Date(data.datetime),
+            log: data,
+          };
+          this.lineQueue.push(log);
+          if (!this.firstLog) this.firstLog = log;
+        },
+        () => {
+          this.paarseQueue = null;
+        },
+      );
+    }
+    this.paarseQueue.push(line);
+  }
+
   initLogFileReader() {
     const rl = readline.createInterface({
       input: this.stream,
@@ -57,7 +75,7 @@ class SingleLogReader {
 
     rl
       .on('line', (line) => {
-        this.paarseQueue.push(line);
+        this.pushToQueue(line);
       })
       .on('end', () => {
         this.eof = true;
@@ -74,7 +92,7 @@ class SingleLogReader {
   }
 
   stopReaderOverload() {
-    if (Math.max(this.lineQueue.length, this.paarseQueue.length) > 5) {
+    if (this.lineQueue.length > 5) {
       this.stream.pause();
     } else this.stream.resume();
   }
@@ -86,57 +104,9 @@ class SingleLogReader {
   }
 
   initLogReaderInterval() {
-    return setInterval(async () => {
+    return setInterval(() => {
       this.stopReaderOverload();
-
-      if (this.parsing) return;
-
-      this.parsing = true;
-
-      const currentLine = this.paarseQueue[0];
-      console.log('sending line', currentLine);
-      let response;
-
-      try {
-        response = await fetch(config.ezpaarse.url, {
-          method: 'POST',
-          headers: { // FIXME 2025-04-14 CANNOT SEEM TO USE THE HEADERS FROM THE CONFIG! HELP!!!
-            Accept: 'application/jsonstream',
-            'Double-Click-Removal': 'false',
-            'crossref-enrich': 'false',
-            'ezPAARSE-Predefined-Settings': 'bibliomap',
-          },
-          body: currentLine,
-        });
-      } catch (err) {
-        console.error('[ezPAARSE] Cannot send line to ezPAARSE');
-        console.error(err);
-        return;
-      } finally {
-        this.paarseQueue.shift();
-        this.parsing = false;
-      }
-
-      const responseText = await response.text();
-
-      if (!response.ok) {
-        console.error('ERROR:', response.status, response.statusText);
-      } else if (responseText) {
-        const json = JSON.parse(responseText.trim());
-        const logDate = new Date(json.datetime);
-        const exportedLine = {
-          'geoip-latitude': json['geoip-latitude'],
-          'geoip-longitude': json['geoip-longitude'],
-          ezproxyName: json['bib-groups'].toUpperCase(),
-          platform_name: json.platform_name,
-          rtype: json.rtype,
-          mime: json.mime,
-        };
-        const log = { date: logDate, log: exportedLine, line: currentLine };
-        this.lineQueue.push(log);
-        if (!this.firstLog) this.firstLog = log;
-      }
-    }, 250);
+    }, 1000);
   }
 
   returnAllPassedLogs(date) {
