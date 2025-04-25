@@ -1,24 +1,16 @@
-FROM node:22.14.0
+FROM node:22.13.1-alpine3.21 AS base
 
-RUN npm config set strict-ssl false
+LABEL maintainer="ezTeam <ezteam@couperin.org>"
 
-# install npm dependencies
-WORKDIR /app
-COPY ./package.json /app/package.json
-RUN yarn install && yarn cache clean
+FROM base AS builder
+WORKDIR /usr/src/app
+COPY package*.json ./
+RUN npm ci --omit=dev
 
-# copy the code source
-# after dependencies installation
-COPY . /app
-
-# ezmasterification of ezpaarse2log.io
-# see https://github.com/Inist-CNRS/ezmaster
-# (no data directory)
-# http port is not used
-RUN echo '{ \
-  "httpPort": 3000, \
-  "configPath": "/app/config/default.json" \
-}' > /etc/ezmaster.json
+FROM base
+WORKDIR /usr/src/app
+COPY --from=builder  /usr/src/app/node_modules ./node_modules 
+COPY . .
 
 # run the application
-CMD ["npm", "start"]
+ENTRYPOINT [ "node", "./src/app.js" ]

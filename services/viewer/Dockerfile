@@ -1,27 +1,17 @@
-FROM node:22.14.0
+FROM node:22.13.1-alpine3.21 AS base
 
-RUN npm config set strict-ssl false
+LABEL maintainer="ezTeam <ezteam@couperin.org>"
 
-# install npm dependencies
-WORKDIR /app
-COPY ./package.json /app/package.json
-RUN npm install && npm cache clear --force
+FROM base AS builder
+WORKDIR /usr/src/app
+COPY package*.json ./
+RUN npm ci --omit=dev
 
-# copy the code source
-# after dependencies installation
-COPY . /app
+FROM base
+WORKDIR /usr/src/app
+COPY --from=builder  /usr/src/app/node_modules ./node_modules 
+COPY . .
 
-# ezmasterification
-# see https://github.com/Inist-CNRS/ezmaster
-# (no data directory)
-# http port is not used
-RUN echo '{ \
-  "httpPort": 50197, \
-  "configPath": "/app/config.json" \
-}' > /etc/ezmaster.json
 
 # run the application
-CMD ["npm", "start"]
-
-EXPOSE 50197
-EXPOSE 27779
+ENTRYPOINT [ "node", "./src/app.js" ]

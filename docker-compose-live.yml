@@ -3,9 +3,8 @@ version: "3.3"
 services:
 
   viewer:
-    build:
-      context: ./services/viewer
-    container_name: bibliomap-viewer-prod
+    image: node:22.14.0
+    container_name: bibliomap-viewer-dev
     environment:
       NODE_ENV: "development"
       BBV_INDEX: cnrs
@@ -14,16 +13,18 @@ services:
       BBV_LISTEN_ENRICHER_PORT: 27779
       BBV_LISTEN_HOST: "0.0.0.0"
       BBV_LISTEN_PORT: 50197 # web server
-    command: "npm start"
+    command: "npm run dev"
+    working_dir: /usr/src/app
+    volumes: 
+      - ./services/viewer:/usr/src/app
     ports:
       - 50197:50197
       - 27779:27779
     restart: unless-stopped
 
   enricher:
-    build:
-      context: ./services/enricher
-    container_name: bibliomap-enricher-prod
+    image: node:22.14.0
+    container_name: bibliomap-enricher-dev
     environment:
       NODE_APP_INSTANCE: ${NODE_APP_INSTANCE}
       BBE_EZPAARSE_URL: "http://ezpaarse:59599"
@@ -36,7 +37,10 @@ services:
       REPLAY_START_TIME: ${REPLAY_START_TIME}
       REPLAY_MULTIPLIER: ${REPLAY_MULTIPLIER}
       REPLAY_MODE: ""
-    command: "npm start"
+    command: "npm run dev"
+    working_dir: /usr/src/app
+    volumes: 
+      - ./services/enricher:/usr/src/app
     restart: unless-stopped
     depends_on:
       ezpaarse:
@@ -45,7 +49,7 @@ services:
   harvester:
     build: 
       context: ./services/harvester
-    container_name: bibliomap-harvester-prod
+    container_name: bibliomap-harvester-dev
     environment:
       BBH_ENRICHER_HOST: "enricher"
       BBH_ENRICHER_PORT: 27777
@@ -56,6 +60,9 @@ services:
       NODE_APP_INSTANCE: cnrs
       BBH_LOGS_PER_SECOND: 10
     command: "npm run dev"
+    working_dir: /usr/src/app
+    volumes:
+      - ./services/harvester:/usr/src/app
     restart: unless-stopped
   
   ezpaarse:

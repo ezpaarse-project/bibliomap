@@ -1,4 +1,5 @@
 node_modules/
 .eslintrc.json
 .gitignore
+data/
 README.md
