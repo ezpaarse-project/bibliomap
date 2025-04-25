@@ -14,4 +14,4 @@ COPY . .
 
 
 # run the application
-ENTRYPOINT [ "node", "./src/app.js" ]
+ENTRYPOINT [ "bin/harvest" ]
