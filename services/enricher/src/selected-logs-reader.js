@@ -6,7 +6,10 @@ import { startOfDay, endOfDay, addDays } from 'date-fns';
 import { TZDate } from '@date-fns/tz';
 import zlib from 'zlib';
 import path from 'path';
+import pino from 'pino';
 import SingleLogReader from './single-logs-reader.js';
+
+const logger = pino();
 
 async function handleGzFile(stream) {
   return stream.pipe(zlib.createGunzip());
@@ -61,11 +64,11 @@ class SelectedLogsReader extends EventEmitter {
 
   updateTimer() {
     if (this.loading) {
-      console.log('[debug] loading');
+      logger.debug('[debug] loading');
       return;
     }
     this.timer += 1000;
-    console.log('[debug] timer:', new Date(this.timer));
+    logger.debug('[debug] timer:', new Date(this.timer));
   }
 
   initInterval(timeout) {

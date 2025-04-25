@@ -1,6 +1,6 @@
 import { parse } from 'csv-parse';
 import readline from 'readline';
-import PaarseQueue from './paarse_queue.js';
+import PaarseQueue from './paarse-queue.js';
 
 class SingleLogReader {
   constructor(file, stream) {
@@ -14,7 +14,6 @@ class SingleLogReader {
     this.eof = false;
 
     this.initFileReader();
-    this.initReaderInterval();
   }
 
   initFileReader() {
@@ -24,6 +23,20 @@ class SingleLogReader {
     };
 
     fileReaders[this.type].call(this);
+  }
+
+  initLogFileReader() {
+    const rl = readline.createInterface({
+      input: this.stream,
+    });
+
+    rl
+      .on('line', (line) => {
+        this.pushToQueue(line);
+      })
+      .on('end', () => {
+        this.eof = true;
+      });
   }
 
   initCsvFileReader() {
@@ -43,6 +56,7 @@ class SingleLogReader {
         };
         this.lineQueue.push(exportedLine);
         if (!this.firstLog) this.firstLog = exportedLine;
+        this.stopReaderOverload();
       })
       .on('end', () => {
         this.eof = true;
@@ -59,6 +73,7 @@ class SingleLogReader {
           };
           this.lineQueue.push(log);
           if (!this.firstLog) this.firstLog = log;
+          this.stopReaderOverload();
         },
         () => {
           this.paarseQueue = null;
@@ -68,45 +83,10 @@ class SingleLogReader {
     this.paarseQueue.push(line);
   }
 
-  initLogFileReader() {
-    const rl = readline.createInterface({
-      input: this.stream,
-    });
-
-    rl
-      .on('line', (line) => {
-        this.pushToQueue(line);
-      })
-      .on('end', () => {
-        this.eof = true;
-      });
-  }
-
-  initReaderInterval() {
-    const readerIntervals = {
-      log: this.initLogReaderInterval,
-      csv: this.initCsvReaderInterval,
-    };
-
-    this.interval = readerIntervals[this.type].call(this);
-  }
-
   stopReaderOverload() {
     if (this.lineQueue.length > 5) {
       this.stream.pause();
     } else this.stream.resume();
-  }
-
-  initCsvReaderInterval() {
-    return setInterval(() => {
-      this.stopReaderOverload();
-    }, 1000);
-  }
-
-  initLogReaderInterval() {
-    return setInterval(() => {
-      this.stopReaderOverload();
-    }, 1000);
   }
 
   returnAllPassedLogs(date) {
@@ -114,6 +94,8 @@ class SingleLogReader {
       .filter((log) => log.date.getTime() <= date);
 
     this.lineQueue = this.lineQueue.filter((log) => log.date.getTime() > date);
+
+    this.stopReaderOverload();
 
     return passedLogs;
   }

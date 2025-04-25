@@ -1,13 +1,15 @@
 import { PassThrough, Readable } from 'stream';
 import JSONStream from 'JSONStream';
 import config from 'config';
+import pino from 'pino';
+
+const logger = pino();
 
 class PaarseQueue {
-  constructor(cb, errCb) {
+  constructor(onData, cb) {
+    this.onData = onData;
     this.cb = cb;
-    this.errCb = errCb;
     this.writeStream = new PassThrough();
-    this.length = 0;
 
     const broadcastedFields = config.broadcast.fields;
 
@@ -23,42 +25,39 @@ class PaarseQueue {
       duplex: 'half',
     }).then((res) => {
       if (!res.ok) {
-        console.error(`[ezPAARSE] Failed to connect to ezPAARSE: ${res.status} ${res.statusText}`);
+        logger.error(`[ezPAARSE] Failed to connect to ezPAARSE: ${res.status} ${res.statusText}`);
         return;
       }
       const nodeReadable = Readable.fromWeb(res.body);
       nodeReadable
         .pipe(JSONStream.parse())
         .on('data', (data) => {
-          this.length -= 1;
           const output = {};
           broadcastedFields.forEach((field) => {
             output[field] = data[field];
           });
           output.ezproxyName = data['bib-groups'].toUpperCase();
           output.datetime = data.datetime;
-          this.cb(output);
+          this.onData(output);
         })
         .on('end', () => {
-          console.log('[ezPAARSE] connection closed');
+          logger.info('[ezPAARSE] connection closed');
           this.writeStream.end();
-          this.errCb();
+          this.cb();
         })
         .on('close', () => {
-          console.log('[ezPAARSE] connection closed');
+          logger.info('[ezPAARSE] connection closed');
           this.writeStream.end();
-          this.errCb();
+          this.cb();
         })
         .on('error', (err) => {
-          this.length -= 1;
-          console.log('[ezPAARSE] error');
-          console.error(err);
+          logger.error('[ezPAARSE] error');
+          logger.error(err);
         });
     });
   }
 
   push(line) {
-    this.length += 1;
     this.writeStream.write(`${line}\n`);
   }
 }
