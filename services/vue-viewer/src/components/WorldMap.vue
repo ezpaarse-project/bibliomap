@@ -5,16 +5,28 @@
 <script lang="ts" setup>
   import L from 'leaflet';
   import { onMounted } from 'vue';
+  import config from '@/assets/config.json';
 
-  const props = defineProps({
-    'defaultX': Number,
-    'defaultY': Number,
-    'defaultZoom': Number,
-  })
+  const props = config.mapParams;
 
   let map: L.Map;
 
   onMounted(() => {
+
+    if (!props || props.include === false) return;
+
+    if((props.defaultZoom || 6) > (props.maxZoom || 9)){
+      console.error('Default zoom cannot be higher than max zoom')
+      props.defaultZoom = 6;
+      props.maxZoom = 9;
+    }
+
+    if((props.defaultZoom || 6) < (props.minZoom || 3)){
+      console.error('Default zoom cannot be lower than max zoom')
+      props.defaultZoom = 6;
+      props.minZoom = 3;
+    }
+  
     map = L.map('map', {
       minZoom: 3,
       maxZoom: 9,

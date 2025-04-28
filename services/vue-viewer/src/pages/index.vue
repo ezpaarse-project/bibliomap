@@ -1,8 +1,6 @@
 <template>
   <main>
-    <LeftDrawer
-      description="Consultations en direct des articles de plusieurs milliers de revues scientifiques électroniques disponibles en texte intégral ainsi que des bases de données."
-      title="Bibliomap" />
+    <LeftDrawer />
     <InfoMap />
   </main>
 </template>
