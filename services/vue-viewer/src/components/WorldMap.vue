@@ -60,7 +60,7 @@
       let color;
       try {
         const portalParams = params.portals as { [key: string]: { color: string } };
-        color = portalParams[log.ezproxyName];
+        color = portalParams[log.ezproxyName].color;
       }
       catch {
         return;
