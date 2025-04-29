@@ -1,15 +1,11 @@
 /* eslint-disable import/extensions */
 import config from 'config';
 import LogIoListener from 'log.io-server-parser';
-import net from 'net';
 import pino from 'pino';
 import http from 'http';
 import { Server } from 'socket.io';
 import SelectedLogsReader from './selected-logs-reader.js';
 import PaarseQueue from './paarse-queue.js';
-
-const viewerConfig = config.broadcast.viewer;
-const viewerUrl = `${viewerConfig.host}: ${viewerConfig.port}`;
 
 const logger = pino();
 
@@ -29,8 +25,8 @@ const io = new Server(server, {
   },
 });
 
-server.listen(27780, () => {
-  logger.info(`Websocket server is running on port 27780`);
+server.listen(process.env.WEBSOCKET_PORT, () => {
+  logger.info(`Websocket server is running on port ${process.env.WEBSOCKET_PORT}`);
 });
 
 const viewers = new Set();

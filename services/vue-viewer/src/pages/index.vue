@@ -1,7 +1,7 @@
 <template>
   <main>
     <LeftDrawer />
-    <WorldMap />
+    <WorldMap :io="socket" />
   </main>
 </template>
 
@@ -10,16 +10,10 @@
   import LeftDrawer from '@/components/LeftDrawer.vue';
   import WorldMap from '@/components/WorldMap.vue';
   import { io } from 'socket.io-client';
-  // import config from 'config';
 
-  // const viewerUrl = `${process.env.BBV_LISTEN_ENRICHER_HOST}:${process.env.BBV_LISTEN_ENRICHER_PORT}`;
-
-  // console.log('viewer url', viewerUrl);
-
-  // To update with all broadcast arguments
-  interface Log {
+  export interface Log {
     datetime: string,
-    ezProxyName: string,
+    ezproxyName: string,
     'geoip-latitude': number,
     'geoip-longitude': number,
     mime: string,
@@ -29,14 +23,9 @@
 
   const socket = io('localhost:27780');
 
-  const handleLog = (log: Log) => {
-    console.log(log);
-  }
 
   onMounted(() => {
-    console.log('SOCKET:', socket);
     socket.on('connect', () => console.log('Enricher connected'));
-    socket.on('log', handleLog)
   })
 
 </script>
