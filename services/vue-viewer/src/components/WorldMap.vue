@@ -26,7 +26,7 @@
       props.defaultZoom = 6;
       props.minZoom = 3;
     }
-  
+
     map = L.map('map', {
       minZoom: 3,
       maxZoom: 9,

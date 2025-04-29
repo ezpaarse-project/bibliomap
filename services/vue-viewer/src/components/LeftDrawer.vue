@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer v-if="include">
+  <v-navigation-drawer v-if="include" width="300">
     <v-list-item-title>{{ props.title }}</v-list-item-title>
     <v-list-item-subtitle>{{ props.description }}</v-list-item-subtitle>
   </v-navigation-drawer>

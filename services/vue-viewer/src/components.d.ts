@@ -12,6 +12,7 @@ declare module 'vue' {
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']
     InfoMap: typeof import('./components/WorldMap.vue')['default']
     LeftDrawer: typeof import('./components/LeftDrawer.vue')['default']
+    LogBubble: typeof import('./components/LogBubble.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     WorldMap: typeof import('./components/WorldMap.vue')['default']

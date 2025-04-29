@@ -3,6 +3,8 @@ import config from 'config';
 import LogIoListener from 'log.io-server-parser';
 import net from 'net';
 import pino from 'pino';
+import http from 'http';
+import { Server } from 'socket.io';
 import SelectedLogsReader from './selected-logs-reader.js';
 import PaarseQueue from './paarse-queue.js';
 
@@ -14,25 +16,33 @@ const logger = pino();
 /**
  * Connect to bibliomap-viewer
  */
-logger.info(`Connecting to viewer at ${viewerUrl}`);
-const viewer = net.createConnection(viewerConfig);
 
-viewer.on('connect', () => {
+const server = http.createServer((req, res) => {
+  res.writeHead(200, { 'Content-Type': 'text/plain' });
+  res.end('Websocket server launched');
+});
+
+const io = new Server(server, {
+  cors: {
+    origin: '*', // TO CHANGE
+    methods: ['GET', 'POST'],
+  },
+});
+
+server.listen(27780, () => {
+  logger.info(`Websocket server is running on port 27780`);
+});
+
+const viewers = new Set();
+
+io.on('connection', (viewerSocket) => {
   logger.info('Viewer connected');
-  viewer.connected = true;
-});
+  viewers.add(viewerSocket);
 
-viewer.on('error', (err) => {
-  logger.error(`Viewer connection got error: ${err}`);
-});
-
-viewer.on('close', () => {
-  logger.info(`Viewer disconnected, reconnecting in ${config.autoConnectDelay}ms`);
-  viewer.connected = false;
-
-  setTimeout(() => {
-    viewer.connect(viewerConfig);
-  }, config.autoConnectDelay);
+  viewerSocket.on('disconnect', () => {
+    logger.info('Viewer disconnected');
+    viewers.delete(viewerSocket);
+  });
 });
 
 /**
@@ -49,10 +59,10 @@ logIoListener.listen(() => {
   logger.info(`Waiting for harvester at ${JSON.stringify(config.listen.harvester)}`);
 });
 
-logIoListener.server.on('connection', (socket) => {
+logIoListener.server.on('connection', (logListenerSocket) => {
   logger.info('Harvester connected');
 
-  socket.on('close', () => {
+  logListenerSocket.on('close', () => {
     logger.info('Harvester disconnected');
   });
 });
@@ -74,7 +84,7 @@ logIoListener.on('+log', async (streamName, node, type, log) => {
 
         if (!Object.values(ec).reduce((a, b) => a && b, true)) return;
 
-        viewer.write(`${JSON.stringify(ec)}\n`);
+        if (viewers && viewers.size) [...viewers].map((s) => s.emit('log', ec));
       },
       () => {
         queues[streamName] = null;
@@ -85,5 +95,5 @@ logIoListener.on('+log', async (streamName, node, type, log) => {
 });
 
 logIoListener.on('+exported_log', (streamName, node, type, log) => {
-  viewer.write(`${JSON.stringify(log)}\n`);
+  if (viewers && viewers.size) [...viewers].map((s) => s.emit('log', log));
 });
