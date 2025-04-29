@@ -17,10 +17,12 @@
 
   let map: L.Map;
 
+  const size = params.bubbleSize || 60;
+
   const bubble = L.divIcon({
     className: 'leaflet-pulsing-icon',
-    iconSize: [60, 60],
-    iconAnchor: [30, 30],
+    iconSize: [size, size],
+    iconAnchor: [size / 2, size / 2],
     html: `
       <div></div>
     `,
