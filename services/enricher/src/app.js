@@ -65,6 +65,13 @@ logIoListener.server.on('connection', (logListenerSocket) => {
 
 const queues = {};
 
+function randomizePos(log) {
+  const randomizedLog = log;
+  randomizedLog['geoip-latitude'] = parseFloat(log['geoip-latitude']) + 0.4 * (Math.random() - 0.5);
+  randomizedLog['geoip-longitude'] = parseFloat(log['geoip-longitude']) + 0.4 * (Math.random() - 0.5);
+  return randomizedLog;
+}
+
 logIoListener.on('+log', async (streamName, node, type, log) => {
   if (!queues[streamName]) {
     queues[streamName] = new PaarseQueue(
@@ -80,7 +87,7 @@ logIoListener.on('+log', async (streamName, node, type, log) => {
 
         if (!Object.values(ec).reduce((a, b) => a && b, true)) return;
 
-        if (viewers && viewers.size) [...viewers].map((s) => s.emit('log', ec));
+        if (viewers && viewers.size) [...viewers].map((s) => s.emit('log', randomizePos(ec)));
       },
       () => {
         queues[streamName] = null;
@@ -91,5 +98,5 @@ logIoListener.on('+log', async (streamName, node, type, log) => {
 });
 
 logIoListener.on('+exported_log', (streamName, node, type, log) => {
-  if (viewers && viewers.size) [...viewers].map((s) => s.emit('log', log));
+  if (viewers && viewers.size) [...viewers].map((s) => s.emit('log', randomizePos(log)));
 });
