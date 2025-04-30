@@ -63,14 +63,28 @@
         className: 'leaflet-marker',
         iconSize: [size, size],
         iconAnchor: [size / 2, size / 2],
-        html: `<div style='background-color: ${color}; width: ${size}px; height: ${size}px' class='bubble'></div><div style='box-shadow: 1px 1px 8px 0 ${color}; width: ${size*1.5}px; height: ${size*1.5}px' class='pulse'></div>`,
+        html: `
+          <div class='container'>
+            <div class='bubble-popup' ${params.includePopup ? '' : 'style="display: none;"'}>
+              <p ${params.popupText.platform_name ? '' : 'style="display: none;"'}><strong>${log.platform_name}</strong></p>
+              <p ${params.popupText.publication_title && log.publication_title ? '' : 'style="display: none;"'}>${log.publication_title}</p>
+              <div class='types-container'>
+                <p style='${params.popupText.rtype && log.rtype ? '' : 'display: none;'} background-color: ${params.attributesColors.rtype || '#7F8C8D'}'>${log.rtype}</p>
+                <p style='${params.popupText.mime && log.mime ? '' : 'display: none;'} background-color: ${log.mime !== null && log.mime !== undefined && Object.keys(params.attributesColors.mimes).includes(log.mime) ? params.attributesColors.mimes[log.mime] : '#D35400' }'>${log.mime}</p>
+              </div>
+            </div>
+            <div class='bubble'>
+              <div style='background-color: ${color}; width: ${size}px; height: ${size}px' class='bubble-circle'></div>
+              <div style='box-shadow: 1px 1px 8px 0 ${color}; width: ${size*2}px; height: ${size*2}px' class='bubble-pulse'></div>
+            </div>
+          </div>
+        `,
       })
 
       const marker = L.marker([log['geoip-latitude'], log['geoip-longitude']], { icon: bubble }).addTo(map);
       const elt = marker.getElement();
       if (!elt) return;
 
-      console.log(elt);
       setTimeout(() => {
         elt.style.opacity = '0';
         setTimeout(() => {
@@ -90,24 +104,68 @@
     right: 0;
   }
 
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
   .leaflet-marker {
     transition: opacity 1.5s ease-in;
   }
 
   .bubble {
+    position: absoute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .bubble-circle {
     border-radius: 100%;
     box-shadow: 1px 1px 8px 0 rgba(0, 0, 0, 0.75);
     position: absolute;
-    top: 100%;
-    left: 100%;
   }
 
-  .pulse {
+  .bubble-pulse {
     animation: pulsate 1s ease-in-out infinite;
     position: absolute;
     border-radius: 100%;
-    top: 75%;
-    left: 75%;
+  }
+
+  .bubble-popup {
+    background-color: rgba(255, 255, 255, 0.90);
+    position: absolute;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    z-index: 2;
+    bottom: 100%;
+    padding: .5em 2.5em;
+    box-shadow: 1px 1px 8px 0 rgba(0, 0, 0, 0.75);
+    min-width: 100px;
+    max-width: 400px;
+    white-space: normal;
+    p {
+      color: black;
+      margin: 0;
+    }
+
+    .types-container {
+      display: flex;
+      gap: .5em;
+
+      p{
+        color: white;
+        padding: .1em .5em;
+        border-radius: 4px;
+      }
+    }
+
   }
 
   @keyframes pulsate {

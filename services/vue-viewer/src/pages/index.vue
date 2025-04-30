@@ -13,12 +13,15 @@
 
   export interface Log {
     datetime: string,
+    url?: string,
+    domain?: string,
+    publication_title?: string,
     ezproxyName: string,
     'geoip-latitude': number,
     'geoip-longitude': number,
-    mime: string,
-    Platform_name: string | null | undefined,
-    rtype: string | null | undefined,
+    mime?: string,
+    platform_name: string | null | undefined,
+    rtype?: string,
   }
 
   const socket = io('localhost:27780');
