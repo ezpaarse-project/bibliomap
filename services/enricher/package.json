@@ -21,6 +21,7 @@
     "log.io-server-parser": "^0.1.2",
     "pino": "^9.6.0",
     "request": "^2.79.0",
+    "socket.io": "^4.8.1",
     "undici": "^7.8.0"
   },
   "devDependencies": {
