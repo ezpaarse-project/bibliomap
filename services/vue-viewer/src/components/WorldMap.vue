@@ -19,15 +19,6 @@
 
   const size = params.bubbleSize || 60;
 
-  const bubble = L.divIcon({
-    className: 'leaflet-pulsing-icon',
-    iconSize: [size, size],
-    iconAnchor: [size / 2, size / 2],
-    html: `
-      <div></div>
-    `,
-  })
-
   onMounted(() => {
 
     if (!params || params.include === false) return;
@@ -68,11 +59,18 @@
         return;
       }
 
+      const bubble = L.divIcon({
+        className: 'leaflet-marker',
+        iconSize: [size, size],
+        iconAnchor: [size / 2, size / 2],
+        html: `<div style='background-color: ${color}; width: ${size}px; height: ${size}px' class='bubble'></div><div style='box-shadow: 1px 1px 8px 0 ${color}; width: ${size*1.5}px; height: ${size*1.5}px' class='pulse'></div>`,
+      })
+
       const marker = L.marker([log['geoip-latitude'], log['geoip-longitude']], { icon: bubble }).addTo(map);
       const elt = marker.getElement();
       if (!elt) return;
 
-      elt.style.backgroundColor = color;
+      console.log(elt);
       setTimeout(() => {
         elt.style.opacity = '0';
         setTimeout(() => {
@@ -92,20 +90,24 @@
     right: 0;
   }
 
-  .leaflet-pulsing-icon {
-    border-radius: 100%;
-    box-shadow: 1px 1px 8px 0 rgba(0, 0, 0, 0.75);
-    transition: opacity 1.5s ease-in-out;
+  .leaflet-marker {
+    transition: opacity 1.5s ease-in;
   }
 
-  .leaflet-pulsing-icon:after {
-    content: "";
+  .bubble {
     border-radius: 100%;
-    height: 200%;
-    width: 200%;
+    box-shadow: 1px 1px 8px 0 rgba(0, 0, 0, 0.75);
     position: absolute;
-    margin: -50% 0 0 -50%;
-    opacity: 0;
+    top: 100%;
+    left: 100%;
+  }
+
+  .pulse {
+    animation: pulsate 1s ease-in-out infinite;
+    position: absolute;
+    border-radius: 100%;
+    top: 75%;
+    left: 75%;
   }
 
   @keyframes pulsate {
@@ -114,7 +116,12 @@
       -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
       filter: alpha(opacity=0);
     }
-    50% {
+    25% {
+      opacity: 1;
+      -ms-filter: none;
+      filter: none;
+    }
+    75% {
       opacity: 1;
       -ms-filter: none;
       filter: none;
@@ -122,7 +129,7 @@
     100% {
       transform: scale(1.2, 1.2);
       -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
-      filter: alpha(opacity=0);
+      opacity: 0;
     }
   }
 
