@@ -48,6 +48,14 @@ class SelectedLogsReader extends EventEmitter {
 
     this.initInterval(1000 / this.replayMultiplier);
 
+    this.on('isReady', (socketId) => {
+      if (!this.loading) this.emit('ready', socketId);
+    });
+
+    this.on('timeRequest', (socketId) => {
+      this.emit('timeResponse', socketId, this.timer, this.startTimerAt, this.dayEnd);
+    });
+
     return cb();
   }
 
@@ -60,6 +68,8 @@ class SelectedLogsReader extends EventEmitter {
     this.startTimerAt = this.dayStart + (this.replayStartTime ? new Date(`1970-01-01T${this.replayStartTime}`).getTime() : 0);
 
     this.timer = this.startTimerAt;
+
+    this.emit('ready', null);
   }
 
   updateTimer() {

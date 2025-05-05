@@ -162,6 +162,7 @@
 
     .types-container {
       display: flex;
+      justify-content: center;
       gap: .5em;
 
       p{

@@ -1,6 +1,8 @@
 <template>
   <div class="time-container">
     <v-chip>{{ text }}</v-chip>
+    <v-progress-linear v-if="!config.realTimeMode && percentage >= 0" :model-value="percentage" />
+    <v-progress-linear v-if="!config.realTimeMode && percentage < 0" indeterminate />
   </div>
 </template>
 
@@ -15,6 +17,10 @@
   const startDate = new Date();
 
   const text = ref();
+  const percentage = ref<number>(-1);
+
+  let startTime;
+  let endTime;
 
   if (config.realTimeMode) {
     text.value = `0${params.dayLetter} 0${params.hourLetter} 0${params.minuteLetter} 0${params.secondLetter}`;
@@ -23,8 +29,19 @@
     }, 1000);
   } else {
     text.value = `Chargement...`;
-    useSocketStore().getSocket()?.on('timeUpdate', time => {
-      text.value = getDateText(time);
+    const socket = useSocketStore().getSocket()
+    socket?.emit('isReady', socket.id);
+    socket?.on('ready', () => {
+      socket?.emit('getTime');
+      socket?.on('timeResponse', (timer, start, end) => {
+        text.value = getDateText(new Date(timer));
+        startTime = start;
+        endTime = end;
+        percentage.value = ((timer - startTime) / (endTime - startTime)) * 100;
+      })
+      socket?.on('timeUpdate', time => {
+        text.value = getDateText(time);
+      })
     })
   }
 
@@ -46,9 +63,10 @@
 <style lang="scss">
   .time-container{
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     margin: .5rem;
+    gap: .5rem;
   }
 </style>

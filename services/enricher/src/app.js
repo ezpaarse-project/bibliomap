@@ -31,16 +31,6 @@ server.listen(process.env.WEBSOCKET_PORT, () => {
 
 const viewers = new Set();
 
-io.on('connection', (viewerSocket) => {
-  logger.info('Viewer connected');
-  viewers.add(viewerSocket);
-
-  viewerSocket.on('disconnect', () => {
-    logger.info('Viewer disconnected');
-    viewers.delete(viewerSocket);
-  });
-});
-
 /**
  * Listen events coming from harvester
  * then forward it to ezpaarse jobs
@@ -60,6 +50,24 @@ logIoListener.server.on('connection', (logListenerSocket) => {
 
   logListenerSocket.on('close', () => {
     logger.info('Harvester disconnected');
+  });
+});
+
+io.on('connection', (viewerSocket) => {
+  logger.info('Viewer connected');
+  viewers.add(viewerSocket);
+
+  viewerSocket.on('disconnect', () => {
+    logger.info('Viewer disconnected');
+    viewers.delete(viewerSocket);
+  });
+
+  viewerSocket.on('isReady', (socketId) => {
+    logIoListener.emit('isReady', socketId);
+
+    viewerSocket.on('getTime', () => {
+      logIoListener.emit('timeRequest', socketId);
+    });
   });
 });
 
@@ -101,4 +109,18 @@ logIoListener.on('+exported_log', (streamName, node, type, log) => {
   if (viewers && viewers.size) [...viewers].map((s) => s.emit('log', randomizePos(log)));
 });
 
+logIoListener.on('ready', (socketId) => {
+  if (!socketId) {
+    io.emit('ready');
+    return;
+  }
+  const socket = [...viewers].filter((s) => s.id === socketId);
+  if (socket) io.to(socket).emit('ready');
+});
+
 logIoListener.on('timeUpdate', (time) => io.emit('timeUpdate', time));
+
+logIoListener.on('timeResponse', (socketId, timer, start, end) => {
+  const socket = [...viewers].filter((s) => s.id === socketId);
+  if (socket) io.to(socket).emit('timeResponse', timer, start, end);
+});
