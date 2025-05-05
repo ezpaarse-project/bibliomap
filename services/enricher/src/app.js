@@ -100,3 +100,5 @@ logIoListener.on('+log', async (streamName, node, type, log) => {
 logIoListener.on('+exported_log', (streamName, node, type, log) => {
   if (viewers && viewers.size) [...viewers].map((s) => s.emit('log', randomizePos(log)));
 });
+
+logIoListener.on('timeUpdate', (time) => io.emit('timeUpdate', time));

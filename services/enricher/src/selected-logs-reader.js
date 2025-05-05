@@ -69,6 +69,7 @@ class SelectedLogsReader extends EventEmitter {
     }
     this.timer += 1000;
     logger.debug('[debug] timer:', new Date(this.timer));
+    this.emit('timeUpdate', new Date(this.timer));
   }
 
   initInterval(timeout) {

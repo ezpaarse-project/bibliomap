@@ -4,14 +4,13 @@
 
 <script lang="ts" setup>
   import L from 'leaflet';
-  import { defineProps, onMounted } from 'vue';
+  import { onMounted } from 'vue';
   import config from '@/assets/config.json';
-  import type { Socket } from 'socket.io-client';
   import type { Log } from '@/pages/index.vue';
+  import { useSocketStore } from '@/stores/socket'
 
-  const props = defineProps<{
-    io: Socket
-  }>();
+  const socketStore = useSocketStore();
+  const io = socketStore.getSocket();
 
   const mapParams = config.mapParams;
   const portals = config.portals;
@@ -51,7 +50,7 @@
       position: 'topright',
     }).addTo(map);
 
-    props.io.on('log', (log: Log) => {
+    io?.on('log', (log: Log) => {
       let color;
       try {
         const portalParams = portals as { [key: string]: { color: string } };
@@ -72,7 +71,7 @@
               <p ${mapParams.popupText.publication_title && log.publication_title ? '' : 'style="display: none;"'}>${log.publication_title}</p>
               <div class='types-container'>
                 <p style='${mapParams.popupText.rtype && log.rtype ? '' : 'display: none;'} background-color: ${mapParams.attributesColors.rtype || '#7F8C8D'}'>${log.rtype}</p>
-                <p style='${mapParams.popupText.mime && log.mime ? '' : 'display: none;'} background-color: ${log.mime !== null && log.mime !== undefined && Object.keys(mimes).includes(log.mime) ? mimes[log.mime].color : '#D35400' }'>${log.mime}</p>
+                <p style='${mapParams.popupText.mime && log.mime ? '' : 'display: none;'} background-color: ${log.mime && mimes?[log.mime].color : '#D35400'}'>${log.mime}</p>
               </div>
             </div>
             <div class='bubble'>

@@ -5,14 +5,10 @@
 </template>
 
 <script setup lang="ts">
-  import { defineProps } from 'vue';
   import config from '@/assets/config.json';
   import { format } from 'date-fns';
-
-  const props = defineProps<{
-    realTimeMode: boolean,
-    time: Date
-  }>();
+  import { useSocketStore } from '@/stores/socket';
+  import { TZDate } from '@date-fns/tz';
 
   const params = config.timer;
 
@@ -20,14 +16,16 @@
 
   const text = ref();
 
-  text.value = `0${params.dayLetter} 0${params.hourLetter} 0${params.minuteLetter} 0${params.secondLetter}`;
-
-  if (props.realTimeMode) {
+  if (config.realTimeMode) {
+    text.value = `0${params.dayLetter} 0${params.hourLetter} 0${params.minuteLetter} 0${params.secondLetter}`;
     setInterval(() => {
       text.value = getDurationText(startDate, new Date());
     }, 1000);
   } else {
-    text.value = getDateText(props.time);
+    text.value = `Chargement...`;
+    useSocketStore().getSocket()?.on('timeUpdate', time => {
+      text.value = getDateText(time);
+    })
   }
 
   function getDurationText (start: Date, date: Date) {
@@ -41,7 +39,7 @@
   }
 
   function getDateText (date: Date) {
-    return format(date, 'dd/MM/yyyy HH:mm:ss');
+    return format(TZDate.tz('Europe/Paris', date), 'dd/MM/yyyy HH:mm:ss');
   }
 </script>
 

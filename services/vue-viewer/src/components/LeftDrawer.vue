@@ -15,7 +15,7 @@
       <v-divider />
     </div>
     <div v-if="props.timerSection.include">
-      <Timer :real-time-mode="true" :time="new Date()" />
+      <Timer />
       <v-divider />
     </div>
     <v-list-item>COUNTER</v-list-item>

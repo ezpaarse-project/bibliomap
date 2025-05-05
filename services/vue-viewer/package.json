@@ -12,6 +12,7 @@
     "lint": "eslint . --fix"
   },
   "dependencies": {
+    "@date-fns/tz": "^1.2.0",
     "@mdi/font": "7.4.47",
     "config": "^3.3.12",
     "date-fns": "^4.1.0",
@@ -26,12 +27,13 @@
     "@tsconfig/node22": "^22.0.0",
     "@types/leaflet": "^1.9.17",
     "@types/node": "^22.9.0",
+    "@types/socket.io-client": "^1.4.36",
     "@vitejs/plugin-vue": "^5.2.3",
     "@vue/tsconfig": "^0.7.0",
     "eslint": "^9.23.0",
     "eslint-config-vuetify": "^3.0.3",
     "npm-run-all2": "^7.0.2",
-    "pinia": "^3.0.1",
+    "pinia": "^3.0.2",
     "sass-embedded": "^1.86.3",
     "typescript": "~5.8.2",
     "unplugin-auto-import": "^19.1.1",

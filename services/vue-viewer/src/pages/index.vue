@@ -1,7 +1,7 @@
 <template>
   <main>
     <LeftDrawer />
-    <WorldMap :io="socket" />
+    <WorldMap />
   </main>
 </template>
 
@@ -9,6 +9,7 @@
   import { onMounted } from 'vue';
   import LeftDrawer from '@/components/LeftDrawer.vue';
   import WorldMap from '@/components/WorldMap.vue';
+  import { useSocketStore } from '@/stores/socket';
   import { io } from 'socket.io-client';
 
   export interface Log {
@@ -26,6 +27,8 @@
 
   const socket = io('localhost:27780');
 
+  const socketStore = useSocketStore();
+  socketStore.setSocket(socket);
 
   onMounted(() => {
     socket.on('connect', () => console.log('Enricher connected'));
