@@ -31,6 +31,10 @@
     socket.on('connect', () => console.log('Enricher connected'));
   })
 
+  onUnmounted(() => {
+    socket.off();
+  })
+
 </script>
 
 <style>

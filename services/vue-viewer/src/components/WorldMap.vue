@@ -13,33 +13,35 @@
     io: Socket
   }>();
 
-  const params = config.mapParams;
+  const mapParams = config.mapParams;
+  const portals = config.portals;
+  const mimes = config.mimes;
 
   let map: L.Map;
 
-  const size = params.bubbleSize || 60;
+  const size = mapParams.bubbleSize || 60;
 
   onMounted(() => {
 
-    if (!params || params.include === false) return;
+    if (!mapParams || mapParams.include === false) return;
 
-    if((params.defaultZoom || 6) > (params.maxZoom || 9)){
+    if((mapParams.defaultZoom || 6) > (mapParams.maxZoom || 9)){
       console.error('Default zoom cannot be higher than max zoom')
-      params.defaultZoom = 6;
-      params.maxZoom = 9;
+      mapParams.defaultZoom = 6;
+      mapParams.maxZoom = 9;
     }
 
-    if((params.defaultZoom || 6) < (params.minZoom || 3)){
+    if((mapParams.defaultZoom || 6) < (mapParams.minZoom || 3)){
       console.error('Default zoom cannot be lower than max zoom')
-      params.defaultZoom = 6;
-      params.minZoom = 3;
+      mapParams.defaultZoom = 6;
+      mapParams.minZoom = 3;
     }
 
     map = L.map('map', {
-      minZoom: params.minZoom || 3,
-      maxZoom: params.maxZoom || 9,
+      minZoom: mapParams.minZoom || 3,
+      maxZoom: mapParams.maxZoom || 9,
       zoomControl: false,
-    }).setView([params.defaultX || 46.603354, params.defaultY || 1.888334], params.defaultZoom || 6);
+    }).setView([mapParams.defaultX || 46.603354, mapParams.defaultY || 1.888334], mapParams.defaultZoom || 6);
 
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
@@ -52,7 +54,7 @@
     props.io.on('log', (log: Log) => {
       let color;
       try {
-        const portalParams = params.portals as { [key: string]: { color: string } };
+        const portalParams = portals as { [key: string]: { color: string } };
         color = portalParams[log.ezproxyName].color;
       }
       catch {
@@ -65,12 +67,12 @@
         iconAnchor: [size / 2, size / 2],
         html: `
           <div class='container'>
-            <div class='bubble-popup' ${params.includePopup ? '' : 'style="display: none;"'}>
-              <p ${params.popupText.platform_name ? '' : 'style="display: none;"'}><strong>${log.platform_name}</strong></p>
-              <p ${params.popupText.publication_title && log.publication_title ? '' : 'style="display: none;"'}>${log.publication_title}</p>
+            <div class='bubble-popup' ${mapParams.includePopup ? '' : 'style="display: none;"'}>
+              <p ${mapParams.popupText.platform_name ? '' : 'style="display: none;"'}><strong>${log.platform_name}</strong></p>
+              <p ${mapParams.popupText.publication_title && log.publication_title ? '' : 'style="display: none;"'}>${log.publication_title}</p>
               <div class='types-container'>
-                <p style='${params.popupText.rtype && log.rtype ? '' : 'display: none;'} background-color: ${params.attributesColors.rtype || '#7F8C8D'}'>${log.rtype}</p>
-                <p style='${params.popupText.mime && log.mime ? '' : 'display: none;'} background-color: ${log.mime !== null && log.mime !== undefined && Object.keys(params.attributesColors.mimes).includes(log.mime) ? params.attributesColors.mimes[log.mime] : '#D35400' }'>${log.mime}</p>
+                <p style='${mapParams.popupText.rtype && log.rtype ? '' : 'display: none;'} background-color: ${mapParams.attributesColors.rtype || '#7F8C8D'}'>${log.rtype}</p>
+                <p style='${mapParams.popupText.mime && log.mime ? '' : 'display: none;'} background-color: ${log.mime !== null && log.mime !== undefined && Object.keys(mimes).includes(log.mime) ? mimes[log.mime].color : '#D35400' }'>${log.mime}</p>
               </div>
             </div>
             <div class='bubble'>
@@ -90,12 +92,15 @@
         setTimeout(() => {
           map.removeLayer(marker);
         }, 2000);
-      }, (params.bubbleDuration || 5) * 1000)
+      }, (mapParams.bubbleDuration || 5) * 1000)
     })
   })
 </script>
 
-<style>
+<style lang="scss">
+
+  $box-shadow: 1px 1px 8px 0 rgba(0, 0, 0, 0.75);
+
   #map{
     width: 100%;
     height: 100%;
@@ -124,7 +129,7 @@
 
   .bubble-circle {
     border-radius: 100%;
-    box-shadow: 1px 1px 8px 0 rgba(0, 0, 0, 0.75);
+    box-shadow: $box-shadow;
     position: absolute;
   }
 
@@ -135,7 +140,7 @@
   }
 
   .bubble-popup {
-    background-color: rgba(255, 255, 255, 0.90);
+    background-color: rgba(255, 255, 255, 0.75);
     position: absolute;
     text-align: center;
     display: flex;
@@ -146,10 +151,11 @@
     z-index: 2;
     bottom: 100%;
     padding: .5em 2.5em;
-    box-shadow: 1px 1px 8px 0 rgba(0, 0, 0, 0.75);
+    box-shadow: $box-shadow;
     min-width: 100px;
     max-width: 400px;
     white-space: normal;
+
     p {
       color: black;
       margin: 0;
@@ -169,9 +175,12 @@
   }
 
   @keyframes pulsate {
+
+    $ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+
     0% {
       transform: scale(0.1, 0.1);
-      -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+      -ms-filter: $ms-filter;
       filter: alpha(opacity=0);
     }
     25% {
@@ -186,7 +195,7 @@
     }
     100% {
       transform: scale(1.2, 1.2);
-      -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+      -ms-filter: $ms-filter;
       opacity: 0;
     }
   }
