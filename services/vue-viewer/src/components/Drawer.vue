@@ -2,7 +2,7 @@
   <v-navigation-drawer
     v-if="include"
     v-model="drawer"
-    :location="props.position as 'left' | 'end' | 'start' | 'top' | 'bottom' | 'right' | undefined"
+    :location="drawerLocation"
     width="300"
   >
     <v-app-bar-nav-icon
@@ -44,6 +44,8 @@
 
   const drawer = ref(true)
   const group = ref(null)
+
+  const drawerLocation = props.position || 'left' as 'left' | 'right' | 'top' | 'bottom' | 'end' | 'start' | undefined
 
   watch(group, () => {
     drawer.value = false
