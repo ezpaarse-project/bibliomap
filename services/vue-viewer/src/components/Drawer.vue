@@ -3,7 +3,7 @@
     v-if="include"
     v-model="drawer"
     :location="drawerLocation"
-    width="300"
+    width="400"
   >
     <v-app-bar-nav-icon
       variant="text"
@@ -18,8 +18,10 @@
       <Timer />
       <v-divider />
     </div>
-    <v-list-item>COUNTER</v-list-item>
-    <v-divider />
+    <div v-if="props.counterSection.include">
+      <Counter />
+      <v-divider />
+    </div>
     <v-list-item>PORTALS</v-list-item>
   </v-navigation-drawer>
   <v-btn

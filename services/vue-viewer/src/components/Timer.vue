@@ -3,6 +3,7 @@
     <v-chip>{{ text }}</v-chip>
     <v-progress-linear v-if="!config.realTimeMode && percentage >= 0" :model-value="percentage" />
     <v-progress-linear v-if="!config.realTimeMode && percentage < 0" indeterminate />
+    <span class="start-end-dates"><v-chip>{{ startTimeText }}</v-chip><span>-</span><v-chip>{{ endTimeText }}</v-chip></span>
   </div>
 </template>
 
@@ -18,6 +19,8 @@
 
   const text = ref();
   const percentage = ref<number>(-1);
+  const startTimeText = ref('');
+  const endTimeText = ref('');
 
   let startTime;
   let endTime;
@@ -38,6 +41,8 @@
         startTime = start;
         endTime = end;
         percentage.value = ((timer - startTime) / (endTime - startTime)) * 100;
+        startTimeText.value = getDateText(new Date(startTime));
+        endTimeText.value = getDateText(new Date(endTime));
       })
       socket?.on('timeUpdate', time => {
         text.value = getDateText(time);
@@ -56,7 +61,7 @@
   }
 
   function getDateText (date: Date) {
-    return format(TZDate.tz('Europe/Paris', date), 'dd/MM/yyyy HH:mm:ss');
+    return format(TZDate.tz('Europe/Paris', date), params.dateFormat);
   }
 </script>
 
@@ -67,6 +72,14 @@
     align-items: center;
     justify-content: center;
     margin: .5rem;
+    gap: .5rem;
+  }
+
+  .start-end-dates{
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-wrap: wrap;
     gap: .5rem;
   }
 </style>
