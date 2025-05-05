@@ -9,8 +9,9 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AppFooter: typeof import('./components/AppFooter.vue')['default']
+    Drawer: typeof import('./components/Drawer.vue')['default']
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']
-    InfoMap: typeof import('./components/WorldMap.vue')['default']
+    InfoMap: typeof import('./c./components/Drawer.vueefault']
     LeftDrawer: typeof import('./components/LeftDrawer.vue')['default']
     LogBubble: typeof import('./components/LogBubble.vue')['default']
     ReplayTimer: typeof import('./components/ReplayTimer.vue')['default']

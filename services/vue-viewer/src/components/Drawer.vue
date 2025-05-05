@@ -2,7 +2,7 @@
   <v-navigation-drawer
     v-if="include"
     v-model="drawer"
-    location="left"
+    :location="props.position as 'left' | 'end' | 'start' | 'top' | 'bottom' | 'right' | undefined"
     width="300"
   >
     <v-app-bar-nav-icon
@@ -38,7 +38,7 @@
 
   import config from '@/assets/config.json';
 
-  const props = config.leftDrawerParams;
+  const props = config.drawerParams;
 
   const include = !(!props || props.include === false);
 
