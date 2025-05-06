@@ -18,7 +18,6 @@
   const mimes = config.mimes;
   Object.keys(mimes).forEach(key => {
     if (mimes[key].count) counts[key] = 0;
-    console.log('COUNT', counts);
   });
 
   const io = useSocketStore().getSocket();
