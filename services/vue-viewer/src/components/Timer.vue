@@ -37,15 +37,15 @@
     socket?.on('ready', () => {
       socket?.emit('getTime');
       socket?.on('timeResponse', (timer, start, end) => {
-        text.value = getDateText(new Date(timer));
+        text.value = getDateText(new Date(timer), params.timerDateFormat);
         startTime = start;
         endTime = end;
         percentage.value = ((timer - startTime) / (endTime - startTime)) * 100;
-        startTimeText.value = getDateText(new Date(startTime));
-        endTimeText.value = getDateText(new Date(endTime));
+        startTimeText.value = getDateText(new Date(startTime), params.startEndDatesFormat);
+        endTimeText.value = getDateText(new Date(endTime), params.startEndDatesFormat);
       })
       socket?.on('timeUpdate', time => {
-        text.value = getDateText(time);
+        text.value = getDateText(time, params.timerDateFormat);
       })
     })
   }
@@ -60,8 +60,8 @@
     return `${days}${params.dayLetter} ${hours}${params.hourLetter} ${minutes}${params.minuteLetter} ${seconds}${params.secondLetter}`;
   }
 
-  function getDateText (date: Date) {
-    return format(TZDate.tz('Europe/Paris', date), params.dateFormat);
+  function getDateText (date: Date, formatString: string) {
+    return format(TZDate.tz('Europe/Paris', date), formatString);
   }
 </script>
 
