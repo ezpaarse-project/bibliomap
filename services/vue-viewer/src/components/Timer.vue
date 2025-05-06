@@ -45,6 +45,7 @@
         endTimeText.value = getDateText(new Date(endTime), params.startEndDatesFormat);
       })
       socket?.on('timeUpdate', time => {
+        percentage.value = ((new Date(time).getTime() - startTime) / (endTime - startTime)) * 100;
         text.value = getDateText(time, params.timerDateFormat);
       })
     })
