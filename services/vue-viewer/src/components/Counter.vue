@@ -36,7 +36,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-evenly;
-    margin: .5rem;
+    margin: 1rem .5rem;
     flex-wrap: wrap;
   }
 </style>
