@@ -152,7 +152,7 @@
     padding: .5em 2.5em;
     box-shadow: $box-shadow;
     min-width: 100px;
-    max-width: 400px;
+    max-width: 300px;
     white-space: normal;
 
     p {
@@ -164,11 +164,15 @@
       display: flex;
       justify-content: center;
       gap: .5em;
+      font-size: 10px;
 
       p{
-        color: white;
-        padding: .1em .5em;
-        border-radius: 4px;
+        margin: 3px;
+        padding: 5px 8px;
+        font-size: 1.2em;
+        border-radius: 3px;
+        color: #fff;
+        box-sizing: border-box;
       }
     }
 
