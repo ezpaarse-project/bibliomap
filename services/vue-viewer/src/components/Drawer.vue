@@ -86,6 +86,7 @@
     span{
       text-align: center;
       font-size: 14px;
+      margin: .5rem;
     }
   }
 </style>
