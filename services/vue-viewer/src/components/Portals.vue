@@ -1,16 +1,18 @@
 <template>
-  <v-list-item v-for="(value, key) in portals" :key="key">
-    <div class="portal-list-item">
-      <div class="portal-container">
-        <img v-if="value.icon" :src="getIconUrl(value.icon)">
-        <div>
-          <h3>{{ key }}</h3>
-          <p>{{ value.subtitle }}</p>
+  <div class="portals-component">
+    <v-list-item v-for="(value, key) in portals" :key="key">
+      <div class="portal-list-item">
+        <div class="portal-container">
+          <img v-if="value.icon" :src="getIconUrl(value.icon)">
+          <div>
+            <h3>{{ key }}</h3>
+            <p>{{ value.subtitle }}</p>
+          </div>
         </div>
+        <v-chip>0</v-chip>
       </div>
-      <v-chip>0</v-chip>
-    </div>
-  </v-list-item>
+    </v-list-item>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -25,6 +27,9 @@
 </script>
 
 <style lang="scss">
+  .portals-component{
+    margin: .5rem 0;
+  }
   .portal-list-item{
     display: flex;
     justify-content: space-between;
