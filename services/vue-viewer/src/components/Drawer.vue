@@ -28,7 +28,7 @@
         <v-divider />
       </div>
       <div v-if="props.portalSection.include" :style="{ order: props.portalSection.index }">
-        <v-list-item>PORTALS</v-list-item>
+        <Portals />
         <v-divider />
       </div>
     </div>

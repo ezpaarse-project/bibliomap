@@ -15,6 +15,7 @@ declare module 'vue' {
     InfoMap: typeof import('./c./components/Drawer.vueefault']
     LeftDrawer: typeof import('./components/LeftDrawer.vue')['default']
     LogBubble: typeof import('./components/LogBubble.vue')['default']
+    Portals: typeof import('./components/Portals.vue')['default']
     ReplayTimer: typeof import('./components/ReplayTimer.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
