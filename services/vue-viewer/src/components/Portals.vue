@@ -9,7 +9,7 @@
             <p>{{ value.subtitle }}</p>
           </div>
         </div>
-        <v-chip>{{ counts[key] }}</v-chip>
+        <v-chip v-if="counts[key] != null" :color="portals[key].color" variant="flat">{{ counts[key] }}</v-chip>
       </div>
     </v-list-item>
   </div>

@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar elevation="5" height="48">
+  <v-app-bar v-if="config.appbarParams.include" elevation="5" height="48">
     <div class="app-bar-content">
       <v-app-bar-nav-icon
         variant="text"

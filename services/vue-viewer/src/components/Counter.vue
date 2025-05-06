@@ -1,6 +1,6 @@
 <template>
   <div class="counter-container">
-    <v-badge v-for="(key, value) in counts" :key="value" :content="key"><v-chip>{{ value }}</v-chip></v-badge>
+    <v-badge v-for="(key, value) in counts" :key="value" :content="key"><v-chip :color="mimes[value].color" variant="flat">{{ value }}</v-chip></v-badge>
     <v-badge v-if="props.showTotal" :content="total"><v-chip>Total</v-chip></v-badge>
   </div>
 </template>
