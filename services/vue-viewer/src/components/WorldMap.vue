@@ -3,14 +3,16 @@
 </template>
 
 <script lang="ts" setup>
-  import L from 'leaflet';
+  import L, { TileLayer } from 'leaflet';
   import { onMounted } from 'vue';
   import config from '@/assets/config.json';
   import type { Log } from '@/pages/index.vue';
   import { useSocketStore } from '@/stores/socket'
+  import { useMittStore } from '@/stores/mitt';
 
   const socketStore = useSocketStore();
   const io = socketStore.getSocket();
+  const emitter = useMittStore().emitter;
 
   const mapParams = config.mapParams;
   const portals = config.portals;
@@ -49,6 +51,48 @@
     L.control.zoom({
       position: 'topright',
     }).addTo(map);
+
+    const defaultLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors',
+    }).addTo(map);
+
+    const humanitarianLayer = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors',
+    });
+
+    const openTopoMapLayer = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors',
+    });
+
+    const cyclosmLayer = L.tileLayer('https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors',
+    });
+
+    const layers: { [key: string]: TileLayer } = {
+      'Default': defaultLayer,
+      'Humanitarian OSM': humanitarianLayer,
+      'OpenTopoMap': openTopoMapLayer,
+      'CyclOSM': cyclosmLayer,
+    };
+
+    let currentLayer = defaultLayer;
+
+    function changeMapLayer (newLayer: TileLayer) {
+      if (currentLayer) {
+        map.removeLayer(currentLayer);
+      }
+      newLayer.addTo(map);
+      currentLayer = newLayer;
+    }
+
+    emitter.on('centerMap', () => {
+      console.log('CENTERMAP')
+      map.setView([mapParams.defaultX || 46.603354, mapParams.defaultY || 1.888334], mapParams.defaultZoom || 6);
+    });
+
+    emitter.on('changeMapType', (layerName: string) => {
+      changeMapLayer(layers[layerName] as TileLayer);
+    });
 
     io?.on('log', (log: Log) => {
       let color;
@@ -92,7 +136,7 @@
           map.removeLayer(marker);
         }, 2000);
       }, (mapParams.bubbleDuration || 5) * 1000)
-    })
+    });
   })
 </script>
 
@@ -102,9 +146,9 @@
 
   #map{
     width: 100%;
-    height: 100%;
+    height: calc(100% - 48px);
     position: absolute;
-    top: 0;
+    top: 48;
     right: 0;
   }
 

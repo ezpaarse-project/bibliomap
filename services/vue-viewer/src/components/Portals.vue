@@ -9,7 +9,7 @@
             <p>{{ value.subtitle }}</p>
           </div>
         </div>
-        <v-chip>0</v-chip>
+        <v-chip>{{ counts[key] }}</v-chip>
       </div>
     </v-list-item>
   </div>
@@ -17,8 +17,23 @@
 
 <script setup lang="ts">
   import config from '@/assets/config.json';
+  import type { Log } from '@/pages/index.vue';
+  import { useSocketStore } from '@/stores/socket';
 
   const portals = config.portals;
+
+  const counts = reactive({} as Record<string, number>);
+
+  Object.keys(portals).forEach(key => {
+    counts[key] = 0;
+  });
+
+  const io = useSocketStore().getSocket();
+  io?.on('log', (log: Log) => {
+    if (log.ezproxyName && Object.keys(counts).includes(log.ezproxyName.toUpperCase())) {
+      counts[log.ezproxyName.toUpperCase()] += 1;
+    }
+  });
 
   const getIconUrl = (iconName: string): string => {
     const str = `../assets/${iconName}`

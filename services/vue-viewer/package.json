@@ -17,6 +17,7 @@
     "config": "^3.3.12",
     "date-fns": "^4.1.0",
     "leaflet": "^1.9.4",
+    "mitt": "^3.0.1",
     "pino": "^9.6.0",
     "roboto-fontface": "*",
     "socket.io-client": "^4.8.1",
