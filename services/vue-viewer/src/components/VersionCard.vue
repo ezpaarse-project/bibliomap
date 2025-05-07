@@ -8,19 +8,16 @@
     </v-card>
   </div>
 </template>
-<script setup lang="ts">
-    //
-</script>
 <style lang="scss">
-    .card-version-container{
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      z-index: 1000;
-      opacity: .75;
-      margin: .5rem;
-    }
-    .justify-center{
-      text-align: center;
-    }
+  .card-version-container{
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    opacity: .75;
+    margin: .5rem;
+  }
+  .justify-center{
+    text-align: center;
+  }
 </style>

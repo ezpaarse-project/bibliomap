@@ -8,7 +8,7 @@
       </v-tooltip>
 
       <v-tooltip
-        v-if="params.showMultiplier && multiplier !== 1"
+        v-if="!config.realTimeMode && params.showMultiplier && multiplier !== 1"
         location="top"
         :text="`Le temps passe ${multiplier} fois plus vite qu'en temps réel`"
       >
@@ -38,7 +38,7 @@
       </template>
     </v-tooltip>
 
-    <span v-if="params.showStartEndTime && startTimeText && endTimeText" class="start-end-dates">
+    <span v-if="!config.realTimeMode && params.showStartEndTime && startTimeText && endTimeText" class="start-end-dates">
       <v-tooltip location="top" text="Date et heure de début">
         <template #activator="{ props }">
           <v-chip v-bind="props">{{ startTimeText }}</v-chip>

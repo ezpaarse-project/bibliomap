@@ -62,6 +62,7 @@
     elevation="5"
     :location="drawerLocation"
     :width="props.width"
+    :permanent="true"
   >
     <div class="drawer-elements-container">
       <div v-if="props.descriptionSection.include" :style="{ order: props.descriptionSection.index }">
@@ -87,6 +88,7 @@
       </div>
     </div>
   </v-navigation-drawer>
+  <ModeCard />
 </template>
 
 <script setup lang="ts">

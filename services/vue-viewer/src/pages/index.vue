@@ -1,6 +1,6 @@
 <template>
   <main>
-    <LeftDrawer />
+    <Drawer />
     <WorldMap />
     <Minimap />
     <VersionCard />
@@ -9,7 +9,7 @@
 
 <script lang="ts" setup>
   import { onMounted } from 'vue';
-  import LeftDrawer from '@/components/Drawer.vue';
+  import Drawer from '@/components/Drawer.vue';
   import WorldMap from '@/components/WorldMap.vue';
   import { useSocketStore } from '@/stores/socket';
   import { io } from 'socket.io-client';
