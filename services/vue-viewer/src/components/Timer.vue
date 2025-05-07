@@ -1,14 +1,59 @@
 <template>
   <div class="time-container">
     <div class="timer-multiplier-container">
-      <v-chip>{{ text }}</v-chip>
-      <v-chip v-if="params.showMultiplier && multiplier !== 1">x{{ multiplier }}</v-chip>
+      <v-tooltip location="top" text="Date et heure de la simulation">
+        <template #activator="{ props }">
+          <v-chip v-bind="props">{{ text }}</v-chip>
+        </template>
+      </v-tooltip>
+
+      <v-tooltip
+        v-if="params.showMultiplier && multiplier !== 1"
+        location="top"
+        :text="`Le temps passe ${multiplier} fois plus vite qu'en temps réel`"
+      >
+        <template #activator="{ props }">
+          <v-chip v-bind="props">x{{ multiplier }}</v-chip>
+        </template>
+      </v-tooltip>
     </div>
-    <v-progress-linear v-if="!config.realTimeMode && percentage >= 0" :model-value="percentage" />
-    <v-progress-linear v-if="!config.realTimeMode && percentage < 0" indeterminate />
-    <span v-if="params.showStartEndTime" class="start-end-dates"><v-chip>{{ startTimeText }}</v-chip><span>-</span><v-chip>{{ endTimeText }}</v-chip></span>
+
+    <v-tooltip
+      v-if="!config.realTimeMode && percentage >= 0"
+      location="top"
+      :text="`Pourcentage de la simulation : ${ Math.round(percentage) }%`"
+    >
+      <template #activator="{ props }">
+        <v-progress-linear v-bind="props" :model-value="percentage" />
+      </template>
+    </v-tooltip>
+
+    <v-tooltip
+      v-if="!config.realTimeMode && percentage < 0"
+      location="top"
+      text="Chargement en cours..."
+    >
+      <template #activator="{ props }">
+        <v-progress-linear v-bind="props" indeterminate />
+      </template>
+    </v-tooltip>
+
+    <span v-if="params.showStartEndTime && startTimeText && endTimeText" class="start-end-dates">
+      <v-tooltip location="top" text="Date et heure de début">
+        <template #activator="{ props }">
+          <v-chip v-bind="props">{{ startTimeText }}</v-chip>
+        </template>
+      </v-tooltip>
+      <span>-</span>
+      <v-tooltip location="top" text="Date et heure de fin">
+        <template #activator="{ props }">
+          <v-chip v-bind="props">{{ endTimeText }}</v-chip>
+        </template>
+      </v-tooltip>
+    </span>
   </div>
 </template>
+
 
 <script setup lang="ts">
   import config from '@/assets/config.json';

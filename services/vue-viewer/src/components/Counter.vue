@@ -1,9 +1,25 @@
 <template>
   <div class="counter-container">
-    <v-badge v-for="(key, value) in counts" :key="value" :content="key"><v-chip :color="mimes[value].color" variant="flat">{{ value }}</v-chip></v-badge>
-    <v-badge v-if="props.showTotal" :content="total"><v-chip>Total</v-chip></v-badge>
+    <v-tooltip v-for="(value, key) in counts" :key="key" location="top" :text="`${value} consultations de fichiers ${key}`">
+      <template #activator="{ props }">
+        <v-badge :content="value">
+          <v-chip v-bind="props" :color="mimes[key].color" variant="flat">
+            {{ key }}
+          </v-chip>
+        </v-badge>
+      </template>
+    </v-tooltip>
+
+    <v-tooltip v-if="props.showTotal" location="top" :text="`Nombre total de consultations : ${total}`">
+      <template #activator="{ props }">
+        <v-badge :content="total">
+          <v-chip v-bind="props">Total</v-chip>
+        </v-badge>
+      </template>
+    </v-tooltip>
   </div>
 </template>
+
 
 <script setup lang='ts'>
   import config from '@/assets/config.json';
