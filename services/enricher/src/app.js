@@ -120,7 +120,7 @@ logIoListener.on('ready', (socketId) => {
 
 logIoListener.on('timeUpdate', (time) => io.emit('timeUpdate', time));
 
-logIoListener.on('timeResponse', (socketId, timer, start, end) => {
+logIoListener.on('timeResponse', (socketId, timer, start, end, multiplier) => {
   const socket = [...viewers].filter((s) => s.id === socketId);
-  if (socket) io.to(socket).emit('timeResponse', timer, start, end);
+  if (socket) io.to(socket).emit('timeResponse', timer, start, end, multiplier);
 });

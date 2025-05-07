@@ -1,6 +1,9 @@
 <template>
   <div class="time-container">
-    <v-chip>{{ text }}</v-chip>
+    <div class="timer-multiplier-container">
+      <v-chip>{{ text }}</v-chip>
+      <v-chip v-if="params.showMultiplier && multiplier !== 1">x{{ multiplier }}</v-chip>
+    </div>
     <v-progress-linear v-if="!config.realTimeMode && percentage >= 0" :model-value="percentage" />
     <v-progress-linear v-if="!config.realTimeMode && percentage < 0" indeterminate />
     <span v-if="params.showStartEndTime" class="start-end-dates"><v-chip>{{ startTimeText }}</v-chip><span>-</span><v-chip>{{ endTimeText }}</v-chip></span>
@@ -24,6 +27,7 @@
 
   let startTime: number;
   let endTime: number;
+  const multiplier = ref<number>(1);
 
   if (config.realTimeMode) {
     text.value = `0${params.dayLetter} 0${params.hourLetter} 0${params.minuteLetter} 0${params.secondLetter}`;
@@ -36,10 +40,11 @@
     socket?.emit('isReady', socket.id);
     socket?.on('ready', () => {
       socket?.emit('getTime');
-      socket?.on('timeResponse', (timer, start, end) => {
+      socket?.on('timeResponse', (timer, start, end, m) => {
         text.value = getDateText(new Date(timer), params.timerDateFormat);
         startTime = start;
         endTime = end;
+        multiplier.value = m;
         percentage.value = ((timer - startTime) / (endTime - startTime)) * 100;
         startTimeText.value = getDateText(new Date(startTime), params.startEndDatesFormat);
         endTimeText.value = getDateText(new Date(endTime), params.startEndDatesFormat);
@@ -73,6 +78,11 @@
     align-items: center;
     justify-content: center;
     margin: .5rem;
+    gap: .5rem;
+  }
+
+  .timer-multiplier-container{
+    display: flex;
     gap: .5rem;
   }
 

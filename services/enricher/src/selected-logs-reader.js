@@ -53,7 +53,7 @@ class SelectedLogsReader extends EventEmitter {
     });
 
     this.on('timeRequest', (socketId) => {
-      this.emit('timeResponse', socketId, this.timer, this.startTimerAt, this.dayEnd);
+      this.emit('timeResponse', socketId, this.timer, this.startTimerAt, this.dayEnd, this.replayMultiplier);
     });
 
     return cb();
