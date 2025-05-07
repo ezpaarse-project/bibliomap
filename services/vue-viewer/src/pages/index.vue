@@ -3,6 +3,7 @@
     <LeftDrawer />
     <WorldMap />
     <Minimap />
+    <VersionCard />
   </main>
 </template>
 

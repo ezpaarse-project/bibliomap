@@ -162,4 +162,11 @@
   }
 }
 
+@media screen and (max-width: 768px) {
+  .minimap-container{
+    width: 200px;
+    height: 200px;
+  }
+}
+
 </style>

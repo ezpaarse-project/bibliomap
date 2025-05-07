@@ -21,6 +21,7 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Timer: typeof import('./components/Timer.vue')['default']
+    VersionCard: typeof import('./components/VersionCard.vue')['default']
     WorldMap: typeof import('./components/WorldMap.vue')['default']
   }
 }
