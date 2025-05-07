@@ -3,7 +3,7 @@
     <v-chip>{{ text }}</v-chip>
     <v-progress-linear v-if="!config.realTimeMode && percentage >= 0" :model-value="percentage" />
     <v-progress-linear v-if="!config.realTimeMode && percentage < 0" indeterminate />
-    <span class="start-end-dates"><v-chip>{{ startTimeText }}</v-chip><span>-</span><v-chip>{{ endTimeText }}</v-chip></span>
+    <span v-if="params.showStartEndTime" class="start-end-dates"><v-chip>{{ startTimeText }}</v-chip><span>-</span><v-chip>{{ endTimeText }}</v-chip></span>
   </div>
 </template>
 
@@ -22,8 +22,8 @@
   const startTimeText = ref('');
   const endTimeText = ref('');
 
-  let startTime;
-  let endTime;
+  let startTime: number;
+  let endTime: number;
 
   if (config.realTimeMode) {
     text.value = `0${params.dayLetter} 0${params.hourLetter} 0${params.minuteLetter} 0${params.secondLetter}`;
