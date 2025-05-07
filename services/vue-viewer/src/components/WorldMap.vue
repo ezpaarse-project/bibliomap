@@ -44,21 +44,25 @@
       zoomControl: false,
     }).setView([mapParams.defaultX || 46.603354, mapParams.defaultY || 1.888334], mapParams.defaultZoom || 6);
 
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    }).addTo(map);
-
     L.control.zoom({
       position: 'topright',
     }).addTo(map);
 
-    const defaultLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+    const defaultLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    }).addTo(map);
 
-    const humanitarianLayer = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png');
+    const humanitarianLayer = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    });
 
-    const openTopoMapLayer = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png');
+    const openTopoMapLayer = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    });
 
-    const cyclosmLayer = L.tileLayer('https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png');
+    const cyclosmLayer = L.tileLayer('https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    });
 
     const layers: { [key: string]: TileLayer } = {
       'Default': defaultLayer,
@@ -78,7 +82,6 @@
     }
 
     emitter.on('centerMap', () => {
-      console.log('CENTERMAP')
       map.setView([mapParams.defaultX || 46.603354, mapParams.defaultY || 1.888334], mapParams.defaultZoom || 6);
     });
 
@@ -116,7 +119,7 @@
             </div>
           </div>
         `,
-      })
+      });
 
       const marker = L.marker([log['geoip-latitude'], log['geoip-longitude']], { icon: bubble }).addTo(map);
       const elt = marker.getElement();
@@ -128,6 +131,10 @@
           map.removeLayer(marker);
         }, 2000);
       }, (mapParams.bubbleDuration || 5) * 1000)
+
+      if (!map.getBounds().contains(L.latLng(log['geoip-latitude'], log['geoip-longitude']))) {
+        emitter.emit('minimap', { log, bubble });
+      }
     });
   })
 </script>

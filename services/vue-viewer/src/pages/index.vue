@@ -2,6 +2,7 @@
   <main>
     <LeftDrawer />
     <WorldMap />
+    <Minimap />
   </main>
 </template>
 
