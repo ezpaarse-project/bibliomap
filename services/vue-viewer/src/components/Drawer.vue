@@ -61,8 +61,8 @@
     v-model="drawer"
     elevation="5"
     :location="drawerLocation"
-    :width="props.width"
     :permanent="true"
+    :width="props.width"
   >
     <div class="drawer-elements-container">
       <div v-if="props.descriptionSection.include" :style="{ order: props.descriptionSection.index }">
@@ -108,7 +108,7 @@
 
   const selectedMapType = ref('Default');
 
-  const drawerLocation = props.position || 'left' as 'left' | 'right' | 'top' | 'bottom' | 'end' | 'start' | undefined
+  const drawerLocation = (props.position ?? 'left') as 'left' | 'top' | 'bottom' | 'start' | 'end' | 'right' | undefined;
 
   watch(group, () => {
     drawer.value = false

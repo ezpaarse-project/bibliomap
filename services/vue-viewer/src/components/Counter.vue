@@ -3,7 +3,7 @@
     <v-tooltip v-for="(value, key) in counts" :key="key" location="top" :text="`${value} consultations de fichiers ${key}`">
       <template #activator="{ props }">
         <v-badge :content="value">
-          <v-chip v-bind="props" :color="mimes[key].color" variant="flat">
+          <v-chip v-bind="props" :color="mimes[key as keyof typeof mimes].color" variant="flat">
             {{ key }}
           </v-chip>
         </v-badge>
@@ -33,7 +33,7 @@
 
   const mimes = config.mimes;
   Object.keys(mimes).forEach(key => {
-    if (mimes[key].count) counts[key] = 0;
+    if (mimes[key as keyof typeof mimes].count) counts[key] = 0;
   });
 
   const io = useSocketStore().getSocket();
