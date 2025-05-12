@@ -1,5 +1,5 @@
 <template>
-  <div v-if="params.include" :class="['minimap-container', { 'exit': currentLogs.length === 0 && hasEntered, 'enter': currentLogs.length > 0}]">
+  <div v-if="params.include && !(usingPhone && params.disableOnPhone)" :class="['minimap-container', { 'exit': currentLogs.length === 0 && hasEntered, 'enter': currentLogs.length > 0}]">
     <div id="minimap" />
   </div>
 </template>
@@ -14,6 +14,7 @@
   const mapParams = config.mapParams;
   const params = config.minimapParams;
   const currentLogs = ref(<Log[]>[]);
+  const usingPhone = window.innerWidth <= 768;
 
   let minimap: L.Map;
 

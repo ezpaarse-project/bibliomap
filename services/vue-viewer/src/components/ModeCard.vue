@@ -13,8 +13,9 @@
   .card-version-container {
     z-index: 1000;
     position: relative;
-    top: 90vh;
+    top: calc(100dvh - 90px);
     left: 20px;
     opacity: 1;
+    max-width: 110px;
   }
 </style>

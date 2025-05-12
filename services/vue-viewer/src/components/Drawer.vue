@@ -88,7 +88,7 @@
       </div>
     </div>
   </v-navigation-drawer>
-  <ModeCard />
+  <ModeCard v-if="!usingPhone || (usingPhone && !drawer)" />
 </template>
 
 <script setup lang="ts">
@@ -103,7 +103,9 @@
   const include = !(!props || props.include === false);
   const emitter = useMittStore().emitter;
 
-  const drawer = ref(true)
+  const usingPhone = window.innerWidth <= 768;
+
+  const drawer = ref(!usingPhone);
   const group = ref(null)
 
   const selectedMapType = ref('Default');

@@ -26,15 +26,17 @@
 
     if (!mapParams || mapParams.include === false) return;
 
-    if((mapParams.defaultZoom || 6) > (mapParams.maxZoom || 9)){
+    let defaultZoom = window.innerWidth <= 768 ? mapParams.defaultPhoneZoom : mapParams.defaultZoom;
+
+    if((defaultZoom || 6) > (mapParams.maxZoom || 9)){
       console.error('Default zoom cannot be higher than max zoom')
-      mapParams.defaultZoom = 6;
+      defaultZoom = 6;
       mapParams.maxZoom = 9;
     }
 
-    if((mapParams.defaultZoom || 6) < (mapParams.minZoom || 3)){
+    if((defaultZoom || 6) < (mapParams.minZoom || 3)){
       console.error('Default zoom cannot be lower than max zoom')
-      mapParams.defaultZoom = 6;
+      defaultZoom = 6;
       mapParams.minZoom = 3;
     }
 
@@ -42,7 +44,7 @@
       minZoom: mapParams.minZoom || 3,
       maxZoom: mapParams.maxZoom || 9,
       zoomControl: false,
-    }).setView([mapParams.defaultX || 46.603354, mapParams.defaultY || 1.888334], mapParams.defaultZoom || 6);
+    }).setView([mapParams.defaultX || 46.603354, mapParams.defaultY || 1.888334], defaultZoom || 6);
 
     L.control.zoom({
       position: 'topright',
@@ -82,7 +84,7 @@
     }
 
     emitter.on('centerMap', () => {
-      map.setView([mapParams.defaultX || 46.603354, mapParams.defaultY || 1.888334], mapParams.defaultZoom || 6);
+      map.setView([mapParams.defaultX || 46.603354, mapParams.defaultY || 1.888334], defaultZoom || 6);
     });
 
     emitter.on('changeMapType', (layerName: string) => {
