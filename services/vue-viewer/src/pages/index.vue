@@ -4,6 +4,7 @@
     <WorldMap />
     <Minimap />
     <VersionCard />
+    <DialogDrawer />
   </main>
 </template>
 
