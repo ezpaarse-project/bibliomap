@@ -21,7 +21,7 @@
   let hasEntered = false;
 
   onMounted(() => {
-    if (!params.include) return;
+    if (!params.include || (usingPhone && params.disableOnPhone)) return;
     minimap = L.map('minimap', {
       minZoom: params.minZoom || 2,
       maxZoom: params.maxZoom || 4,
