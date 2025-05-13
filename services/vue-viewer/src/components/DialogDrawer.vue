@@ -15,6 +15,12 @@
 <script setup lang="ts">
 
   import config from '@/assets/config.json';
+  import { useMittStore } from '@/stores/mitt';
+
+  const emitter = useMittStore().emitter;
+  emitter.on('showInfoDialog', () => {
+    drawer.value = true
+  })
 
   const props = config.dialogDrawerParams;
   console.log('props', props);

@@ -51,6 +51,12 @@
             <v-btn icon="mdi-cog" v-bind="settingsProps" />
           </template>
         </v-tooltip>
+
+        <v-tooltip location="bottom" text="Montrer les informations">
+          <template #activator="{ props: settingsProps }">
+            <v-btn icon="mdi-information" v-bind="settingsProps" @click="emitter.emit('showInfoDialog', null)" />
+          </template>
+        </v-tooltip>
       </div>
 
     </div>

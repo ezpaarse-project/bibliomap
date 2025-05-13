@@ -8,6 +8,7 @@ type Events = {
   centerMap: null;
   changeMapType: string;
   minimap: { log: Log; bubble: L.DivIcon };
+  showInfoDialog: null;
 };
 
 export const useMittStore = defineStore('mitt', () => {
