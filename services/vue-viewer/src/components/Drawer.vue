@@ -48,13 +48,13 @@
 
         <v-tooltip location="bottom" text="Autres paramètres">
           <template #activator="{ props: settingsProps }">
-            <v-btn icon="mdi-cog" v-bind="settingsProps" />
+            <v-btn icon="mdi-cog" v-bind="settingsProps" @click="emitter.emit('showSettings', null)" />
           </template>
         </v-tooltip>
 
         <v-tooltip location="bottom" text="Montrer les informations">
-          <template #activator="{ props: settingsProps }">
-            <v-btn icon="mdi-information" v-bind="settingsProps" @click="emitter.emit('showInfoDialog', null)" />
+          <template #activator="{ props: infoProps }">
+            <v-btn icon="mdi-information" v-bind="infoProps" @click="emitter.emit('showInfoDialog', null)" />
           </template>
         </v-tooltip>
       </div>

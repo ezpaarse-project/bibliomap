@@ -5,6 +5,7 @@
     <Minimap />
     <VersionCard />
     <DialogDrawer />
+    <SettingsDialog />
   </main>
 </template>
 
