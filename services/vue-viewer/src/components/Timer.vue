@@ -8,7 +8,7 @@
       </v-tooltip>
 
       <v-tooltip
-        v-if="!config.realTimeMode && params.showMultiplier && multiplier !== 1"
+        v-if="!config.realTimeMode && params.showMultiplier && multiplier > 1"
         location="top"
         :text="`Le temps passe ${multiplier} fois plus vite qu'en temps réel`"
       >
