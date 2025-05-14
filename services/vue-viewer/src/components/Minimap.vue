@@ -8,6 +8,7 @@
   import L, { TileLayer } from 'leaflet';
   import { useViewerConfigStore } from '@/stores/viewer-config';
   import type { Log } from '@/main';
+  import useMitt from '@/composables/useMitt';
 
   const config = useViewerConfigStore().config;
   const mapParams = config.mapParams;
@@ -32,9 +33,8 @@
 
     if (!params.include || (usingPhone && params.disableOnPhone)) return;
 
-    const instance = getCurrentInstance();
-    const emitter = instance ? instance.appContext.config.globalProperties.emitter : null;
-    emitter.on('minimap', ({ log, bubble }) => {
+    const emitter = useMitt();
+    emitter.on('minimap', ({ log, bubble }: { log: Log; bubble: L.DivIcon }) => {
       hasEntered = true;
 
       const marker = L.marker([log['geoip-latitude'], log['geoip-longitude']], { icon: bubble }).addTo(minimap);

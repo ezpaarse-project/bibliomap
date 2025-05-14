@@ -20,7 +20,6 @@
   </div>
 </template>
 
-
 <script setup lang='ts'>
   import { useViewerConfigStore } from '@/stores/viewer-config';
   import type { Log } from '@/main';

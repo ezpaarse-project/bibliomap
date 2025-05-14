@@ -6,39 +6,39 @@
         @click.stop="drawer = !drawer"
       />
       <div>
-        <v-tooltip location="bottom" text="Centrer la carte">
+        <v-tooltip location="bottom" :text="t('drawer.tooltips.center-map')">
           <template #activator="{ props: centerMapProps }">
             <v-btn icon="mdi-target" v-bind="centerMapProps" @click="centerMap" />
           </template>
         </v-tooltip>
 
-        <v-tooltip location="bottom" text="Traduction">
+        <v-tooltip location="bottom" :text="t('drawer.tooltips.translation')">
           <template #activator="{ props: translateProps }">
             <v-btn icon="mdi-translate" v-bind="translateProps" />
           </template>
         </v-tooltip>
 
-        <v-tooltip location="bottom" text="Changer le type de carte">
+        <v-tooltip location="bottom" :text="t('drawer.tooltips.change-map')">
           <template #activator="{ props: mapTooltipProps }">
             <v-dialog max-width="600">
               <template #activator="{ props: mapDialogProps }">
                 <v-btn icon="mdi-map" v-bind="{ ...mapTooltipProps, ...mapDialogProps }" />
               </template>
               <template #default="{ isActive }">
-                <v-card title="Changer le type de carte">
+                <v-card :title="t('drawer.change-map-dialog.title')">
                   <v-card-text>
-                    Choisissez un type de carte.
+                    {{ t('drawer.change-map-dialog.subtitle') }}
                   </v-card-text>
                   <v-select
                     :key="selectedMapType"
                     v-model="selectedMapType"
                     :items="['Default', 'Humanitarian OSM', 'OpenTopoMap', 'CyclOSM']"
-                    label="Type de carte"
+                    :label="t('drawer.change-map-dialog.select-label')"
                     @update:model-value="(value) => changeMapType(value)"
                   />
                   <v-card-actions>
                     <v-spacer />
-                    <v-btn text="Fermer" @click="isActive.value = false" />
+                    <v-btn :text="t('drawer.change-map-dialog.close')" @click="isActive.value = false" />
                   </v-card-actions>
                 </v-card>
               </template>
@@ -46,13 +46,13 @@
           </template>
         </v-tooltip>
 
-        <v-tooltip location="bottom" text="Autres paramètres">
+        <v-tooltip location="bottom" :text="t('drawer.tooltips.settings')">
           <template #activator="{ props: settingsProps }">
             <v-btn icon="mdi-cog" v-bind="settingsProps" @click="emitter.emit('showSettings', null)" />
           </template>
         </v-tooltip>
 
-        <v-tooltip location="bottom" text="Montrer les informations">
+        <v-tooltip location="bottom" :text="t('drawer.tooltips.info')">
           <template #activator="{ props: infoProps }">
             <v-btn icon="mdi-information" v-bind="infoProps" @click="emitter.emit('showInfoDialog', null)" />
           </template>
@@ -98,14 +98,16 @@
 </template>
 
 <script setup lang="ts">
+  import useMitt from '@/composables/useMitt';
   import { useViewerConfigStore } from '@/stores/viewer-config';
+  import { useI18n } from 'vue-i18n';
 
   const config = useViewerConfigStore().config;
   const props = config.drawerParams;
+  const { t, locale } = useI18n();
 
   const include = !(!props || props.include === false);
-  const instance = getCurrentInstance();
-  const emitter = instance ? instance.appContext.config.globalProperties.emitter : null;
+  const emitter = useMitt();
 
   const usingPhone = window.innerWidth <= 768;
 

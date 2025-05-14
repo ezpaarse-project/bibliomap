@@ -15,14 +15,14 @@
 
 <script setup lang="ts">
 
+  import useMitt from '@/composables/useMitt';
   import { useViewerConfigStore } from '@/stores/viewer-config';
 
   const config = useViewerConfigStore().config;
 
-  const instance = getCurrentInstance();
-  const emitter = instance ? instance.appContext.config.globalProperties.emitter : null;
+  const emitter = useMitt();
   emitter.on('showInfoDialog', () => {
-    drawer.value = true
+    drawer.value = true;
   })
 
   const props = config.dialogDrawerParams;

@@ -1,0 +1,35 @@
+{
+  "drawer": {
+    "tooltips": {
+      "center-map": "Centrer la carte sur la France",
+      "translation": "Traduction",
+      "change-map": "Changer de fond de carte",
+      "settings": "Paramètres",
+      "info": "A propos de BiblioMap"
+    },
+    "change-map-dialog": {
+      "title": "Changer de fond de carte",
+      "subtitle": "Choisissez un type de carte.",
+      "select-label": "Type de carte",
+      "close": "Fermer"
+    },
+    "settings-dialog": {
+      "title": "Paramètres",
+      "minimap-section": {
+        "title": "Afficher la minimap"
+      },
+      "portals-section": {
+        "title": "Instituts à afficher",
+        "select-all": "Tout cocher",
+        "select-none": "Tout décocher"
+      },
+      "review-titles-section": {
+        "title": "Afficher le titre des revues"
+      },
+      "filter-section": {
+        "title": "Filtrer par plateforme éditeur",
+        "placeholder": "ex: Wiley"
+      }
+    }
+  }
+}

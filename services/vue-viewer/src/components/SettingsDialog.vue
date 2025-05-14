@@ -4,7 +4,7 @@
     max-width="1000"
   >
     <v-card :flat="true">
-      <v-card-title class="text-h4">Paramètres</v-card-title>
+      <v-card-title class="text-h4">{{ t('drawer.settings-dialog.title') }}</v-card-title>
       <v-divider />
       <v-card class="d-flex flex-column" flat>
         <div
@@ -12,7 +12,7 @@
           style="height: 72px;"
         >
           <v-card-title class="text-h6" style="font-weight: 400;">
-            Afficher la minimap
+            {{ t('drawer.settings-dialog.minimap-section.title') }}
           </v-card-title>
           <div>
             <v-switch
@@ -28,7 +28,7 @@
       </v-card>
       <v-divider />
       <v-card :flat="true">
-        <v-card-text class="text-h6">Instituts à afficher</v-card-text>
+        <v-card-text class="text-h6">{{ t('drawer.settings-dialog.portals-section.title') }}</v-card-text>
         <div
           class="d-flex flex-column flex-wrap px-4"
           style="gap: 4px; max-height: 300px; overflow-y: auto;"
@@ -44,8 +44,8 @@
           />
         </div>
         <div class="pa-4">
-          <v-btn class="mr-4" color="primary" @click="checkAll">Tout cocher</v-btn>
-          <v-btn color="primary" @click="uncheckAll">Tout décocher</v-btn>
+          <v-btn class="mr-4" color="primary" @click="checkAll">{{ t('drawer.settings-dialog.portals-section.select-all') }}</v-btn>
+          <v-btn color="primary" @click="uncheckAll">{{ t('drawer.settings-dialog.portals-section.select-none') }}</v-btn>
         </div>
       </v-card>
       <v-divider />
@@ -55,7 +55,7 @@
           style="height: 72px;"
         >
           <v-card-title class="text-h6" style="font-weight: 400;">
-            Afficher le titre des revues
+            {{ t('drawer.settings-dialog.review-titles-section.title') }}
           </v-card-title>
           <div>
             <v-switch
@@ -71,13 +71,15 @@
       </v-card>
       <v-divider />
       <v-card :flat="true">
-        <v-card-text class="text-h6">Filtrer par plateforme éditeur</v-card-text>
+        <v-card-text class="text-h6">
+          {{ t('drawer.settings-dialog.filter-section.title') }}
+        </v-card-text>
         <v-text-field
           v-model="filter"
           class="mx-4"
           :clearable="true"
           color="primary"
-          placeholder="ex: Wiley"
+          :placeholder="t('drawer.settings-dialog.filter-section.placeholder')"
         />
       </v-card>
       <v-divider />
@@ -89,11 +91,13 @@
   import initialConfig from '@/assets/config.json';
   import { useViewerConfigStore } from '@/stores/viewer-config';
   import { usePlatformFilterStore } from '@/stores/platform-filter';
+  import useMitt from '@/composables/useMitt';
+  import { useI18n } from 'vue-i18n';
 
+  const { t } = useI18n();
   const currentConfig = useViewerConfigStore().config;
   const allPortals: Record<string, { title: string; subtitle: string; color: string; icon?: string }> = initialConfig.portals;
-  const instance = getCurrentInstance();
-  const emitter = instance ? instance.appContext.config.globalProperties.emitter : null;
+  const emitter = useMitt();
   const active = ref(false);
   emitter.on('showSettings', () => {
     active.value = true;

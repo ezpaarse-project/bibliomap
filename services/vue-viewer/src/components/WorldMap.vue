@@ -9,11 +9,11 @@
   import type { Log } from '@/main';
   import { useSocketStore } from '@/stores/socket'
   import { usePlatformFilterStore } from '@/stores/platform-filter';
+  import useMitt from '@/composables/useMitt';
 
   const socketStore = useSocketStore();
   const io = socketStore.getSocket();
-  const instance = getCurrentInstance();
-  const emitter = instance ? instance.appContext.config.globalProperties.emitter : null;
+  const emitter = useMitt();
 
   const config = ref(useViewerConfigStore().config);
   const mapParams = config.value.mapParams;
