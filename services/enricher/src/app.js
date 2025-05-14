@@ -89,6 +89,7 @@ logIoListener.on('+log', async (streamName, node, type, log) => {
           'geoip-longitude': data['geoip-longitude'],
           ezproxyName: streamName,
           platform_name: data.platform_name,
+          publication_title: data.publication_title,
           rtype: data.rtype,
           mime: data.mime,
         };

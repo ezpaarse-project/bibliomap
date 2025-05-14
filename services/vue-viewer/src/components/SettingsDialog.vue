@@ -59,6 +59,7 @@
           </v-card-title>
           <div>
             <v-switch
+              v-model="showTitles"
               class="ma-0 pa-0"
               color="primary"
               hide-details
@@ -97,7 +98,8 @@
       acc[key] = true
       return acc
     }, {})
-  )
+  );
+  const showTitles = ref(currentConfig.mapParams.popupText.publication_title as boolean);
 
   watch(showMinimap, () => {
     currentConfig.minimapParams.include = showMinimap.value;
@@ -107,6 +109,10 @@
     currentConfig.portals = Object.fromEntries(
       Object.entries(allPortals).filter(([key]) => shownPortals[key])
     ) as typeof currentConfig.portals;
+  });
+
+  watch(showTitles, () => {
+    currentConfig.mapParams.popupText.publication_title = showTitles.value;
   });
 
   function changeAll (check: boolean) {

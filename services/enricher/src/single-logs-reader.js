@@ -50,6 +50,7 @@ class SingleLogReader {
             'geoip-longitude': row['geoip-longitude'],
             ezproxyName: row['bib-groups'].toUpperCase(),
             platform_name: row.platform_name,
+            publication_title: row.publication_title,
             rtype: row.rtype,
             mime: row.mime,
           },
