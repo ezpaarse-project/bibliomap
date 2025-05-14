@@ -72,7 +72,13 @@
       <v-divider />
       <v-card :flat="true">
         <v-card-text class="text-h6">Filtrer par plateforme éditeur</v-card-text>
-        <v-text-field class="mx-4" :clearable="true" color="primary" placeholder="ex: Wiley" />
+        <v-text-field
+          v-model="filter"
+          class="mx-4"
+          :clearable="true"
+          color="primary"
+          placeholder="ex: Wiley"
+        />
       </v-card>
       <v-divider />
     </v-card>
@@ -83,6 +89,7 @@
   import { useMittStore } from '@/stores/mitt';
   import initialConfig from '@/assets/config.json';
   import { useViewerConfigStore } from '@/stores/viewer-config';
+  import { usePlatformFilterStore } from '@/stores/platform-filter';
 
   const currentConfig = useViewerConfigStore().config;
   const allPortals: Record<string, { title: string; subtitle: string; color: string; icon?: string }> = initialConfig.portals;
@@ -100,6 +107,7 @@
     }, {})
   );
   const showTitles = ref(currentConfig.mapParams.popupText.publication_title as boolean);
+  const filter = ref(usePlatformFilterStore().getFilter());
 
   watch(showMinimap, () => {
     currentConfig.minimapParams.include = showMinimap.value;
@@ -114,6 +122,11 @@
   watch(showTitles, () => {
     currentConfig.mapParams.popupText.publication_title = showTitles.value;
   });
+
+  watch(filter, () => {
+    usePlatformFilterStore().setFilter(filter.value);
+    console.log('FILTER (settings):', usePlatformFilterStore().getFilter());
+  })
 
   function changeAll (check: boolean) {
     Object.keys(allPortals).forEach(key => {

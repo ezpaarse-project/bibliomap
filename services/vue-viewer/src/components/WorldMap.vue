@@ -9,6 +9,8 @@
   import type { Log } from '@/pages/index.vue';
   import { useSocketStore } from '@/stores/socket'
   import { useMittStore } from '@/stores/mitt';
+  import { usePlatformFilterStore } from '@/stores/platform-filter';
+import { useFilter } from 'vuetify/lib/composables/filter.mjs';
 
   const socketStore = useSocketStore();
   const io = socketStore.getSocket();
@@ -92,6 +94,8 @@
     });
 
     io?.on('log', (log: Log) => {
+      if (usePlatformFilterStore().getFilter() && log.platform_name && !((usePlatformFilterStore().getFilter().toUpperCase().includes(log.platform_name.toUpperCase()) || log.platform_name.toUpperCase().includes(usePlatformFilterStore().getFilter().toUpperCase())))) return;
+
       let color;
       try {
         const portalParams = config.value.portals as { [key: string]: { color: string } };

@@ -19,6 +19,7 @@
   import { useViewerConfigStore } from '@/stores/viewer-config';
   import type { Log } from '@/pages/index.vue';
   import { useSocketStore } from '@/stores/socket';
+  import { usePlatformFilterStore } from '@/stores/platform-filter';
 
   const config = ref(useViewerConfigStore().config);
 
@@ -30,6 +31,7 @@
 
   const io = useSocketStore().getSocket();
   io?.on('log', (log: Log) => {
+    if (usePlatformFilterStore().getFilter() && log.platform_name && !((usePlatformFilterStore().getFilter().toUpperCase().includes(log.platform_name.toUpperCase()) || log.platform_name.toUpperCase().includes(usePlatformFilterStore().getFilter().toUpperCase())))) return;
     if (log.ezproxyName && Object.keys(counts).includes(log.ezproxyName.toUpperCase())) {
       counts[log.ezproxyName.toUpperCase()] += 1;
     }

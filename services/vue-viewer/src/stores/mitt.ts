@@ -1,4 +1,3 @@
-// stores/mittStore.ts
 import { defineStore } from 'pinia';
 import mitt from 'mitt';
 import L from 'leaflet';
