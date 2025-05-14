@@ -17,7 +17,7 @@
 
 <script setup lang="ts">
   import { useViewerConfigStore } from '@/stores/viewer-config';
-  import type { Log } from '@/pages/index.vue';
+  import type { Log } from '@/main';
   import { useSocketStore } from '@/stores/socket';
   import { usePlatformFilterStore } from '@/stores/platform-filter';
 

@@ -17,19 +17,6 @@
   import { io } from 'socket.io-client';
   import { useViewerConfigStore } from '@/stores/viewer-config';
 
-  export type Log = {
-    datetime: string,
-    url?: string,
-    domain?: string,
-    publication_title?: string,
-    ezproxyName: string,
-    'geoip-latitude': number,
-    'geoip-longitude': number,
-    mime?: string,
-    platform_name: string | null | undefined,
-    rtype?: string,
-  }
-
   const socket = io('localhost:27780');
 
   const socketStore = useSocketStore();

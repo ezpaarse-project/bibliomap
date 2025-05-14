@@ -6,14 +6,14 @@
   import L, { TileLayer } from 'leaflet';
   import { onMounted } from 'vue';
   import { useViewerConfigStore } from '@/stores/viewer-config';
-  import type { Log } from '@/pages/index.vue';
+  import type { Log } from '@/main';
   import { useSocketStore } from '@/stores/socket'
-  import { useMittStore } from '@/stores/mitt';
   import { usePlatformFilterStore } from '@/stores/platform-filter';
 
   const socketStore = useSocketStore();
   const io = socketStore.getSocket();
-  const emitter = useMittStore().emitter;
+  const instance = getCurrentInstance();
+  const emitter = instance ? instance.appContext.config.globalProperties.emitter : null;
 
   const config = ref(useViewerConfigStore().config);
   const mapParams = config.value.mapParams;

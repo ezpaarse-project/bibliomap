@@ -99,13 +99,13 @@
 
 <script setup lang="ts">
   import { useViewerConfigStore } from '@/stores/viewer-config';
-  import { useMittStore } from '@/stores/mitt';
 
   const config = useViewerConfigStore().config;
   const props = config.drawerParams;
 
   const include = !(!props || props.include === false);
-  const emitter = useMittStore().emitter;
+  const instance = getCurrentInstance();
+  const emitter = instance ? instance.appContext.config.globalProperties.emitter : null;
 
   const usingPhone = window.innerWidth <= 768;
 

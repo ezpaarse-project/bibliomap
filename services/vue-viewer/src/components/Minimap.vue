@@ -7,10 +7,8 @@
 <script setup lang="ts">
   import L, { TileLayer } from 'leaflet';
   import { useViewerConfigStore } from '@/stores/viewer-config';
-  import { useMittStore } from '@/stores/mitt';
-  import type { Log } from '@/pages/index.vue';
+  import type { Log } from '@/main';
 
-  const emitter = useMittStore().emitter;
   const config = useViewerConfigStore().config;
   const mapParams = config.mapParams;
   const params = config.minimapParams;
@@ -34,6 +32,8 @@
 
     if (!params.include || (usingPhone && params.disableOnPhone)) return;
 
+    const instance = getCurrentInstance();
+    const emitter = instance ? instance.appContext.config.globalProperties.emitter : null;
     emitter.on('minimap', ({ log, bubble }) => {
       hasEntered = true;
 

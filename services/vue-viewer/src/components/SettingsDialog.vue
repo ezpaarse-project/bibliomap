@@ -86,14 +86,14 @@
 </template>
 
 <script setup lang="ts">
-  import { useMittStore } from '@/stores/mitt';
   import initialConfig from '@/assets/config.json';
   import { useViewerConfigStore } from '@/stores/viewer-config';
   import { usePlatformFilterStore } from '@/stores/platform-filter';
 
   const currentConfig = useViewerConfigStore().config;
   const allPortals: Record<string, { title: string; subtitle: string; color: string; icon?: string }> = initialConfig.portals;
-  const emitter = useMittStore().emitter;
+  const instance = getCurrentInstance();
+  const emitter = instance ? instance.appContext.config.globalProperties.emitter : null;
   const active = ref(false);
   emitter.on('showSettings', () => {
     active.value = true;
