@@ -14,10 +14,9 @@
   const io = socketStore.getSocket();
   const emitter = useMittStore().emitter;
 
-  const config = useViewerConfigStore().config;
-  const mapParams = config.mapParams;
-  const portals = config.portals;
-  const mimes = config.mimes;
+  const config = ref(useViewerConfigStore().config);
+  const mapParams = config.value.mapParams;
+  const mimes = config.value.mimes;
 
   let map: L.Map;
 
@@ -95,7 +94,7 @@
     io?.on('log', (log: Log) => {
       let color;
       try {
-        const portalParams = portals as { [key: string]: { color: string } };
+        const portalParams = config.value.portals as { [key: string]: { color: string } };
         color = portalParams[log.ezproxyName].color;
       }
       catch {

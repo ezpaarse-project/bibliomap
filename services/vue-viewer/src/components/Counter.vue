@@ -22,23 +22,24 @@
 
 
 <script setup lang='ts'>
-  import config from '@/assets/config.json';
+  import { useViewerConfigStore } from '@/stores/viewer-config';
   import type { Log } from '@/pages/index.vue';
   import { useSocketStore } from '@/stores/socket';
 
   const counts = reactive({} as Record<string, number>);
   const total = ref(0);
 
-  const props = config.counter;
+  const config = ref(useViewerConfigStore().config);
+  const props = config.value.counter;
+  const mimes = config.value.mimes;
 
-  const mimes = config.mimes;
   Object.keys(mimes).forEach(key => {
     if (mimes[key as keyof typeof mimes].count) counts[key] = 0;
   });
 
   const io = useSocketStore().getSocket();
   io?.on('log', (log: Log) => {
-    if (log.mime && Object.keys(counts).includes(log.mime)) {
+    if (log.mime && Object.keys(counts).includes(log.mime) && log.ezproxyName && Object.keys(config.value.portals).includes(log.ezproxyName)) {
       counts[log.mime] += 1;
       total.value += 1;
     }

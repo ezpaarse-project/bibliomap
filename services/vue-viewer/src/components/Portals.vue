@@ -1,6 +1,6 @@
 <template>
   <div class="portals-component">
-    <v-list-item v-for="(value, key) in portals" :key="key">
+    <v-list-item v-for="(value, key) in config.portals" :key="key">
       <div class="portal-list-item">
         <div class="portal-container">
           <img v-if="value.icon" :src="getIconUrl(value.icon)">
@@ -9,22 +9,22 @@
             <p>{{ value.subtitle }}</p>
           </div>
         </div>
-        <v-chip v-if="counts[key] != null" :color="portals[key].color" variant="flat">{{ counts[key] }}</v-chip>
+        <v-chip v-if="counts[key] != null" :color="config.portals[key].color" variant="flat">{{ counts[key] }}</v-chip>
       </div>
     </v-list-item>
   </div>
 </template>
 
 <script setup lang="ts">
-  import config from '@/assets/config.json';
+  import { useViewerConfigStore } from '@/stores/viewer-config';
   import type { Log } from '@/pages/index.vue';
   import { useSocketStore } from '@/stores/socket';
 
-  const portals = config.portals;
+  const config = ref(useViewerConfigStore().config);
 
   const counts = reactive({} as Record<string, number>);
 
-  Object.keys(portals).forEach(key => {
+  Object.keys(config.value.portals).forEach(key => {
     counts[key] = 0;
   });
 

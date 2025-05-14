@@ -36,6 +36,7 @@
           <v-checkbox
             v-for="(value, index) in allPortals"
             :key="index"
+            v-model="shownPortals[index]"
             class="ma-0"
             :color="value.color || 'primary'"
             hide-details
@@ -43,8 +44,8 @@
           />
         </div>
         <div class="pa-4">
-          <v-btn class="mr-4" color="primary">Tout cocher</v-btn>
-          <v-btn color="primary">Tout décocher</v-btn>
+          <v-btn class="mr-4" color="primary" @click="checkAll">Tout cocher</v-btn>
+          <v-btn color="primary" @click="uncheckAll">Tout décocher</v-btn>
         </div>
       </v-card>
       <v-divider />
@@ -83,7 +84,7 @@
   import { useViewerConfigStore } from '@/stores/viewer-config';
 
   const currentConfig = useViewerConfigStore().config;
-  const allPortals = initialConfig.portals;
+  const allPortals: Record<string, { title: string; subtitle: string; color: string; icon?: string }> = initialConfig.portals;
   const emitter = useMittStore().emitter;
   const active = ref(false);
   emitter.on('showSettings', () => {
@@ -91,10 +92,36 @@
   });
 
   const showMinimap = ref(currentConfig.minimapParams.include as boolean);
+  const shownPortals = reactive<Record<string, boolean>>(
+    Object.keys(initialConfig.portals).reduce((acc: Record<string, boolean>, key) => {
+      acc[key] = true
+      return acc
+    }, {})
+  )
 
   watch(showMinimap, () => {
     currentConfig.minimapParams.include = showMinimap.value;
   });
+
+  watch(shownPortals, () => {
+    currentConfig.portals = Object.fromEntries(
+      Object.entries(allPortals).filter(([key]) => shownPortals[key])
+    ) as typeof currentConfig.portals;
+  });
+
+  function changeAll (check: boolean) {
+    Object.keys(allPortals).forEach(key => {
+      shownPortals[key] = check;
+    });
+  }
+
+  function checkAll() {
+    changeAll(true);
+  }
+
+  function uncheckAll(){
+    changeAll(false);
+  }
 
 </script>
 
