@@ -15,8 +15,10 @@
 
 <script setup lang="ts">
 
-  import config from '@/assets/config.json';
+  import { useViewerConfigStore } from '@/stores/viewer-config';
   import { useMittStore } from '@/stores/mitt';
+
+  const config = useViewerConfigStore().config;
 
   const emitter = useMittStore().emitter;
   emitter.on('showInfoDialog', () => {

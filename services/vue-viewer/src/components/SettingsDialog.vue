@@ -16,6 +16,7 @@
           </v-card-title>
           <div>
             <v-switch
+              v-model="showMinimap"
               class="ma-0 pa-0"
               color="primary"
               hide-details
@@ -33,7 +34,7 @@
           style="gap: 4px; max-height: 300px; overflow-y: auto;"
         >
           <v-checkbox
-            v-for="(value, index) in portals"
+            v-for="(value, index) in allPortals"
             :key="index"
             class="ma-0"
             :color="value.color || 'primary'"
@@ -78,13 +79,21 @@
 
 <script setup lang="ts">
   import { useMittStore } from '@/stores/mitt';
-  import config from '@/assets/config.json';
+  import initialConfig from '@/assets/config.json';
+  import { useViewerConfigStore } from '@/stores/viewer-config';
 
-  const portals = config.portals;
+  const currentConfig = useViewerConfigStore().config;
+  const allPortals = initialConfig.portals;
   const emitter = useMittStore().emitter;
   const active = ref(false);
   emitter.on('showSettings', () => {
     active.value = true;
+  });
+
+  const showMinimap = ref(currentConfig.minimapParams.include as boolean);
+
+  watch(showMinimap, () => {
+    currentConfig.minimapParams.include = showMinimap.value;
   });
 
 </script>

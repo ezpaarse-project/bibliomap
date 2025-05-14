@@ -98,12 +98,10 @@
 </template>
 
 <script setup lang="ts">
-
-  import { ref, watch } from 'vue'
-
-  import config from '@/assets/config.json';
+  import { useViewerConfigStore } from '@/stores/viewer-config';
   import { useMittStore } from '@/stores/mitt';
 
+  const config = useViewerConfigStore().config;
   const props = config.drawerParams;
 
   const include = !(!props || props.include === false);

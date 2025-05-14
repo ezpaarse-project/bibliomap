@@ -5,7 +5,7 @@
 <script lang="ts" setup>
   import L, { TileLayer } from 'leaflet';
   import { onMounted } from 'vue';
-  import config from '@/assets/config.json';
+  import { useViewerConfigStore } from '@/stores/viewer-config';
   import type { Log } from '@/pages/index.vue';
   import { useSocketStore } from '@/stores/socket'
   import { useMittStore } from '@/stores/mitt';
@@ -14,6 +14,7 @@
   const io = socketStore.getSocket();
   const emitter = useMittStore().emitter;
 
+  const config = useViewerConfigStore().config;
   const mapParams = config.mapParams;
   const portals = config.portals;
   const mimes = config.mimes;

@@ -1,16 +1,17 @@
 <template>
-  <div v-if="params.include && !(usingPhone && params.disableOnPhone)" :class="['minimap-container', { 'exit': currentLogs.length === 0 && hasEntered, 'enter': currentLogs.length > 0}]">
+  <div :class="['minimap-container', { 'exit': currentLogs.length === 0 && hasEntered, 'enter': currentLogs.length > 0}]">
     <div id="minimap" />
   </div>
 </template>
 
 <script setup lang="ts">
   import L, { TileLayer } from 'leaflet';
-  import config from '@/assets/config.json';
+  import { useViewerConfigStore } from '@/stores/viewer-config';
   import { useMittStore } from '@/stores/mitt';
   import type { Log } from '@/pages/index.vue';
 
   const emitter = useMittStore().emitter;
+  const config = useViewerConfigStore().config;
   const mapParams = config.mapParams;
   const params = config.minimapParams;
   const currentLogs = ref(<Log[]>[]);
@@ -21,7 +22,6 @@
   let hasEntered = false;
 
   onMounted(() => {
-    if (!params.include || (usingPhone && params.disableOnPhone)) return;
     minimap = L.map('minimap', {
       minZoom: params.minZoom || 2,
       maxZoom: params.maxZoom || 4,
@@ -31,6 +31,8 @@
     L.control.zoom({
       position: 'topleft',
     }).addTo(minimap);
+
+    if (!params.include || (usingPhone && params.disableOnPhone)) return;
 
     emitter.on('minimap', ({ log, bubble }) => {
       hasEntered = true;

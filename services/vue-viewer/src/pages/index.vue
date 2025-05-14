@@ -2,7 +2,7 @@
   <main>
     <Drawer />
     <WorldMap />
-    <Minimap />
+    <Minimap v-if="config.minimapParams.include" />
     <VersionCard />
     <DialogDrawer />
     <SettingsDialog />
@@ -15,8 +15,9 @@
   import WorldMap from '@/components/WorldMap.vue';
   import { useSocketStore } from '@/stores/socket';
   import { io } from 'socket.io-client';
+  import { useViewerConfigStore } from '@/stores/viewer-config';
 
-  export interface Log {
+  export type Log = {
     datetime: string,
     url?: string,
     domain?: string,
@@ -33,6 +34,8 @@
 
   const socketStore = useSocketStore();
   socketStore.setSocket(socket);
+
+  const config = ref(useViewerConfigStore().config);
 
   onMounted(() => {
     socket.on('connect', () => console.log('Enricher connected'));
