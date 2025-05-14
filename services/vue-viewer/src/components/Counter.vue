@@ -10,7 +10,7 @@
       </template>
     </v-tooltip>
 
-    <v-tooltip v-if="props.showTotal" location="top" :text="`Nombre total de consultations : ${total}`">
+    <v-tooltip v-if="counterProps.showTotal" location="top" :text="`Nombre total de consultations : ${total}`">
       <template #activator="{ props }">
         <v-badge :content="total">
           <v-chip v-bind="props">Total</v-chip>
@@ -30,7 +30,7 @@
   const total = ref(0);
 
   const config = ref(useViewerConfigStore().config);
-  const props = config.value.counter;
+  const counterProps = config.value.counter;
   const mimes = config.value.mimes;
 
   Object.keys(mimes).forEach(key => {

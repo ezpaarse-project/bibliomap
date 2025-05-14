@@ -115,11 +115,11 @@
     });
   }
 
-  function checkAll() {
+  function checkAll () {
     changeAll(true);
   }
 
-  function uncheckAll(){
+  function uncheckAll (){
     changeAll(false);
   }
 
