@@ -1,16 +1,20 @@
-import { defineStore } from 'pinia'
-import { Socket } from 'socket.io-client'
+import { defineStore } from 'pinia';
+import { Socket } from 'socket.io-client';
 
-export const useSocketStore = defineStore('socket', {
-  state: () => ({
-    socket: null as Socket | null,
-  }),
-  actions: {
-    setSocket (socketInstance: Socket) {
-      this.socket = socketInstance
-    },
-    getSocket () {
-      return this.socket;
-    },
-  },
-})
+export const useSocketStore = defineStore('socket', () => {
+  const socket = ref<Socket | null>(null);
+
+  function setSocket (socketInstance: Socket) {
+    socket.value = socketInstance;
+  }
+
+  function getSocket () {
+    return socket.value;
+  }
+
+  return {
+    socket,
+    setSocket,
+    getSocket,
+  };
+});

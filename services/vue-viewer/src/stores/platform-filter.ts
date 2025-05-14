@@ -1,15 +1,19 @@
 import { defineStore } from 'pinia';
 
-export const usePlatformFilterStore = defineStore('platform-filter', {
-  state: () => ({
-    filter: '',
-  }),
-  actions: {
-    setFilter (filter: string) {
-      this.filter = filter;
-    },
-    getFilter () {
-      return this.filter;
-    },
-  },
+export const usePlatformFilterStore = defineStore('platform-filter', () => {
+  const filter = ref('');
+
+  function setFilter (newFilter: string) {
+    filter.value = newFilter;
+  }
+
+  function getFilter () {
+    return filter.value;
+  }
+
+  return {
+    filter,
+    setFilter,
+    getFilter,
+  };
 });

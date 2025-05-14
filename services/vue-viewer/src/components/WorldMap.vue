@@ -10,7 +10,6 @@
   import { useSocketStore } from '@/stores/socket'
   import { useMittStore } from '@/stores/mitt';
   import { usePlatformFilterStore } from '@/stores/platform-filter';
-import { useFilter } from 'vuetify/lib/composables/filter.mjs';
 
   const socketStore = useSocketStore();
   const io = socketStore.getSocket();
