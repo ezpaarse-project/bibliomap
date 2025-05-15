@@ -50,5 +50,8 @@
       },
       "total": "Total"
     }
+  },
+  "version-card": {
+    "connection": "Connecté à ezPAARSE"
   }
 }
