@@ -13,36 +13,56 @@
         </v-tooltip>
 
         <v-tooltip location="bottom" :text="t('drawer.tooltips.translation')">
-          <template #activator="{ props: translateProps }">
-            <v-btn icon="mdi-translate" v-bind="translateProps" />
+          <template #activator="{ props: tooltipProps }">
+            <v-menu
+              v-model="translationMenu"
+              :close-on-content-click="false"
+              offset-y
+            >
+              <template #activator="{ props: translationMenuProps }">
+                <v-btn
+                  v-bind="{ ...translationMenuProps, ...tooltipProps }"
+                  icon="mdi-translate"
+                />
+              </template>
+
+              <v-list>
+                <v-list-item
+                  v-for="(lang, index) in ['FR', 'EN']"
+                  :key="index"
+                  @click="selectLanguage(lang)"
+                >
+                  <v-list-item-title>{{ lang }}</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
           </template>
         </v-tooltip>
 
         <v-tooltip location="bottom" :text="t('drawer.tooltips.change-map')">
-          <template #activator="{ props: mapTooltipProps }">
-            <v-dialog max-width="600">
-              <template #activator="{ props: mapDialogProps }">
-                <v-btn icon="mdi-map" v-bind="{ ...mapTooltipProps, ...mapDialogProps }" />
+          <template #activator="{ props: tooltipProps }">
+            <v-menu
+              v-model="mapMenu"
+              :close-on-content-click="false"
+              offset-y
+            >
+              <template #activator="{ props: mapMenuProps }">
+                <v-btn
+                  v-bind="{ ...mapMenuProps, ...tooltipProps }"
+                  icon="mdi-map"
+                />
               </template>
-              <template #default="{ isActive }">
-                <v-card :title="t('drawer.change-map-dialog.title')">
-                  <v-card-text>
-                    {{ t('drawer.change-map-dialog.subtitle') }}
-                  </v-card-text>
-                  <v-select
-                    :key="selectedMapType"
-                    v-model="selectedMapType"
-                    :items="['Default', 'Humanitarian OSM', 'OpenTopoMap', 'CyclOSM']"
-                    :label="t('drawer.change-map-dialog.select-label')"
-                    @update:model-value="(value) => changeMapType(value)"
-                  />
-                  <v-card-actions>
-                    <v-spacer />
-                    <v-btn :text="t('drawer.change-map-dialog.close')" @click="isActive.value = false" />
-                  </v-card-actions>
-                </v-card>
-              </template>
-            </v-dialog>
+
+              <v-list>
+                <v-list-item
+                  v-for="(map, index) in ['Default', 'Humanitarian OSM', 'OpenTopoMap', 'CyclOSM']"
+                  :key="index"
+                  @click="changeMapType(map)"
+                >
+                  <v-list-item-title>{{ map }}</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
           </template>
         </v-tooltip>
 
@@ -112,9 +132,15 @@
   const usingPhone = window.innerWidth <= 768;
 
   const drawer = ref(!usingPhone);
-  const group = ref(null)
+  const group = ref(null);
 
-  const selectedMapType = ref('Default');
+  const translationMenu = ref(false);
+  const mapMenu = ref(false);
+
+  function selectLanguage (lang: string) {
+    locale.value = lang.toLowerCase();
+    translationMenu.value = false
+  }
 
   const drawerLocation = (props.position ?? 'left') as 'left' | 'top' | 'bottom' | 'start' | 'end' | 'right' | undefined;
 
@@ -132,6 +158,7 @@
 
   const changeMapType = (layerName: string) => {
     emitter.emit('changeMapType', layerName);
+    mapMenu.value = false;
   }
 
 </script>

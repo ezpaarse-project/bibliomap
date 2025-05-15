@@ -129,8 +129,7 @@
 
   watch(filter, () => {
     usePlatformFilterStore().setFilter(filter.value);
-    console.log('FILTER (settings):', usePlatformFilterStore().getFilter());
-  })
+  });
 
   function changeAll (check: boolean) {
     Object.keys(allPortals).forEach(key => {
