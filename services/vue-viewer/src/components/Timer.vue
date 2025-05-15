@@ -1,7 +1,7 @@
 <template>
   <div class="time-container">
     <div class="timer-multiplier-container">
-      <v-tooltip location="top" text="Date et heure de la simulation">
+      <v-tooltip location="top" :text="t('drawer.timer.tooltips.simulation-datetime')">
         <template #activator="{ props }">
           <v-chip v-bind="props">{{ text }}</v-chip>
         </template>
@@ -10,7 +10,7 @@
       <v-tooltip
         v-if="!config.realTimeMode && params.showMultiplier && multiplier > 1"
         location="top"
-        :text="`Le temps passe ${multiplier} fois plus vite qu'en temps réel`"
+        :text="t('drawer.timer.tooltips.multiplier', {multiplier})"
       >
         <template #activator="{ props }">
           <v-chip v-bind="props">x{{ multiplier }}</v-chip>
@@ -21,7 +21,7 @@
     <v-tooltip
       v-if="!config.realTimeMode && percentage >= 0"
       location="top"
-      :text="`Pourcentage de la simulation : ${ Math.round(percentage) }%`"
+      :text="t('drawer.timer.tooltips.simulation-percentage', {percentage: Math.round(percentage)})"
     >
       <template #activator="{ props }">
         <v-progress-linear v-bind="props" :model-value="percentage" />
@@ -31,7 +31,7 @@
     <v-tooltip
       v-if="!config.realTimeMode && percentage < 0"
       location="top"
-      text="Chargement en cours..."
+      :text="t('drawer.timer.loading')"
     >
       <template #activator="{ props }">
         <v-progress-linear v-bind="props" indeterminate />
@@ -39,13 +39,13 @@
     </v-tooltip>
 
     <span v-if="!config.realTimeMode && params.showStartEndTime && startTimeText && endTimeText" class="start-end-dates">
-      <v-tooltip location="top" text="Date et heure de début">
+      <v-tooltip location="top" :text="t('drawer.timer.tooltips.start-datetime')">
         <template #activator="{ props }">
           <v-chip v-bind="props">{{ startTimeText }}</v-chip>
         </template>
       </v-tooltip>
       <span>-</span>
-      <v-tooltip location="top" text="Date et heure de fin">
+      <v-tooltip location="top" :text="t('drawer.timer.tooltips.end-datetime')">
         <template #activator="{ props }">
           <v-chip v-bind="props">{{ endTimeText }}</v-chip>
         </template>
@@ -60,8 +60,10 @@
   import { format } from 'date-fns';
   import { useSocketStore } from '@/stores/socket';
   import { TZDate } from '@date-fns/tz';
+  import { useI18n } from 'vue-i18n';
 
   const params = config.timer;
+  const { t } = useI18n();
 
   const startDate = new Date();
 
@@ -80,7 +82,7 @@
       text.value = getDurationText(startDate, new Date());
     }, 1000);
   } else {
-    text.value = `Chargement...`;
+    text.value = t('drawer.timer.loading');
     const socket = useSocketStore().getSocket()
     socket?.emit('isReady', socket.id);
     socket?.on('ready', () => {

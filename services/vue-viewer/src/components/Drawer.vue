@@ -6,13 +6,13 @@
         @click.stop="drawer = !drawer"
       />
       <div>
-        <v-tooltip location="bottom" :text="t('drawer.tooltips.center-map')">
+        <v-tooltip location="bottom" :text="t('appbar.tooltips.center-map')">
           <template #activator="{ props: centerMapProps }">
             <v-btn icon="mdi-target" v-bind="centerMapProps" @click="centerMap" />
           </template>
         </v-tooltip>
 
-        <v-tooltip location="bottom" :text="t('drawer.tooltips.translation')">
+        <v-tooltip location="bottom" :text="t('appbar.tooltips.translation')">
           <template #activator="{ props: tooltipProps }">
             <v-menu
               v-model="translationMenu"
@@ -39,7 +39,7 @@
           </template>
         </v-tooltip>
 
-        <v-tooltip location="bottom" :text="t('drawer.tooltips.change-map')">
+        <v-tooltip location="bottom" :text="t('appbar.tooltips.change-map')">
           <template #activator="{ props: tooltipProps }">
             <v-menu
               v-model="mapMenu"
@@ -66,13 +66,13 @@
           </template>
         </v-tooltip>
 
-        <v-tooltip location="bottom" :text="t('drawer.tooltips.settings')">
+        <v-tooltip location="bottom" :text="t('appbar.tooltips.settings')">
           <template #activator="{ props: settingsProps }">
             <v-btn icon="mdi-cog" v-bind="settingsProps" @click="emitter.emit('showSettings', null)" />
           </template>
         </v-tooltip>
 
-        <v-tooltip location="bottom" :text="t('drawer.tooltips.info')">
+        <v-tooltip location="bottom" :text="t('appbar.tooltips.info')">
           <template #activator="{ props: infoProps }">
             <v-btn icon="mdi-information" v-bind="infoProps" @click="emitter.emit('showInfoDialog', null)" />
           </template>

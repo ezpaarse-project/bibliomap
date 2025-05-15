@@ -1,5 +1,5 @@
 {
-  "drawer": {
+  "appbar": {
     "tooltips": {
       "center-map": "Centrer la carte sur la France",
       "translation": "Traduction",
@@ -30,6 +30,25 @@
         "title": "Filtrer par plateforme éditeur",
         "placeholder": "ex: Wiley"
       }
+    }
+  },
+  "drawer": {
+    "timer": {
+      "tooltips": {
+        "simulation-datetime": "Date et heure de la simulation",
+        "multiplier": "Le temps passe {multiplier} fois plus vite qu'en temps réel",
+        "simulation-percentage": "Pourcentage de la simulation : {percentage}%",
+        "start-datetime": "Date et heure de début de la simulation",
+        "end-datetime": "Date et heure de fin de la simulation"
+      },
+      "loading": "Chargement en cours..."
+    },
+    "counter": {
+      "tooltips": {
+        "file-type-consultations": "{n} consultations de fichiers {type}",
+        "total-consultations": "Nombre total de consultations : {n}"
+      },
+      "total": "Total"
     }
   }
 }

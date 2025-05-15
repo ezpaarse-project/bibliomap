@@ -1,6 +1,6 @@
 <template>
   <div class="counter-container">
-    <v-tooltip v-for="(value, key) in counts" :key="key" location="top" :text="`${value} consultations de fichiers ${key}`">
+    <v-tooltip v-for="(value, key) in counts" :key="key" location="top" :text="t('drawer.counter.tooltips.file-type-consultations', {n: value, type: key})">
       <template #activator="{ props }">
         <v-badge :content="value">
           <v-chip v-bind="props" :color="mimes[key as keyof typeof mimes].color" variant="flat">
@@ -10,10 +10,10 @@
       </template>
     </v-tooltip>
 
-    <v-tooltip v-if="counterProps.showTotal" location="top" :text="`Nombre total de consultations : ${total}`">
+    <v-tooltip v-if="counterProps.showTotal" location="top" :text="t('drawer.counter.tooltips.total-consultations', {n: total})">
       <template #activator="{ props }">
         <v-badge :content="total">
-          <v-chip v-bind="props">Total</v-chip>
+          <v-chip v-bind="props">{{ t('drawer.counter.total') }}</v-chip>
         </v-badge>
       </template>
     </v-tooltip>
@@ -25,7 +25,9 @@
   import type { Log } from '@/main';
   import { useSocketStore } from '@/stores/socket';
   import { usePlatformFilterStore } from '@/stores/platform-filter';
+  import { useI18n } from 'vue-i18n';
 
+  const { t } = useI18n();
   const counts = reactive({} as Record<string, number>);
   const total = ref(0);
 
