@@ -1,0 +1,55 @@
+{
+  "drawer-custom": {
+    "description": "Online consultation of articles from several thousand electronic scientific journals available in full text as well as databases.",
+    "portals": {
+      "INSB": {
+        "title": "INSB",
+        "subtitle": "Biology"
+      },
+      "INC": {
+        "title": "INC",
+        "subtitle": "Chemestry"
+      },
+      "INEE": {
+        "title": "INEE",
+        "subtitle": "Ecology & Environment"
+      },
+      "INSHS": {
+        "title": "INSHS",
+        "subtitle": "People & Society"
+      },
+      "INSIS": {
+        "title": "INSIS",
+        "subtitle": "Engineering & systems"
+      },
+      "INSMI": {
+        "title": "INSMI",
+        "subtitle": "Mathematics"
+      },
+      "IN2P3": {
+        "title": "IN2P3",
+        "subtitle": "Nuclear and Particles"
+      },
+      "INP": {
+        "title": "INP",
+        "subtitle": "Physics"
+      },
+      "IN2SI": {
+        "title": "IN2SI",
+        "subtitle": "Information Science"
+      },
+      "INSU": {
+        "title": "INSU",
+        "subtitle": "Earth & the Universe"
+      }
+    }
+  },
+  "info-card": {
+    "title": "\"Research never stops\"",
+    "p1": "<strong>BiblioMap</strong> reflects <a href=\"http://www.cnrs.fr/fr/organisme/presentation.htm\">CNRS</a>'s online consultations of digital resources via the <a href=\"https://bib.cnrs.fr/\">bibCNRS</a> portal. This digital tool provides access to the full text of articles from several thousand electronic scientific journals and to bibliographic databases.",
+    "img1-alt": "BibCNRS, the portal to CNRS electronic documentary resources",
+    "img1-caption": "The specialized access portal platforms are managed by <a href=\"http://www.inist.fr/\">Inist-CNRS</a>.",
+    "p2": "The visualizations available in <a href=\"https://github.com/ezpaarse-project/bibliomap\">BiblioMap</a> are made possible by the use of <a href=\"http://ezpaarse.couperin.org/\">ezPAARSE</a>, an <a href=\"https://github.com/ezpaarse-project/ezpaarse\">open-source software</a> developed by <a href=\"http://www.couperin.org/presentation\">COUPERIN</a>, l'<a href=\"http://www.inist.fr/\">INIST-CNRS</a> and the <a href=\"http://www.univ-lorraine.fr/\">Université de Lorraine</a> as a pilot site. <a href=\"http://analogist.couperin.org/\">AnalogIST</a> is the Higher Education and Research collaborative portal dedicated to measuring the use of electronic resources. The developments associated with this collaboration are available as free software within <a href=\"https://github.com/ezpaarse-project/\">ezPAARSE-project</a>.",
+    "comment": "Note: the location of consultations shown on the map is deliberately approximate."
+  }
+}

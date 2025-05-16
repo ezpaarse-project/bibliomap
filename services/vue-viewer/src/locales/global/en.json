@@ -1,0 +1,51 @@
+{
+  "appbar": {
+    "tooltips": {
+      "center-map": "Center the map",
+      "translation": "Translation",
+      "change-map": "Change map background",
+      "settings": "Settings",
+      "info": "About BiblioMap"
+    },
+    "settings-dialog": {
+      "title": "Settings",
+      "minimap-section": {
+        "title": "Show minimap"
+      },
+      "portals-section": {
+        "title": "Institutes to display",
+        "select-all": "Select all",
+        "select-none": "Select none"
+      },
+      "journal-titles-section": {
+        "title": "Display journal titles"
+      },
+      "filter-section": {
+        "title": "Filter by editor platforms",
+        "placeholder": "ex: Wiley"
+      }
+    }
+  },
+  "drawer": {
+    "timer": {
+      "tooltips": {
+        "simulation-datetime": "Date and time of simulation",
+        "multiplier": "Time is {multiplier} faster than real time",
+        "simulation-percentage": "Simulation progress: {percentage}%",
+        "start-datetime": "Data and time of start of the simulation",
+        "end-datetime": "Date and time of end of the simulation"
+      },
+      "loading": "Loading..."
+    },
+    "counter": {
+      "tooltips": {
+        "file-type-consultations": "{n} consultations of {type} documents",
+        "total-consultations": "Total consultations: {n}"
+      },
+      "total": "Total"
+    }
+  },
+  "version-card": {
+    "connection": "Connected to ezPAARSE"
+  }
+}

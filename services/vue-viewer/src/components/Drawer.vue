@@ -95,7 +95,7 @@
         <v-list-item>
           <div class="description-section-item">
             <img v-if="props.descriptionSection.icon" alt="icon" :src="getIconUrl(props.descriptionSection.icon)">
-            <span>{{ props.descriptionSection.content }}</span>
+            <span>{{ t('drawer-custom.description') }}</span>
           </div>
         </v-list-item>
         <v-divider />
@@ -176,6 +176,7 @@
       height: 100%;
       width: 100%;
       margin: .5rem;
+      max-height: 128px;
     }
 
     span{

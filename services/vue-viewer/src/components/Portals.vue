@@ -5,8 +5,8 @@
         <div class="portal-container">
           <img v-if="value.icon" :src="getIconUrl(value.icon)">
           <div>
-            <h3>{{ key }}</h3>
-            <p>{{ value.subtitle }}</p>
+            <h3>{{ t(`drawer-custom.portals.${key}.title`) }}</h3>
+            <p>{{ t(`drawer-custom.portals.${key}.subtitle`) }}</p>
           </div>
         </div>
         <v-chip v-if="counts[key] != null" :color="config.portals[key].color" variant="flat">{{ counts[key] }}</v-chip>
@@ -20,8 +20,10 @@
   import type { Log } from '@/main';
   import { useSocketStore } from '@/stores/socket';
   import { usePlatformFilterStore } from '@/stores/platform-filter';
+  import { useI18n } from 'vue-i18n';
 
   const config = ref(useViewerConfigStore().config);
+  const { t } = useI18n();
 
   const counts = reactive({} as Record<string, number>);
 

@@ -1,17 +1,11 @@
 {
   "appbar": {
     "tooltips": {
-      "center-map": "Centrer la carte sur la France",
+      "center-map": "Recentrer la carte",
       "translation": "Traduction",
       "change-map": "Changer de fond de carte",
       "settings": "Paramètres",
       "info": "A propos de BiblioMap"
-    },
-    "change-map-dialog": {
-      "title": "Changer de fond de carte",
-      "subtitle": "Choisissez un type de carte.",
-      "select-label": "Type de carte",
-      "close": "Fermer"
     },
     "settings-dialog": {
       "title": "Paramètres",
