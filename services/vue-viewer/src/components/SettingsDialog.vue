@@ -40,7 +40,7 @@
             class="ma-0"
             :color="value.color || 'primary'"
             hide-details
-            :label="value.title"
+            :label="t(`drawer-custom.portals.${index}.title`)"
           />
         </div>
         <div class="pa-4">
@@ -96,7 +96,7 @@
 
   const { t } = useI18n();
   const currentConfig = useViewerConfigStore().config;
-  const allPortals: Record<string, { title: string; subtitle: string; color: string; icon?: string }> = initialConfig.portals;
+  const allPortals: Record<string, { color: string; icon?: string }> = initialConfig.portals;
   const emitter = useMitt();
   const active = ref(false);
   emitter.on('showSettings', () => {
