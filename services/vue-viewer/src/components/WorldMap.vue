@@ -1,5 +1,5 @@
 <template>
-  <div id="map" />
+  <div id="map" :style="{height: height}" />
 </template>
 
 <script lang="ts" setup>
@@ -18,6 +18,8 @@
   const config = ref(useViewerConfigStore().config);
   const mapParams = config.value.mapParams;
   const mimes = config.value.mimes;
+
+  const height = config.value.appbarParams.include ? 'calc(100vh - 48px)' : '100vh';
 
   let map: L.Map;
 
@@ -150,7 +152,7 @@
 
   #map{
     width: 100%;
-    height: calc(100% - 48px);
+    height: 100%;
     position: absolute;
     bottom: 0;
     right: 0;
