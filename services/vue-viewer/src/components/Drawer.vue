@@ -9,12 +9,7 @@
   >
     <div class="drawer-elements-container">
       <div v-if="props.descriptionSection.include" :style="{ order: props.descriptionSection.index }">
-        <v-list-item>
-          <div class="description-section-item">
-            <img v-if="props.descriptionSection.icon" alt="icon" :src="getIconUrl(props.descriptionSection.icon)">
-            <span>{{ t('drawer-custom.description') }}</span>
-          </div>
-        </v-list-item>
+        <Description />
         <v-divider />
       </div>
       <div v-if="props.timerSection.include" :style="{ order: props.timerSection.index }">
@@ -36,12 +31,10 @@
 
 <script setup lang="ts">
   import { useViewerConfigStore } from '@/stores/viewer-config';
-  import { useI18n } from 'vue-i18n';
   import useMitt from '@/composables/useMitt';
 
   const config = useViewerConfigStore().config;
   const props = config.drawerParams;
-  const { t } = useI18n();
   const emitter = useMitt();
 
   const include = !(!props || props.include === false);
@@ -56,10 +49,6 @@
   watch(group, () => {
     drawer.value = false
   })
-
-  const getIconUrl = (iconName: string): string => {
-    return new URL(`../assets/${iconName}`, import.meta.url).href;
-  };
 
   emitter.on('toggleDrawer', () => {
     drawer.value = !drawer.value;

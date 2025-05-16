@@ -40,7 +40,7 @@
   });
 
   const getIconUrl = (iconName: string): string => {
-    const str = `../assets/${iconName}`
+    const str = `../../assets/${iconName}`
     return new URL(str, import.meta.url).href;
   };
 </script>
