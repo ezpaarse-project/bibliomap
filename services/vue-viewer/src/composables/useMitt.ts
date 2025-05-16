@@ -8,6 +8,7 @@ type Events = {
   minimap: { log: Log; bubble: L.DivIcon };
   showInfoDialog: null;
   showSettings: null;
+  toggleDrawer: null;
 };
 
 const emitter = mitt<Events>();

@@ -9,7 +9,7 @@
     :width="width"
   >
     <v-btn :flat="true" icon="mdi-close" @click.stop="drawer = false" />
-    <DialogContent />
+    <InformationContent />
   </v-navigation-drawer>
 </template>
 

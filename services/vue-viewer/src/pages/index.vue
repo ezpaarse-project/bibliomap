@@ -1,10 +1,11 @@
 <template>
   <main>
+    <Appbar />
     <Drawer />
     <WorldMap />
     <Minimap v-if="config.minimapParams.include" />
     <VersionCard />
-    <DialogDrawer />
+    <InformationDrawer />
     <SettingsDialog />
   </main>
 </template>
