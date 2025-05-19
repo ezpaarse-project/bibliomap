@@ -1,9 +1,6 @@
 # bibliomap-enricher
 
-
-Listen for [bibliomap-harvester](https://github.com/ezpaarse-project/bibliomap-harvester) data, send it to [ezPAARSE](https://github.com/ezpaarse-project/ezpaarse) for enrichments and send the result to [bibliomap-viewer](https://github.com/ezpaarse-project/bibliomap-viewer)
-
-
+Bibliomap Enricher is a service that listens to the data sent by Bibliomap Harvester, turns it into EC consultation events, and sends them to Bibliomap Viewer (user interface).
 
 ## Architecture
 
@@ -13,13 +10,12 @@ Listen for [bibliomap-harvester](https://github.com/ezpaarse-project/bibliomap-h
 
 ## Prerequisites
 
-  * Docker and docker-compose
+  * Docker
 
 
 ## Installation and running
 
 As a standalone script, bibliomap-enricher is not very usefull. Please have a look to [bibliomap](https://github.com/ezpaarse-project/bibliomap) docker-compose.yml to understand how it can be orchestrated with required modules: [bibliomap-harvester](https://github.com/ezpaarse-project/bibliomap-harvester) and [bibliomap-viewer](https://github.com/ezpaarse-project/bibliomap-viewer)
-
 
 
 ## Configuration
