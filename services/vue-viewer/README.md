@@ -138,6 +138,7 @@ The Information drawer configurations are done in the "infoDrawerParams" block. 
 It is possible to configure customizable text fields thanks to the use of i18n. The text should be written in json files at src/locals/custom/{language}.json. Writing text in these files ensure content can be translated. Here are the fields:
 
 | Name | Description |
+| -- | -- |
 | description | Text of the description section in the drawer. |
 | portals | Portals can have a title and a subtitle. They must be of this format: "nameOfPortal": {"title": "titleOfPortal", "subtitle": "subtitleOfPortal"} |
 
