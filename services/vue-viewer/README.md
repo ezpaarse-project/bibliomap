@@ -25,6 +25,8 @@ Each module owns a json block containing parameters. All of them have a "include
 
 ### Map configuration
 
+![map](https://github.com/user-attachments/assets/de35d119-32ef-4a17-a637-e84ac61b2f30)
+
 The map configurations are done in the "mapParams" block. Here are the different parameters:
 
 | Name | Description | Default | 
@@ -44,6 +46,8 @@ The map configurations are done in the "mapParams" block. Here are the different
 
 ### Drawer configuration
 
+![drawer](https://github.com/user-attachments/assets/c1fbd746-ea00-4007-b43a-625e2e7afb22)
+
 The drawer configurations are done in the "drawerParams" block. Here are the different parameters:
 
 | Name | Description | Default | 
@@ -62,6 +66,8 @@ They all contain an "index" parameter, which indicates in what order they should
 
 ### Description section configuration
 
+![description](https://github.com/user-attachments/assets/dddd48fb-9c8c-48e6-8c95-a9c9e3ca847c)
+
 The description section configurations are done in the "descriptionSection" block, inside the "drawerParams" block. Here are the different parameters:
 
 | Name | Description | Default | 
@@ -71,6 +77,8 @@ The description section configurations are done in the "descriptionSection" bloc
 | icon | Icon sitting to the left of the description text. Can be empty. | "" |
 
 ### Timer section configuration
+
+![timer](https://github.com/user-attachments/assets/8287d982-7089-4b09-bc88-9e0d67533a79)
 
 The timer section configurations are done in the "timerSection" block, inside the "drawerParams" block. Here are the different parameters:
 
@@ -89,6 +97,8 @@ The timer section configurations are done in the "timerSection" block, inside th
 
 ### Counter section configuration
 
+![counter](https://github.com/user-attachments/assets/a5aba38c-371d-4da9-88c2-7050eed2c4f1)
+
 The counter section configurations are done in the "counterSection" block, inside the "drawerParams" block. Here are the different parameters:
 
 | Name | Description | Default | 
@@ -98,6 +108,8 @@ The counter section configurations are done in the "counterSection" block, insid
 | showTotal | Indicates if the total amount of consultations should be shown or hidden. | true |
 
 ### Portal section configuration
+
+![portals](https://github.com/user-attachments/assets/2ab7257e-eb66-445b-9d8e-a2827bb6cb24)
 
 The portal section configurations are done in the "descriptionSection" block, inside the "drawerParams" block. Here are the different parameters:
 
@@ -109,6 +121,8 @@ The portal section configurations are done in the "descriptionSection" block, in
 
 ### Appbar configurations
 
+![appbar](https://github.com/user-attachments/assets/c4b0b054-8190-4e58-b8c2-d748884b669a)
+
 The appbar configurations are done in the "appbarParams" block. Here are the different parameters:
 
 | Name | Description | Default | 
@@ -116,6 +130,9 @@ The appbar configurations are done in the "appbarParams" block. Here are the dif
 | include | Indicates if the appbar should be shown or hidden. | true |
 
 ### Minimap configurations
+
+![minimap](https://github.com/user-attachments/assets/be58c748-5a25-4044-8f94-563754d50001)
+
 The appbar configurations are done in the "minimapParams" block. Here are the different parameters:
 
 | Name | Description | Default | 
@@ -127,6 +144,8 @@ The appbar configurations are done in the "minimapParams" block. Here are the di
 | disableOnPhone | Indicates if the minimap should be disabled on phone, as it takes a lot of space on the screen. | true |
 
 ### Information drawer configurations
+
+![info-drawer](https://github.com/user-attachments/assets/44f8b518-32a5-40a9-8486-6c7c876f84c1)
 
 The Information drawer configurations are done in the "infoDrawerParams" block. Here are the different parameters:
 
@@ -146,4 +165,4 @@ It is possible to configure customizable text fields thanks to the use of i18n. 
 
 ## Information card
 
-It is possible to fully customize the information card that appears as a drawer to the right of the page by default. To do so, you need to change the "InformationContent" component, located inside the information-components folder. You can also use the customizable text files to write text in your information card. To do so, visit the [vue-i18n documentation page](https://vue-i18n.intlify.dev/).
+It is possible to fully customize the information card that appears as a drawer to the right of the page by default. To do so, you need to change the "InformationContent" component in src/components/information-components/, located inside the information-components folder. You can also use the customizable text files to write text in your information card. To do so, visit the [vue-i18n documentation page](https://vue-i18n.intlify.dev/).
