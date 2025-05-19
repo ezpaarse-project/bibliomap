@@ -2,9 +2,11 @@
 
 Bibliomap viewer is a service that connects to Bibliomap enricher via websockets. It shows the received information on a map, allowing the user to concretely view the consultations events.
 
+![Enricher to viewer connection](https://github.com/user-attachments/assets/d30b0e05-022f-47c4-bb69-212a840e896a)
+
 ## Configuration
 
-With this new version of Bibliomap Viewer, it is possible to configurate every of the page's modules, which make it easy to create a custom version of the user interface.
+With this new version of Bibliomap Viewer, it is possible to configure each of the page's modules, which make it easy to create a custom version of the user interface.
 
 **All of the customization options are done in the file src/assets/config.json.**
 
