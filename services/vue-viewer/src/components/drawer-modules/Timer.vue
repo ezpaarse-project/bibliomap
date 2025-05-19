@@ -62,7 +62,7 @@
   import { TZDate } from '@date-fns/tz';
   import { useI18n } from 'vue-i18n';
 
-  const params = config.timer;
+  const params = config.drawerParams.timerSection;
   const { t } = useI18n();
 
   const startDate = new Date();

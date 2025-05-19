@@ -96,7 +96,7 @@
 
   const { t } = useI18n();
   const currentConfig = useViewerConfigStore().config;
-  const allPortals: Record<string, { color: string; icon?: string }> = initialConfig.portals;
+  const allPortals: Record<string, { color: string; icon?: string }> = initialConfig.drawerParams.portalSection.portals;
   const emitter = useMitt();
   const active = ref(false);
   emitter.on('showSettings', () => {
@@ -105,7 +105,7 @@
 
   const showMinimap = ref(currentConfig.minimapParams.include as boolean);
   const shownPortals = reactive<Record<string, boolean>>(
-    Object.keys(initialConfig.portals).reduce((acc: Record<string, boolean>, key) => {
+    Object.keys(initialConfig.drawerParams.portalSection.portals).reduce((acc: Record<string, boolean>, key) => {
       acc[key] = true
       return acc
     }, {})
@@ -118,9 +118,9 @@
   });
 
   watch(shownPortals, () => {
-    currentConfig.portals = Object.fromEntries(
+    currentConfig.drawerParams.portalSection.portals = Object.fromEntries(
       Object.entries(allPortals).filter(([key]) => shownPortals[key])
-    ) as typeof currentConfig.portals;
+    ) as typeof currentConfig.drawerParams.portalSection.portals;
   });
 
   watch(showTitles, () => {

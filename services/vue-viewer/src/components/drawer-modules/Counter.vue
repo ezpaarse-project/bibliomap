@@ -32,8 +32,8 @@
   const total = ref(0);
 
   const config = ref(useViewerConfigStore().config);
-  const counterProps = config.value.counter;
-  const mimes = config.value.mimes;
+  const counterProps = config.value.drawerParams.counterSection;
+  const mimes = config.value.mapParams.attributesColors.mimes;
 
   Object.keys(mimes).forEach(key => {
     if (mimes[key as keyof typeof mimes].count) counts[key] = 0;
@@ -42,7 +42,7 @@
   const io = useSocketStore().getSocket();
   io?.on('log', (log: Log) => {
     if (usePlatformFilterStore().getFilter() && log.platform_name && !((usePlatformFilterStore().getFilter().toUpperCase().includes(log.platform_name.toUpperCase()) || log.platform_name.toUpperCase().includes(usePlatformFilterStore().getFilter().toUpperCase())))) return;
-    if (log.mime && Object.keys(counts).includes(log.mime) && log.ezproxyName && Object.keys(config.value.portals).includes(log.ezproxyName)) {
+    if (log.mime && Object.keys(counts).includes(log.mime) && log.ezproxyName && Object.keys(config.value.drawerParams.portalSection.portals).includes(log.ezproxyName)) {
       counts[log.mime] += 1;
       total.value += 1;
     }

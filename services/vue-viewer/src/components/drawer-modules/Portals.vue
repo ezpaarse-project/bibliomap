@@ -1,6 +1,6 @@
 <template>
   <div class="portals-component">
-    <v-list-item v-for="(value, key) in config.portals" :key="key">
+    <v-list-item v-for="(value, key) in config.drawerParams.portalSection.portals" :key="key">
       <v-tooltip
         v-if="counts[key] && Object.keys(counts[key]).length > 0"
         location="right"
@@ -15,7 +15,7 @@
               </div>
             </div>
             <v-chip
-              :color="config.portals[key].color"
+              :color="config.drawerParams.portalSection.portals[key].color"
               variant="flat"
             >
               {{ Object.values(counts[key]).reduce((a, b) => a + b, 0) }}
@@ -42,7 +42,7 @@
           </div>
           <v-chip
             v-if="counts[key]"
-            :color="config.portals[key].color"
+            :color="config.drawerParams.portalSection.portals[key].color"
             variant="flat"
           >
             {{ Object.values(counts[key]).reduce((a, b) => a + b, 0) }}
@@ -65,7 +65,7 @@
 
   const counts = reactive({} as Record<string, Record<string, number>>);
 
-  Object.keys(config.value.portals).forEach(key => {
+  Object.keys(config.value.drawerParams.portalSection.portals).forEach(key => {
     counts[key] = {};
   });
 
