@@ -12,7 +12,7 @@
       </v-list-item>
       <v-list-item>
         <v-card :flat="true">
-          <a href="https://bib.cnrs.fr/">
+          <a href="https://bib.cnrs.fr/" target="_blank">
             <img :alt="t('info-card.img1-alt')" class="bibcnrs-img" src="@/assets/bibCnrs.png">
           </a>
           <v-card-text
@@ -26,8 +26,8 @@
       <v-list-item>
         <v-card :flat="true">
           <div class="ez-logos">
-            <a href="http://ezpaarse.couperin.org/"><img alt="ezPAARSE" src="@/assets/logo-ezpaarse.png"></a>
-            <a href="https://ang.couperin.org//"><img alt="AnalogIST" src="@/assets/logo-analogist.png"></a>
+            <a href="https://www.readmetrics.org/" target="_blank"><img alt="ezPAARSE" src="@/assets/logo-ezpaarse.png"></a>
+            <a href="https://ang.couperin.org" target="_blank"><img alt="AnalogIST" src="@/assets/logo-analogist.png"></a>
           </div>
           <v-card-text>
             <p v-html="t('info-card.p2')" />
@@ -42,9 +42,9 @@
       <v-list-item>
         <v-card :flat="true">
           <div class="org-logos">
-            <a href="http://www.couperin.org/"><img alt="Couperin" src="@/assets/logo-couperin.jpg"></a>
-            <a href="http://www.cnrs.fr/"><img alt="CNRS" src="@/assets/logo.svg"></a>
-            <a href="http://www.univ-lorraine.fr/"><img alt="Université de Lorraine" src="@/assets/logo-universite-de-lorraine.png"></a>
+            <a href="http://www.couperin.org/" target="_blank"><img alt="Couperin" src="@/assets/logo-couperin.jpg"></a>
+            <a href="http://www.cnrs.fr/" target="_blank"><img alt="CNRS" src="@/assets/logo.svg"></a>
+            <a href="http://www.univ-lorraine.fr/" target="_blank"><img alt="Université de Lorraine" src="@/assets/logo-universite-de-lorraine.png"></a>
           </div>
         </v-card>
       </v-list-item>
