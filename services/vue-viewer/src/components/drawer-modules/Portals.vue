@@ -1,20 +1,56 @@
 <template>
   <div class="portals-component">
-    <v-list-item v-for="(value, key) in config.drawerParams.portalSection.portals" :key="key">
-      <v-tooltip
-        v-if="counts[key] && Object.keys(counts[key]).length > 0"
-        location="right"
-      >
-        <template #activator="{ props }">
-          <div class="portal-list-item" v-bind="props">
+    <a
+      v-for="(value, key) in config.drawerParams.portalSection.portals"
+      :key="key"
+      class="anchor"
+      :href="value.url"
+      target="_blank"
+    >
+      <v-list-item class="portal-list-element">
+
+        <v-tooltip
+          v-if="counts[key] && Object.keys(counts[key]).length > 0"
+          location="right"
+        >
+          <template #activator="{ props }">
+            <div class="portal-list-item" v-bind="props">
+              <div class="portal-container">
+                <img v-if="value.icon" :src="getIconUrl(value.icon)">
+                <div>
+                  <h3>{{ t(`drawer-custom.portals.${key}.title`) }}</h3>
+                  <p>{{ t(`drawer-custom.portals.${key}.subtitle`) }}</p>
+                </div>
+              </div>
+              <v-chip
+                :color="config.drawerParams.portalSection.portals[key].color"
+                variant="flat"
+              >
+                {{ Object.values(counts[key]).reduce((a, b) => a + b, 0) }}
+              </v-chip>
+            </div>
+          </template>
+          <div>
+            <div
+              v-for="(val, subKey) in counts[key]"
+              :key="subKey"
+            >
+              {{ subKey }}: {{ val }}
+            </div>
+          </div>
+        </v-tooltip>
+        <template v-else>
+          <div class="portal-list-item">
             <div class="portal-container">
               <img v-if="value.icon" :src="getIconUrl(value.icon)">
+
               <div>
                 <h3>{{ t(`drawer-custom.portals.${key}.title`) }}</h3>
                 <p>{{ t(`drawer-custom.portals.${key}.subtitle`) }}</p>
               </div>
             </div>
             <v-chip
+              v-if="counts[key]"
               :color="config.drawerParams.portalSection.portals[key].color"
               variant="flat"
             >
@@ -22,34 +58,9 @@
             </v-chip>
           </div>
         </template>
-        <div>
-          <div
-            v-for="(val, subKey) in counts[key]"
-            :key="subKey"
-          >
-            {{ subKey }}: {{ val }}
-          </div>
-        </div>
-      </v-tooltip>
-      <template v-else>
-        <div class="portal-list-item">
-          <div class="portal-container">
-            <img v-if="value.icon" :src="getIconUrl(value.icon)">
-            <div>
-              <h3>{{ t(`drawer-custom.portals.${key}.title`) }}</h3>
-              <p>{{ t(`drawer-custom.portals.${key}.subtitle`) }}</p>
-            </div>
-          </div>
-          <v-chip
-            v-if="counts[key]"
-            :color="config.drawerParams.portalSection.portals[key].color"
-            variant="flat"
-          >
-            {{ Object.values(counts[key]).reduce((a, b) => a + b, 0) }}
-          </v-chip>
-        </div>
-      </template>
-    </v-list-item>
+
+      </v-list-item>
+    </a>
   </div>
 </template>
 
@@ -84,10 +95,24 @@
 </script>
 
 <style lang="scss">
+  .anchor{
+    text-decoration: none;
+    color: inherit;
+    z-index: 100;
+  }
   .portals-component{
     margin: .5rem 0;
   }
+  .portal-list-element{
+    background-color: white;
+    transition: filter 0.2s ease-in-out;
+  }
+  .portal-list-element:hover{
+      filter: brightness(0.8);
+  }
   .portal-list-item{
+    width: 100%;
+    height: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
