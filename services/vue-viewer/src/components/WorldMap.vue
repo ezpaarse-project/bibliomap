@@ -17,7 +17,7 @@
 
   const config = ref(useViewerConfigStore().config);
   const mapParams = config.value.mapParams;
-  const mimes = config.value.mimes;
+  const mimes = config.value.mapParams.attributesColors.mimes;
 
   const height = config.value.appbarParams.include ? 'calc(100vh - 48px)' : '100vh';
 
@@ -99,7 +99,7 @@
 
       let color;
       try {
-        const portalParams = config.value.portals as { [key: string]: { color: string } };
+        const portalParams = config.value.drawerParams.portalSection.portals as { [key: string]: { color: string } };
         color = portalParams[log.ezproxyName].color;
       }
       catch {
