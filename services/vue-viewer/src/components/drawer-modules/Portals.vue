@@ -22,8 +22,6 @@
             </v-chip>
           </div>
         </template>
-
-        <!-- Tooltip content -->
         <div>
           <div
             v-for="(val, subKey) in counts[key]"
@@ -33,8 +31,6 @@
           </div>
         </div>
       </v-tooltip>
-
-      <!-- Fallback when no tooltip is shown -->
       <template v-else>
         <div class="portal-list-item">
           <div class="portal-container">
@@ -54,8 +50,6 @@
         </div>
       </template>
     </v-list-item>
-
-
   </div>
 </template>
 
