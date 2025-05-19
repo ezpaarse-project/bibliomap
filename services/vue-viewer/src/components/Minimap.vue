@@ -1,7 +1,7 @@
 <template>
-  <div :class="['minimap-container', { 'exit': currentLogs.length === 0 && hasEntered, 'enter': currentLogs.length > 0}]">
+  <v-card :class="['minimap-container', { 'exit': currentLogs.length === 0 && hasEntered, 'enter': currentLogs.length > 0}]" :elevation="24">
     <div id="minimap" />
-  </div>
+  </v-card>
 </template>
 
 <script setup lang="ts">
@@ -105,7 +105,6 @@
       z-index: 4;
       padding: 0%;
       margin: 0%;
-      border: 3px inset #2c3e50;
       visibility: hidden;
       z-index: 1000;
     }
