@@ -7,7 +7,7 @@ How could it be useful ?
   * For helping ezpaarse adoption in your institution.
   * And just for fun !
 
-![anim](https://cloud.githubusercontent.com/assets/328244/19802257/11855392-9d03-11e6-9338-e35893ecddfc.gif)
+![bibliomap-shorter](https://github.com/user-attachments/assets/5151332c-444d-461c-89eb-e6423b154320)
 
 [Demonstration on the CNRS subscribed electronic ressources usage statistics](http://bibliomap.inist.fr/)
 
