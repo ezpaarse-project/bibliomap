@@ -6,6 +6,14 @@ Bibliomap viewer is a service that connects to Bibliomap enricher via websockets
 
 ## Configuration
 
+Bibliomap Viewer needs two environment variables:
+| name | Description |
+| -- | -- |
+| VITE_ENRICHER_WEBSOCKET_URL | The URL of the enricher's websocket server. Needed to get the EC consultation events. |
+| VITE_REPLAY_MODE | Boolean indicating the Bibliomap mode. Needed to know which view to use (how to display certain components). |
+
+## Customization
+
 With this new version of Bibliomap Viewer, it is possible to configure each of the page's modules, which make it easy to create a custom version of the user interface.
 
 **All of the customization options are done in the file src/assets/config.json.**
