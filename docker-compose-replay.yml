@@ -6,12 +6,8 @@ services:
     image: node:22.14.0
     container_name: bibliomap-viewer-dev
     environment:
-      NODE_ENV: "development"
-      BBV_INDEX: cnrs
-      BBV_JSFILE: bibliomap-cnrs.js
-      BBV_LISTEN_ENRICHER_HOST: "0.0.0.0"
-      BBV_LISTEN_ENRICHER_PORT: 27779
       VITE_ENRICHER_WEBSOCKET_URL: localhost:27780
+      VITE_REPLAY_MODE: ${REPLAY_MODE}
     command: "npm run dev"
     working_dir: /usr/src/app
     volumes: 

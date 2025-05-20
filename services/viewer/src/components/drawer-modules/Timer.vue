@@ -8,7 +8,7 @@
       </v-tooltip>
 
       <v-tooltip
-        v-if="!config.realTimeMode && params.showMultiplier && multiplier > 1"
+        v-if="replayMode && params.showMultiplier && multiplier > 1"
         location="top"
         :text="t('drawer.timer.tooltips.multiplier', {multiplier})"
       >
@@ -19,7 +19,7 @@
     </div>
 
     <v-tooltip
-      v-if="!config.realTimeMode && percentage >= 0"
+      v-if="replayMode && percentage >= 0"
       location="top"
       :text="t('drawer.timer.tooltips.simulation-percentage', {percentage: Math.round(percentage)})"
     >
@@ -29,7 +29,7 @@
     </v-tooltip>
 
     <v-tooltip
-      v-if="!config.realTimeMode && percentage < 0"
+      v-if="replayMode && percentage < 0"
       location="top"
       :text="t('drawer.timer.loading')"
     >
@@ -38,7 +38,7 @@
       </template>
     </v-tooltip>
 
-    <span v-if="!config.realTimeMode && params.showStartEndTime && startTimeText && endTimeText" class="start-end-dates">
+    <span v-if="replayMode && params.showStartEndTime && startTimeText && endTimeText" class="start-end-dates">
       <v-tooltip location="top" :text="t('drawer.timer.tooltips.start-datetime')">
         <template #activator="{ props }">
           <v-chip v-bind="props">{{ startTimeText }}</v-chip>
@@ -61,6 +61,7 @@
   import { useSocketStore } from '@/stores/socket';
   import { TZDate } from '@date-fns/tz';
   import { useI18n } from 'vue-i18n';
+  const replayMode = import.meta.env.VITE_REPLAY_MODE;
 
   const params = config.drawerParams.timerSection;
   const { t } = useI18n();
@@ -76,7 +77,7 @@
   let endTime: number;
   const multiplier = ref<number>(1);
 
-  if (config.realTimeMode) {
+  if (!replayMode) {
     text.value = `0${params.dayLetter} 0${params.hourLetter} 0${params.minuteLetter} 0${params.secondLetter}`;
     setInterval(() => {
       text.value = getDurationText(startDate, new Date());
