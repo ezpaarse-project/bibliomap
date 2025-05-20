@@ -32,7 +32,6 @@
   const route = useRoute();
 
   const props = config.dialogDrawerParams;
-  console.log('props', props);
   const include = !(!props || props.include === false);
   const usingPhone = window.innerWidth <= 768;
   const drawer = ref(!usingPhone);
