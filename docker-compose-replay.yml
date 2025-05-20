@@ -11,32 +11,13 @@ services:
       BBV_JSFILE: bibliomap-cnrs.js
       BBV_LISTEN_ENRICHER_HOST: "0.0.0.0"
       BBV_LISTEN_ENRICHER_PORT: 27779
-      BBV_LISTEN_HOST: "0.0.0.0"
-      BBV_LISTEN_PORT: 50197 # web server
+      ENRICHER_WEBSOCKET_PORT: 27780
     command: "npm run dev"
     working_dir: /usr/src/app
     volumes: 
       - ./services/viewer:/usr/src/app
     ports:
       - 50197:50197
-    restart: unless-stopped
-
-  vue-viewer:
-    image: node:22.14.0
-    container_name: bibliomap-vue-viewer-dev
-    environment:
-      NODE_ENV: "development"
-      BBV_INDEX: cnrs
-      BBV_JSFILE: bibliomap-cnrs.js
-      BBV_LISTEN_ENRICHER_HOST: "0.0.0.0"
-      BBV_LISTEN_ENRICHER_PORT: 27779
-      ENRICHER_WEBSOCKET_PORT: 27780
-    command: "npm run dev"
-    working_dir: /usr/src/app
-    volumes: 
-      - ./services/vue-viewer:/usr/src/app
-    ports:
-      - 3000:3000
     restart: unless-stopped
     depends_on:
       enricher:
