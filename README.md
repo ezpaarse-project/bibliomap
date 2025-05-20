@@ -15,7 +15,11 @@ How could it be useful ?
 
 ### Expo mode
 
-In expo mode, the description popup will automatically show and hide at determined intervals. To activate it, add `expo` or `e` in the querystring. By default, the popup will be shown for **1 minute**, then hidden for **10 minutes**. To define custom intervals, `expo` should take two numbers separated by a comma. The first one is the time shown, the second is the time hidden. Times are defined in **seconds**.
+In expo mode, the information drawer will automatically appear and disappear at set intervals. To activate this mode, add expo or e to the query string.
+
+By default, the drawer is shown for 1 minute and then hidden for 10 minutes.
+
+To customize these intervals, assign two comma-separated numbers to the expo parameter. The first number sets how long the drawer is shown, and the second sets how long it is hidden. Both values should be specified in seconds.
 
 Examples:
   - http://bibliomap.inist.fr?expo (activates default expo mode: 1min shown / 10 min hidden)
@@ -36,9 +40,9 @@ Bibliomap uses these softwares:
 
 ## Prerequisites
 
-  * Docker and docker-compose
+  * Docker
 
-  * Load the configuration file which define your project settings (setup_*.sh)
+  * Configuration file to set the environment variables (setup_*.sh)
 
 ## Installation and running a quick demo
 
