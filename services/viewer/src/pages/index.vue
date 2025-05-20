@@ -18,7 +18,8 @@
   import { io } from 'socket.io-client';
   import { useViewerConfigStore } from '@/stores/viewer-config';
 
-  const socket = io('localhost:27780');
+  const websocketUrl = import.meta.env.VITE_ENRICHER_WEBSOCKET_URL;
+  const socket = io(websocketUrl);
 
   const socketStore = useSocketStore();
   socketStore.setSocket(socket);
