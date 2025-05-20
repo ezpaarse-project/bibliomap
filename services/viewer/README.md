@@ -90,7 +90,7 @@ The timer section configurations are done in the "timerSection" block, inside th
 | hourLetter |  Letter used for the hour unit. | "h" |
 | minuteLetter |  Letter used for the minute unit.  | "m" |
 | secondLetter |  Letter used for the second unit.  | "s" |
-| timerDateFormat | Format used to show the simulation time on replay. | "EEEE dd/MM/yyyy HH:mm:ss" |
+| timerDateFormat | Format used to show the simulation time on replay. You can visit [this documentation page](https://date-fns.org/v4.1.0/docs/format) to know how to use it. | "EEEE dd/MM/yyyy HH:mm:ss" |
 | showStartEndTime | Indicates if the interface should show or hide the start and end times of the replay simulation. | true |
 | startEndDatesFormat | Format that will be used to show the start and end times. |  "HH:mm:ss" |
 | showMultiplier | Indicates if the multiplier should be shown or hidden. | true |
