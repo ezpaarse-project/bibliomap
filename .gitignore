@@ -3,3 +3,4 @@ node_modules/
 build.sh
 setup_replay.sh
 node_modules/.package-lock.json
+data/
