@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 module.exports = class LogGenerator {
-  constructor (config = {}) {
+  constructor(config = {}) {
     this.logFiles = [];
     this.logLines = {};
     this.sourceDir = config.source;
@@ -10,30 +10,30 @@ module.exports = class LogGenerator {
     this.frequency = 1000 / (parseFloat(config.speed) || 5);
   }
 
-  async run () {
+  async run() {
     this.logFiles = await this.loadLogFiles();
     this.write();
   }
 
-  write () {
+  write() {
     const randomFile = this.logFiles[Math.floor(Math.random() * this.logFiles.length)];
     this.writeInFile(randomFile);
     setTimeout(() => this.write(), this.frequency);
   }
 
-  loadLogFiles () {
+  loadLogFiles() {
     return new Promise((resolve, reject) => {
       fs.readdir(this.sourceDir, (err, files) => {
         if (err) {
           return reject(err);
         }
 
-        files.forEach(filename => {
+        files.forEach((filename) => {
           const sourceFile = path.resolve(this.sourceDir, filename);
           const destFile = path.resolve(this.destinationDir, filename);
 
           const fileContent = fs.readFileSync(sourceFile, 'utf-8');
-          this.logLines[filename] = fileContent.split(/\r?\n/).map(line => line.trim()).filter(line => line);
+          this.logLines[filename] = fileContent.split(/\r?\n/).map((line) => line.trim()).filter((line) => line);
 
           if (!fs.existsSync(destFile)) {
             fs.writeFileSync(destFile, '');
@@ -45,7 +45,7 @@ module.exports = class LogGenerator {
     });
   }
 
-  writeInFile (file) {
+  writeInFile(file) {
     const lines = this.logLines[file];
     const line = lines[Math.floor(Math.random() * lines.length)];
 
@@ -56,4 +56,4 @@ module.exports = class LogGenerator {
       }
     });
   }
-}
+};
