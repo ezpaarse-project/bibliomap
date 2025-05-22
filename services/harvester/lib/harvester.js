@@ -1,3 +1,6 @@
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable max-classes-per-file */
+
 /* Log.io Log Harvester
 
 Watches local files and sends new log message to server via TCP.
@@ -34,32 +37,30 @@ const { EventEmitter } = require('events');
  * changes, extracts new log messages, and emits 'new_log' events.
  */
 class LogStream extends EventEmitter {
-
-  constructor (name, paths, _log) {
+  constructor(name, paths, _log) {
     super();
     this.name = name;
     this.paths = paths;
     this._log = _log;
   }
 
-  watch () {
+  watch() {
     console.log(`Starting log stream: '${this.name}'`);
-    this.paths.forEach(p => this._watchFile(p));
+    this.paths.forEach((p) => this._watchFile(p));
     return this;
-  };
+  }
 
-  _watchFile (path) {
+  _watchFile(path) {
     if (!fs.existsSync(path)) {
       console.error(`File doesn't exist: '${path}'`);
       setTimeout(() => this._watchFile(path), 1000);
       return;
     }
 
-
     console.log(`Watching file: '${path}'`);
     let currSize = fs.statSync(path).size;
 
-    let watcher = fs.watch(path, event => {
+    const watcher = fs.watch(path, (event) => {
       if (event === 'rename') {
         watcher.close();
         this._watchFile(path);
@@ -72,27 +73,27 @@ class LogStream extends EventEmitter {
     });
 
     return watcher;
-  };
+  }
 
-  _readNewLogs (path, curr, prev) {
+  _readNewLogs(path, curr, prev) {
     if (curr < prev) { return; }
 
     const rstream = fs.createReadStream(path, {
       encoding: 'utf8',
       start: prev,
-      end: curr
+      end: curr,
     });
     rstream.on('error', (err) => {
       console.error(err);
     });
 
-    rstream.on('data', data => {
-      const lines = data.split('\n').filter(line => line);
+    rstream.on('data', (data) => {
+      const lines = data.split('\n').filter((line) => line);
       console.log(lines);
-      return lines.map(line => this.emit('new_log', line));
+      return lines.map((line) => this.emit('new_log', line));
     });
-  };
-};
+  }
+}
 
 /**
  * LogHarvester creates LogStreams and opens a persistent TCP connection to the server.
@@ -100,35 +101,35 @@ class LogStream extends EventEmitter {
  * Log messages are sent to the server via string-delimited TCP messages
  */
 class LogHarvester {
-
-  constructor (config) {
+  constructor(config) {
     this.nodeName = config.nodeName;
     this.server = config.server;
     this.delim = config.delimiter || '\r\n';
     this._log = config.logging || winston;
-    this.logStreams = Object.entries(config.logStreams).map(([name, paths]) => new LogStream(name, paths, this._log));
+    this.logStreams = Object.entries(config.logStreams)
+      .map(([name, paths]) => new LogStream(name, paths, this._log));
   }
 
-  run () {
+  run() {
     this._connect();
 
-    this.logStreams.forEach(stream => {
-      stream.watch().on('new_log', msg => {
+    this.logStreams.forEach((stream) => {
+      stream.watch().on('new_log', (msg) => {
         if (this._connected) {
           return this._sendLog(stream, msg);
         }
       });
     });
-  };
+  }
 
-  _connect () {
+  _connect() {
     console.log('Connecting to server...');
 
     this.socket = new net.Socket();
     this.socket.on('error', () => {
       this._connected = false;
       console.error('Unable to connect server, trying again...');
-      console.log(this.server)
+      console.log(this.server);
       setTimeout(() => this._connect(), 2000);
     });
 
@@ -137,24 +138,24 @@ class LogHarvester {
       this._connected = true;
       this._announce();
     });
-  };
+  }
 
-  _sendLog (stream, msg) {
+  _sendLog(stream, msg) {
     console.log(`Sending log: (${stream.name}) ${msg}`);
     return this._send('+log', stream.name, this.nodeName, 'info', msg);
-  };
+  }
 
-  _announce () {
-    const snames = this.logStreams.map(l => l.name).join(',');
+  _announce() {
+    const snames = this.logStreams.map((l) => l.name).join(',');
     console.log(`Announcing: ${this.nodeName} (${snames})`);
     this._send('+node', this.nodeName, snames);
     return this._send('+bind', 'node', this.nodeName);
-  };
+  }
 
-  _send (mtype, ...args) {
-    console.log("send:", `${mtype}|${args.join('|')}${this.delim}`);
+  _send(mtype, ...args) {
+    console.log('send:', `${mtype}|${args.join('|')}${this.delim}`);
     return this.socket.write(`${mtype}|${args.join('|')}${this.delim}`);
-  };
-};
+  }
+}
 
 module.exports = LogHarvester;
