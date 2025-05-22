@@ -60,7 +60,7 @@ services:
   
   ezpaarse:
     container_name: bibliomap-ezpaarse-dev
-    image: ezpaarseproject/ezpaarse:3.4.0
+    image: ezpaarseproject/ezpaarse:3.4.3
     environment:
       http_proxy:  ${http_proxy}
       https_proxy: ${https_proxy}

@@ -2,50 +2,6 @@ version: "3.3"
 
 services:
 
-  viewer:
-    image: node:22.14.0
-    container_name: bibliomap-viewer-dev
-    environment:
-      NODE_ENV: "development"
-      BBV_INDEX: cnrs
-      BBV_JSFILE: bibliomap-cnrs.js
-      BBV_LISTEN_ENRICHER_HOST: "0.0.0.0"
-      BBV_LISTEN_ENRICHER_PORT: 27779
-      BBV_LISTEN_HOST: "0.0.0.0"
-      BBV_LISTEN_PORT: 50197 # web server
-    command: "npm run dev"
-    working_dir: /usr/src/app
-    volumes: 
-      - ./services/viewer:/usr/src/app
-    ports:
-      - 50197:50197
-      - 27779:27779
-    restart: unless-stopped
-
-  enricher:
-    image: node:22.14.0
-    container_name: bibliomap-enricher-dev
-    environment:
-      NODE_APP_INSTANCE: ${NODE_APP_INSTANCE}
-      BBE_EZPAARSE_URL: "http://ezpaarse:59599"
-      BBE_LISTEN_HARVESTER_HOST: "0.0.0.0"
-      BBE_LISTEN_HARVESTER_PORT: 27777
-      BBE_BROADCAST_VIEWER_HOST: "viewer"
-      BBE_BROADCAST_VIEWER_PORT: 27779
-      BBE_EZPAARSE_PREDEF: bibliomap
-      REPLAY_FILE_PATHS: ${REPLAY_FILE_PATHS}
-      REPLAY_START_TIME: ${REPLAY_START_TIME}
-      REPLAY_MULTIPLIER: ${REPLAY_MULTIPLIER}
-      REPLAY_MODE: ""
-    command: "npm run dev"
-    working_dir: /usr/src/app
-    volumes: 
-      - ./services/enricher:/usr/src/app
-    restart: unless-stopped
-    depends_on:
-      ezpaarse:
-        condition: service_healthy
-
   harvester:
     build: 
       context: ./services/harvester
@@ -64,16 +20,100 @@ services:
     volumes:
       - ./services/harvester:/usr/src/app
     restart: unless-stopped
-  
+
+  viewer:
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    build: 
+      context: ./services/viewer
+    container_name: bibliomap-viewer-dev
+    environment:
+      NODE_ENV: "development"
+      BBV_INDEX: cnrs
+      BBV_JSFILE: bibliomap-cnrs.js
+      BBV_LISTEN_ENRICHER_HOST: "0.0.0.0"
+      BBV_LISTEN_ENRICHER_PORT: 27779
+      BBV_LISTEN_HOST: "0.0.0.0"
+      BBV_LISTEN_PORT: 50197 # web server
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./services/viewer
+          target: /app
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: ./services/viewer/package.json
+    command: "npm start"
+    ports:
+      - 50197:50197
+      - 27779:27779
+    restart: unless-stopped
+
+  vue-viewer:
+    image: node:22.14.0
+    container_name: bibliomap-vue-viewer-dev
+    environment:
+      VITE_ENRICHER_WEBSOCKET_URL: localhost:27780
+    command: "npm run dev"
+    working_dir: /usr/src/app
+    volumes: 
+      - ./services/vue-viewer:/usr/src/app
+    ports:
+      - 3000:3000
+    restart: unless-stopped
+    depends_on:
+      enricher:
+        condition: service_healthy
+
+  enricher:
+    image: node:22.14.0
+    container_name: bibliomap-enricher-dev
+    environment:
+      NODE_APP_INSTANCE: cnrs
+      BBE_EZPAARSE_URL: "http://ezpaarse:59599"
+      BBE_LISTEN_HARVESTER_HOST: "0.0.0.0"
+      BBE_LISTEN_HARVESTER_PORT: 27777
+      HARVESTER_URL: "localhost:27777"
+      BBE_BROADCAST_VIEWER_HOST: "viewer"
+      BBE_BROADCAST_VIEWER_PORT: 27779
+      WEBSOCKET_PORT: 27780
+      BBE_EZPAARSE_PREDEF: bibliomap
+    command: "npm run dev"
+    working_dir: /usr/src/app
+    volumes: 
+      - ./services/enricher:/usr/src/app
+    restart: unless-stopped
+    depends_on:
+      ezpaarse:
+        condition: service_healthy
+    ports:
+      - 27780:27780
+      - 9229:9229
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -Y off --no-verbose --tries=1 --spider http://localhost:27780 || exit 1"
+        ]
+      interval: 2s
+      timeout: 2s
+      retries: 10
+
   ezpaarse:
     container_name: bibliomap-ezpaarse-dev
-    image: ezpaarseproject/ezpaarse:3.4.0
+    image: ezpaarseproject/ezpaarse:3.10.5
     environment:
       http_proxy:  ${http_proxy}
       https_proxy: ${https_proxy}
       no_proxy: ${no_proxy}
       NODE_ENV: "production"
       EZPAARSE_MONGO_URL: "mongodb://ezpaarse_db:27017/ezpaarse"
+    volumes:
+      - ./data/ezpaarse/platforms:/opt/ezpaarse/platforms
+      - ./data/ezpaarse/middlewares:/opt/ezpaarse/middlewares
+      - ./data/ezpaarse/resources:/opt/ezpaarse/resources
+      - ./data/ezpaarse/exclusions:/opt/ezpaarse/exclusions
     ports:
       - 59599:59599
     depends_on:
@@ -84,13 +124,17 @@ services:
           "CMD-SHELL",
           "wget -Y off --no-verbose --tries=1 --spider http://localhost:59599 || exit 1"
         ]
-      interval: 5s
-      timeout: 5s
+      interval: 2s
+      timeout: 2s
       retries: 10
     #restart: unless-stopped
 
   ezpaarse_db:
+    image: mongo:7.0.20
     container_name: bibliomap-ezpaarse-db-dev
-    image: mongo:3.4.1
-    command: --smallfiles
-    #restart: unless-stopped
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 2s
+      timeout: 2s
+      retries: 10
