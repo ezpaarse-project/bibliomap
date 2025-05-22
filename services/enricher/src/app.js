@@ -4,7 +4,7 @@ import LogIoListener from 'log.io-server-parser';
 import pino from 'pino';
 import http from 'http';
 import { Server } from 'socket.io';
-import SelectedLogsReader from './selected-logs-reader.js';
+import FileReaderListener from './file_reader_listener.js';
 import PaarseQueue from './paarse-queue.js';
 
 const logger = pino();
@@ -37,8 +37,8 @@ const viewers = new Set();
  */
 logger.debug('config:', config.listen.harvester);
 
-const logIoListener = process.env.REPLAY_MODE
-  ? new SelectedLogsReader(config.listen.harvester)
+const logIoListener = process.env.REPLAY_MODE === 'true'
+  ? new FileReaderListener()
   : new LogIoListener(config.listen.harvester);
 
 logIoListener.listen(() => {
@@ -84,6 +84,7 @@ logIoListener.on('+log', async (streamName, node, type, log) => {
   if (!queues[streamName]) {
     queues[streamName] = new PaarseQueue(
       (data) => {
+        console.log(data);
         const ec = {
           'geoip-latitude': data['geoip-latitude'],
           'geoip-longitude': data['geoip-longitude'],
@@ -102,6 +103,9 @@ logIoListener.on('+log', async (streamName, node, type, log) => {
         queues[streamName] = null;
       },
     );
+    setTimeout(() => {
+      queues[streamName].writeStream.pause();
+    }, 5000);
   }
   queues[streamName].push(log);
 });

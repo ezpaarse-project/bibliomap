@@ -56,7 +56,20 @@ class FileReaderListener extends EventEmitter {
     return cb();
   }
 
-  initTimer(firstLogDate) {
+  initTimer() {
+    if (process.env.REPLAY_START_DATETIME) {
+      this.dayStart = startOfDay(TZDate.tz('Europe/Paris', new Date(process.env.REPLAY_START_DATETIME))).getTime();
+      this.dayEnd = endOfDay(addDays(TZDate.tz('Europe/Paris', new Date(process.env.REPLAY_START_DATETIME)), this.duration - 1)).getTime();
+      this.startTimerAt = new Date(process.env.REPLAY_START_DATETIME).getTime();
+      this.timer = this.startTimerAt;
+      this.loading = false;
+      this.emit('ready', null);
+      return;
+    }
+
+    const firstLogDate = this.logReaders
+      .reduce((acc, reader) => Math.min(acc, reader.firstLog.date.getTime()), Infinity);
+
     this.dayStart = startOfDay(TZDate.tz('Europe/Paris', firstLogDate)).getTime();
     this.dayEnd = endOfDay(addDays(TZDate.tz('Europe/Paris', firstLogDate), this.duration - 1)).getTime();
 
@@ -88,9 +101,9 @@ class FileReaderListener extends EventEmitter {
       this.logReaders = this.logReaders.filter((reader) => !reader.eof);
 
       if (this.loading) {
-        if (this.logReaders.every((reader) => reader.firstLog)) {
-          this.initTimer(this.logReaders
-            .reduce((acc, reader) => Math.min(acc, reader.firstLog.date.getTime()), Infinity));
+        if ((process.env.REPLAY_START_DATETIME)
+        || this.logReaders.every((reader) => reader.firstLog)) {
+          this.initTimer();
         } else return;
       }
 

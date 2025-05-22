@@ -7,6 +7,7 @@ const logger = pino();
 
 class PaarseQueue {
   constructor(onData, cb) {
+    console.log('PaarseQueue constructor');
     this.onData = onData;
     this.cb = cb;
     this.writeStream = new PassThrough();
@@ -24,6 +25,7 @@ class PaarseQueue {
       body: this.writeStream,
       duplex: 'half',
     }).then((res) => {
+      console.log('RESPONSE', res);
       if (!res.ok) {
         logger.error(`[ezPAARSE] Failed to connect to ezPAARSE: ${res.status} ${res.statusText}`);
         return;
@@ -54,6 +56,9 @@ class PaarseQueue {
           logger.error('[ezPAARSE] error');
           logger.error(err);
         });
+    }).catch((err) => {
+      logger.error('[ezPAARSE] error');
+      logger.error(err);
     });
   }
 
