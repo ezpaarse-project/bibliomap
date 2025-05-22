@@ -1,0 +1,34 @@
+<ul id="slide-out" class="sidenav sidenav-fixed">
+  <li>
+    <div class="row top-side">
+      <div class="col s3">
+        <img src="/themes/{{ entity }}/images/logo.svg" alt="Logo {{ entity|upper }}" width="66px">
+      </div>
+      <div class="col s8">
+        <p>
+          {% set locale = i18n.locale %}
+          {% include "../../" ~ entity ~ "/components/legend.html.twig" with locale %}
+        </p>
+      </div>
+      <div class="col s1">
+        <a href="#">
+          <i class="material-icons close-side" id="close-side">close</i>
+        </a>
+      </div>
+    </div>
+  </li>
+  <li><div class="divider"></div></li>
+  <li class="center-align">
+    <div class="chip" id="Timer">0j 0h 0m 0s</div>         
+  </li>
+  <li><div class="divider"></div></li>
+  <li>
+    <ul class="collection bibliomap-collection">
+      <li class="collection-item center-align" id="totalCounters"></li>
+    </ul>
+  </li>
+  <li><div class="divider"></div></li>
+  <li>
+    <ul class="collection bibliomap-collection" id="legend"></ul>
+  </li>
+</ul>

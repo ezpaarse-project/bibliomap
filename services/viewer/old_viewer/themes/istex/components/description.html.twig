@@ -1,0 +1,35 @@
+<div class="row">
+  <div class="col s6">
+    <a href="http://www.istex.fr/" target="_blank">
+      <img alt="CNRS" src="/themes/{{ entity }}/images/logocnrs.png">
+    </a>
+  </div>
+  <div class="col s6">
+    <a href="http://www.istex.fr/" target="_blank">
+      <img alt="ISTEX" src="/themes/{{ entity }}/images/logo.svg" width="100%">
+    </a>
+  </div>
+  <div class="col s12">
+    <!-- French part -->
+    {% if locale == "fr" %}
+      <strong>BiblioMap</strong>
+      reflète les consultations en direct des membres de l’ESR (Enseignement Supérieur et de la Recherche) des ressources numériques via la plateforme ISTEX. Cet outil numérique mis à leur disposition permet
+      <strong>d’accéder au texte intégral</strong> de <strong>plusieurs millions d’articles</strong>
+      de revues, livres, corpus de textes appartenant à des <strong>collections rétrospectives</strong>
+      de la littérature scientifique dans toutes les disciplines. Un second type d’accès dans le cadre des services ou usages d’<strong>ISTEX</strong>
+      apporte une autre visualisation et est identifié en tant que accès
+      <strong>DM (Text and Data Mining)</strong>.
+    {% endif %}
+
+    <!-- English part -->
+    {% if locale == "en" %}
+      <strong>BiblioMap</strong>
+      reflects the direct consultations of members of the ESR (Higher Education and Research) of digital resources via the ISTEX platform. This digital tool made available to them allows them to
+      <strong>to access the full text</strong> of <strong>several million articles</strong>
+      journals, books, corpora of texts belonging to <strong>retrospective collections</strong>
+      scientific literature in all disciplines. A second type of access as part of the services or uses of <strong>ISTEX</strong>
+      provides another visualization and is identified as access
+      <strong>DM (Text and Data Mining)</strong>.
+    {% endif %}
+  </div>
+</div>
