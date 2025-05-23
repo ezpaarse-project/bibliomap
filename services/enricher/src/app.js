@@ -35,14 +35,19 @@ const viewers = new Set();
  * Listen events coming from harvester
  * then forward it to ezpaarse jobs
  */
-logger.debug('config:', config.listen.harvester);
+logger.debug('config:', config);
+
+const harvesterConfig = {
+  host: process.env.HARVESTER_URL.split(':')[0],
+  port: process.env.HARVESTER_URL.split(':')[1],
+};
 
 const logIoListener = process.env.REPLAY_MODE === 'true'
   ? new FileReaderListener()
-  : new LogIoListener(config.listen.harvester);
+  : new LogIoListener(harvesterConfig);
 
 logIoListener.listen(() => {
-  logger.info(`Waiting for harvester at ${JSON.stringify(config.listen.harvester)}`);
+  logger.info(`Waiting for harvester at ${JSON.stringify(harvesterConfig)}`);
 });
 
 logIoListener.server.on('connection', (logListenerSocket) => {
@@ -71,8 +76,6 @@ io.on('connection', (viewerSocket) => {
   });
 });
 
-const queues = {};
-
 function randomizePos(log) {
   const randomizedLog = log;
   randomizedLog['geoip-latitude'] = parseFloat(log['geoip-latitude']) + 0.4 * (Math.random() - 0.5);
@@ -80,15 +83,17 @@ function randomizePos(log) {
   return randomizedLog;
 }
 
+let paarseQueue;
+
 logIoListener.on('+log', async (streamName, node, type, log) => {
-  if (!queues[streamName]) {
-    queues[streamName] = new PaarseQueue(
+  if (!paarseQueue) {
+    paarseQueue = new PaarseQueue(
       (data) => {
         console.log(data);
         const ec = {
           'geoip-latitude': data['geoip-latitude'],
           'geoip-longitude': data['geoip-longitude'],
-          ezproxyName: streamName,
+          ezproxyName: data.ezproxyName,
           platform_name: data.platform_name,
           publication_title: data.publication_title,
           rtype: data.rtype,
@@ -100,14 +105,11 @@ logIoListener.on('+log', async (streamName, node, type, log) => {
         if (viewers && viewers.size) [...viewers].map((s) => s.emit('log', randomizePos(ec)));
       },
       () => {
-        queues[streamName] = null;
+        paarseQueue = null;
       },
     );
-    setTimeout(() => {
-      queues[streamName].writeStream.pause();
-    }, 5000);
   }
-  queues[streamName].push(log);
+  paarseQueue.push(log);
 });
 
 logIoListener.on('+exported_log', (streamName, node, type, log) => {

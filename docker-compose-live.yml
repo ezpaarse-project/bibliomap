@@ -72,11 +72,7 @@ services:
     environment:
       NODE_APP_INSTANCE: cnrs
       BBE_EZPAARSE_URL: "http://ezpaarse:59599"
-      BBE_LISTEN_HARVESTER_HOST: "0.0.0.0"
-      BBE_LISTEN_HARVESTER_PORT: 27777
       HARVESTER_URL: "localhost:27777"
-      BBE_BROADCAST_VIEWER_HOST: "viewer"
-      BBE_BROADCAST_VIEWER_PORT: 27779
       WEBSOCKET_PORT: 27780
       BBE_EZPAARSE_PREDEF: bibliomap
     command: "npm run dev"

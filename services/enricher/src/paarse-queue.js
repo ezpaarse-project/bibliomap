@@ -7,29 +7,37 @@ const logger = pino();
 
 class PaarseQueue {
   constructor(onData, cb) {
-    console.log('PaarseQueue constructor');
     this.onData = onData;
     this.cb = cb;
     this.writeStream = new PassThrough();
 
-    const broadcastedFields = config.broadcast.fields;
+    this.start();
+  }
 
-    fetch(config.ezpaarse.url, {
-      method: 'POST',
-      headers: { // FIXME 2025-04-14 CANNOT SEEM TO USE THE HEADERS FROM THE CONFIG! HELP!!!
-        Accept: 'application/jsonstream',
-        'Double-Click-Removal': 'false',
-        'crossref-enrich': 'false',
-        'ezPAARSE-Predefined-Settings': 'bibliomap',
-      },
-      body: this.writeStream,
-      duplex: 'half',
-    }).then((res) => {
-      console.log('RESPONSE', res);
+  async start() {
+    try {
+      const res = await fetch(config.ezpaarse.url, {
+        method: 'POST',
+        headers: { // FIXME 2025-04-14 CANNOT SEEM TO USE THE HEADERS FROM THE CONFIG! HELP!!!
+          Accept: 'application/jsonstream',
+          'Traces-Level': 'info',
+          'Log-Format-ezproxy': '%h %{ezproxy-session} %l %u %t "%r" %s %b %{bib-groups}<[a-zA-Z0-9@\\.\\-_%\\,=\\+]+>',
+          'Crypted-Fields': 'login,user',
+          'Output-Fields': '+bib-groups',
+          'ezPAARSE-Middlewares': '(only) filter, parser, geolocalizer, ebscohost, qualifier', // TODO: only keep wanted middlewares
+          extract: 'login => /^([^_]+)_O_([^_]+)_I_([^_]+)_OU_([^_]+)$/ => user,section,department,unit',
+        },
+        body: this.writeStream,
+        duplex: 'half',
+      });
+
       if (!res.ok) {
         logger.error(`[ezPAARSE] Failed to connect to ezPAARSE: ${res.status} ${res.statusText}`);
         return;
       }
+
+      const broadcastedFields = config.broadcast.fields;
+
       const nodeReadable = Readable.fromWeb(res.body);
       nodeReadable
         .pipe(JSONStream.parse())
@@ -56,10 +64,10 @@ class PaarseQueue {
           logger.error('[ezPAARSE] error');
           logger.error(err);
         });
-    }).catch((err) => {
+    } catch (err) {
       logger.error('[ezPAARSE] error');
       logger.error(err);
-    });
+    }
   }
 
   push(line) {
