@@ -1,11 +1,11 @@
 /* eslint-disable import/extensions */
-import config from 'config';
 import LogIoListener from 'log.io-server-parser';
 import pino from 'pino';
 import http from 'http';
 import { Server } from 'socket.io';
 import FileReaderListener from './file_reader_listener.js';
 import PaarseQueue from './paarse-queue.js';
+import config from '../config/config.json' with { type: 'json' };
 
 const logger = pino();
 
@@ -89,20 +89,7 @@ logIoListener.on('+log', async (streamName, node, type, log) => {
   if (!paarseQueue) {
     paarseQueue = new PaarseQueue(
       (data) => {
-        console.log(data);
-        const ec = {
-          'geoip-latitude': data['geoip-latitude'],
-          'geoip-longitude': data['geoip-longitude'],
-          ezproxyName: data.ezproxyName,
-          platform_name: data.platform_name,
-          publication_title: data.publication_title,
-          rtype: data.rtype,
-          mime: data.mime,
-        };
-
-        if (!Object.values(ec).reduce((a, b) => a && b, true)) return;
-
-        if (viewers && viewers.size) [...viewers].map((s) => s.emit('log', randomizePos(ec)));
+        if (viewers && viewers.size) [...viewers].map((s) => s.emit('log', randomizePos(data)));
       },
       () => {
         paarseQueue = null;

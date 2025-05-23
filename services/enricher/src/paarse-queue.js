@@ -1,7 +1,7 @@
 import { PassThrough, Readable } from 'stream';
 import JSONStream from 'JSONStream';
-import config from 'config';
 import pino from 'pino';
+import config from '../config/config.json' with { type: 'json' };
 
 const logger = pino();
 
@@ -10,23 +10,14 @@ class PaarseQueue {
     this.onData = onData;
     this.cb = cb;
     this.writeStream = new PassThrough();
-
     this.start();
   }
 
   async start() {
     try {
-      const res = await fetch(config.ezpaarse.url, {
+      const res = await fetch(process.env.EZPAARSE_URL, {
         method: 'POST',
-        headers: { // FIXME 2025-04-14 CANNOT SEEM TO USE THE HEADERS FROM THE CONFIG! HELP!!!
-          Accept: 'application/jsonstream',
-          'Traces-Level': 'info',
-          'Log-Format-ezproxy': '%h %{ezproxy-session} %l %u %t "%r" %s %b %{bib-groups}<[a-zA-Z0-9@\\.\\-_%\\,=\\+]+>',
-          'Crypted-Fields': 'login,user',
-          'Output-Fields': '+bib-groups',
-          'ezPAARSE-Middlewares': '(only) filter, parser, geolocalizer, ebscohost, qualifier', // TODO: only keep wanted middlewares
-          extract: 'login => /^([^_]+)_O_([^_]+)_I_([^_]+)_OU_([^_]+)$/ => user,section,department,unit',
-        },
+        headers: config.headers,
         body: this.writeStream,
         duplex: 'half',
       });
@@ -36,7 +27,7 @@ class PaarseQueue {
         return;
       }
 
-      const broadcastedFields = config.broadcast.fields;
+      const broadcastedFields = config.broadcasted_fields;
 
       const nodeReadable = Readable.fromWeb(res.body);
       nodeReadable
@@ -46,7 +37,9 @@ class PaarseQueue {
           broadcastedFields.forEach((field) => {
             output[field] = data[field];
           });
-          output.ezproxyName = data['bib-groups'].toUpperCase();
+          if (config.multiple_portals && config.portal_field) {
+            output.ezproxyName = data[config.portal_field];
+          }
           output.datetime = data.datetime;
           this.onData(output);
         })

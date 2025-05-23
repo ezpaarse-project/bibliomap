@@ -71,10 +71,9 @@ services:
     container_name: bibliomap-enricher-dev
     environment:
       NODE_APP_INSTANCE: cnrs
-      BBE_EZPAARSE_URL: "http://ezpaarse:59599"
+      EZPAARSE_URL: "http://ezpaarse:59599"
       HARVESTER_URL: "localhost:27777"
       WEBSOCKET_PORT: 27780
-      BBE_EZPAARSE_PREDEF: bibliomap
     command: "npm run dev"
     working_dir: /usr/src/app
     volumes: 

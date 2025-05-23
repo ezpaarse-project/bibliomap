@@ -1,36 +1,15 @@
 {
-  "ezpaarse": {
-    "url": "http://127.0.0.1:59599",
-    "headers": {
-    "Accept": "application/jsonstream",
-      "Double-Click-Removal": "false",
-      "crossref-enrich": "false"
-    }
-  },
-  "listen": {
-    "harvester": {
-      "host": "0.0.0.0",
-      "port": 27777
-    }
-  },
-  "broadcast": {
-    "viewer": {
-      "host": "127.0.0.1",
-      "port": 27779
-    },
-    "fields": [
-      "geoip-latitude",
-      "geoip-longitude",
-      "ezproxyName",
-      "platform_name",
-      "publication_title",
-      "online_identifier",
-      "print_identifier",
-      "rtype",
-      "mime"
-    ]
-  },
-  "autoConnectDelay": 3000
+  "exported_fields": [
+    "geoip-latitude",
+    "geoip-longitude",
+    "ezproxyName",
+    "platform_name",
+    "publication_title",
+    "online_identifier",
+    "print_identifier",
+    "rtype",
+    "mime"
+  ],
+  "header": {},
+  "multiple_portals": false
 }
-
-

@@ -2,43 +2,43 @@
   "drawer-custom": {
     "description": "Online consultation of articles from several thousand electronic scientific journals available in full text as well as databases.",
     "portals": {
-      "INSB": {
+      "insb": {
         "title": "INSB",
         "subtitle": "Biology"
       },
-      "INC": {
+      "inc": {
         "title": "INC",
         "subtitle": "Chemestry"
       },
-      "INEE": {
+      "inee": {
         "title": "INEE",
         "subtitle": "Ecology & Environment"
       },
-      "INSHS": {
+      "inshs": {
         "title": "INSHS",
         "subtitle": "People & Society"
       },
-      "INSIS": {
+      "insis": {
         "title": "INSIS",
         "subtitle": "Engineering & systems"
       },
-      "INSMI": {
+      "insmi": {
         "title": "INSMI",
         "subtitle": "Mathematics"
       },
-      "IN2P3": {
+      "in2p3": {
         "title": "IN2P3",
         "subtitle": "Nuclear and Particles"
       },
-      "INP": {
+      "inp": {
         "title": "INP",
         "subtitle": "Physics"
       },
-      "IN2SI": {
+      "in2si": {
         "title": "IN2SI",
         "subtitle": "Information Science"
       },
-      "INSU": {
+      "insu": {
         "title": "INSU",
         "subtitle": "The Earth & the Universe"
       }
