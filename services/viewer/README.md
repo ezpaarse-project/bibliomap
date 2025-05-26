@@ -95,7 +95,7 @@ Code is available in `src/components/Appbar.vue/` as well as `src/components/app
 ### Minimap
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/be58c748-5a25-4044-8f94-563754d50001" />
+  <img src="https://github.com/user-attachments/assets/b010646d-89f1-4a9f-b095-6dc57d6976a0" />
 </p>
 
 The minimap is shown when an event happens at a place that is uncovered by the main map (for example, an event in the USA if the map is centered to France). It will show a zoomed out version of the map with a bubble and its popup card. It is possible to disable it in the settings menu. Code is available in `src/components/Minimap.vue`.
@@ -109,6 +109,11 @@ The minimap is shown when an event happens at a place that is uncovered by the m
 Drawer than shows additional information about [Bibliomap](https://bibliomap.inist.fr/), [ezPAARSE](https://www.readmetrics.org/) and [bibCNRS](https://bib.cnrs.fr/). With using expo mode, it is possible to automatically open and close it after a certain amount of time. Code is available in `src/components/information-components/`.
 
 ### Settings menu
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/e35444a6-762c-4168-8801-5d1c48bc5b59" />
+</p>
+
 
 Dialog that allows the user to customize their view. Here are the possible settings options:
 - Able / disable Minimap
