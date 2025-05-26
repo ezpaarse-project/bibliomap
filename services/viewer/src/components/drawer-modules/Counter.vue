@@ -42,7 +42,7 @@
   const io = useSocketStore().getSocket();
   io?.on('log', (log: Log) => {
     if (usePlatformFilterStore().getFilter() && log.platform_name && !((usePlatformFilterStore().getFilter().toUpperCase().includes(log.platform_name.toUpperCase()) || log.platform_name.toUpperCase().includes(usePlatformFilterStore().getFilter().toUpperCase())))) return;
-    if (log.mime && Object.keys(counts).includes(log.mime) && log.ezproxyName && Object.keys(config.value.drawerParams.portalSection.portals).includes(log.ezproxyName)) {
+    if (log.mime && Object.keys(counts).includes(log.mime)) {
       counts[log.mime] += 1;
       total.value += 1;
     }
