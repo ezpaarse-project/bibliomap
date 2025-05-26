@@ -7,6 +7,7 @@ services:
     container_name: bibliomap-viewer-dev
     environment:
       VITE_ENRICHER_WEBSOCKET_URL: localhost:27780
+      VITE_REPLAY_MODE: true
     command: "npm run dev"
     working_dir: /usr/src/app
     volumes: 
@@ -22,10 +23,14 @@ services:
     image: node:22.14.0
     container_name: bibliomap-enricher-dev
     environment:
-      NODE_APP_INSTANCE: cnrs
       EZPAARSE_URL: "http://ezpaarse:59599"
       HARVESTER_URL: "localhost:27777"
       WEBSOCKET_PORT: 27780
+      REPLAY_MODE: true
+      REPLAY_FILE_PATHS: ${REPLAY_FILE_PATHS}
+      REPLAY_START_DATETIME: ${REPLAY_START_DATETIME}
+      REPLAY_MULTIPLIER: ${REPLAY_MULTIPLIER}
+      REPLAY_DURATION: ${REPLAY_DURATION}
     command: "npm run dev"
     working_dir: /usr/src/app
     volumes: 
