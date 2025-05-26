@@ -110,6 +110,11 @@ Drawer than shows additional information about [Bibliomap](https://bibliomap.ini
 
 ### Settings menu
 
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/b010646d-89f1-4a9f-b095-6dc57d6976a0" />
+</p>
+
+
 Dialog that allows the user to customize their view. Here are the possible settings options:
 - Able / disable Minimap
 - Show / hide each portal
