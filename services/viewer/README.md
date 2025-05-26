@@ -108,6 +108,16 @@ The minimap is shown when an event happens at a place that is uncovered by the m
 
 Drawer than shows additional information about [Bibliomap](https://bibliomap.inist.fr/), [ezPAARSE](https://www.readmetrics.org/) and [bibCNRS](https://bib.cnrs.fr/). With using expo mode, it is possible to automatically open and close it after a certain amount of time. Code is available in `src/components/information-components/`.
 
+### Settings menu
+
+Dialog that allows the user to customize their view. Here are the possible settings options:
+- Able / disable Minimap
+- Show / hide each portal
+- Show / hide article titles
+- Filter events by institution name
+
+Code is available in `src/components/SettingsDialog.vue`.
+
 ## Configuration
 
 Bibliomap Viewer needs two environment variables:
