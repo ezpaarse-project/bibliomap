@@ -3,17 +3,20 @@
 const winston = require('winston');
 const LogHarvester = require('../lib/harvester.js');
 
+const enricherHost = process.env.ENRICHER_URL.split(':')[0];
+const enricherPort = process.env.ENRICHER_URL.split(':')[1];
+
 process.title = 'harvester';
 
 const logger = winston.createLogger({
   level: 'error',
   format: winston.format.simple(),
   transports: [
-    new winston.transports.Console({ format: winston.format.simple() })
-  ]
+    new winston.transports.Console({ format: winston.format.simple() }),
+  ],
 });
 
-let config = Object.assign({ logging: logger }, require('../config.json'));
+let config = { logging: logger, ...require('../config.json') };
 
 try {
   config = Object.assign(config, require('../config.local.json'));
@@ -37,16 +40,16 @@ if (appInstance) {
   }
 }
 
-if (process.env.BBH_ENRICHER_HOST) {
-  config.server.host = process.env.BBH_ENRICHER_HOST;
+if (enricherHost) {
+  config.server.host = enricherHost;
 }
-if (process.env.BBH_ENRICHER_PORT) {
-  config.server.port = process.env.BBH_ENRICHER_PORT;
+if (enricherPort) {
+  config.server.port = enricherPort;
 }
 
-if (process.env.BBH_STREAMNAMES && process.env.BBH_STREAMPATHS) {
-  const streamNames = process.env.BBH_STREAMNAMES.split(' ');
-  const streamPaths = process.env.BBH_STREAMPATHS.split(' ');
+if (process.env.HARVESTER_STREAMNAMES && process.env.HARVESTER_STREAMPATHS) {
+  const streamNames = process.env.HARVESTER_STREAMNAMES.split(' ');
+  const streamPaths = process.env.HARVESTER_STREAMPATHS.split(' ');
 
   config.logStreams = {};
 
