@@ -21,6 +21,8 @@
 
   const height = config.value.appbarParams.include ? 'calc(100vh - 48px)' : '100vh';
 
+  const onlyPortal = Object.keys(config.value.drawerParams.portalSection.portals).length === 1 ? Object.keys(config.value.drawerParams.portalSection.portals)[0] : null;
+
   let map: L.Map;
 
   const size = mapParams.bubbleSize || 60;
@@ -96,11 +98,10 @@
 
     io?.on('log', (log: Log) => {
       if (usePlatformFilterStore().getFilter() && log.platform_name && !((usePlatformFilterStore().getFilter().toUpperCase().includes(log.platform_name.toUpperCase()) || log.platform_name.toUpperCase().includes(usePlatformFilterStore().getFilter().toUpperCase())))) return;
-
       let color;
       try {
         const portalParams = config.value.drawerParams.portalSection.portals as { [key: string]: { color: string } };
-        color = portalParams[log.ezproxyName].color;
+        color = portalParams[onlyPortal || log.ezproxyName].color;
       }
       catch {
         return;

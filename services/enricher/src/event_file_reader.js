@@ -52,6 +52,7 @@ class EventFileReader {
         broadcastedFields.forEach((field) => {
             exportedLine.log[field] = row[field];
           });
+        exportedLine.log['ezproxyName'] = row[config.portal_field];
         this.lineQueue.push(exportedLine);
         if (!this.firstLog) this.firstLog = exportedLine;
         this.stopReaderOverload();
