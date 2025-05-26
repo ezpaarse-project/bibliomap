@@ -26,7 +26,7 @@ try {
   }
 }
 
-const appInstance = process.env.NODE_APP_INSTANCE;
+const appInstance = process.env.HARVESTER_DEMO_DIR;
 
 if (appInstance) {
   try {

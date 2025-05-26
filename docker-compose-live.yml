@@ -12,7 +12,7 @@ services:
       HARVESTER_STREAMNAMES: "" # default streams are for the demo
       HARVESTER_STREAMPATHS: ""
       HARVESTER_LOG_FOLDER: demo-logs/cnrs
-      NODE_APP_INSTANCE: cnrs
+      HARVESTER_DEMO_DIR: cnrs
       HARVESTER_LOGS_PER_SECOND: 10
     command: "npm run dev"
     working_dir: /usr/src/app
@@ -40,9 +40,8 @@ services:
     image: node:22.14.0
     container_name: bibliomap-enricher-dev
     environment:
-      NODE_APP_INSTANCE: cnrs
-      EZPAARSE_URL: "http://ezpaarse:59599"
-      HARVESTER_URL: "localhost:27777"
+      EZPAARSE_URL: "ezpaarse:59599"
+      HARVESTER_URL: "harvester:27777"
       WEBSOCKET_PORT: 27780
     command: "npm run dev"
     working_dir: /usr/src/app

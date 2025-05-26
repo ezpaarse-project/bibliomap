@@ -15,7 +15,7 @@ class PaarseQueue {
 
   async start() {
     try {
-      const res = await fetch(process.env.EZPAARSE_URL, {
+      const res = await fetch(`http://${process.env.EZPAARSE_URL}`, {
         method: 'POST',
         headers: config.headers,
         body: this.writeStream,
