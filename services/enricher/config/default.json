@@ -11,5 +11,6 @@
     "mime"
   ],
   "header": {},
-  "multiple_portals": false
+  "multiple_portals": false,
+  "portal_fields": null
 }

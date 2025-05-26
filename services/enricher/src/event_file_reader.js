@@ -1,6 +1,7 @@
 import { parse } from 'csv-parse';
 import readline from 'readline';
 import PaarseQueue from './paarse-queue.js';
+import config from '../config/config.json' with { type: 'json' };
 
 class EventFileReader {
   constructor(file, stream) {
@@ -40,21 +41,17 @@ class EventFileReader {
   }
 
   initCsvFileReader() {
+    const broadcastedFields = config.broadcasted_fields;
     this.stream
       .pipe(parse({ columns: true, delimiter: ';' }))
       .on('data', (row) => {
         const exportedLine = {
           date: new Date(row.datetime),
-          log: {
-            'geoip-latitude': row['geoip-latitude'],
-            'geoip-longitude': row['geoip-longitude'],
-            ezproxyName: row['bib-groups'].toUpperCase(),
-            platform_name: row.platform_name,
-            publication_title: row.publication_title,
-            rtype: row.rtype,
-            mime: row.mime,
-          },
+          log: {},
         };
+        broadcastedFields.forEach((field) => {
+            exportedLine.log[field] = row[field];
+          });
         this.lineQueue.push(exportedLine);
         if (!this.firstLog) this.firstLog = exportedLine;
         this.stopReaderOverload();
@@ -66,12 +63,16 @@ class EventFileReader {
 
   pushToQueue(line) {
     if (!this.paarseQueue) {
+      const broadcastedFields = config.broadcasted_fields;
       this.paarseQueue = new PaarseQueue(
         (data) => {
           const log = {
             date: new Date(data.datetime),
-            log: data,
+            log: {},
           };
+          broadcastedFields.forEach((field) => {
+            log.log[field] = data[field];
+          });
           this.lineQueue.push(log);
           if (!this.firstLog) this.firstLog = log;
           this.stopReaderOverload();
