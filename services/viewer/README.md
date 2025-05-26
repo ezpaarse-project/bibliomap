@@ -1,20 +1,24 @@
-# bibliomap viewer
+# bibliomap Viewer
 
-Bibliomap viewer is a service that connects to Bibliomap enricher via websockets. It shows the received information on a map, allowing the user to concretely view the consultations events.
+Bibliomap Viewer is a service that connects to Bibliomap enricher via websockets. It shows the received information on a map, allowing the user to concretely view the consultations events.
 
-![Enricher to viewer connection](https://github.com/user-attachments/assets/d30b0e05-022f-47c4-bb69-212a840e896a)
+## Communication with Enricher
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/d30b0e05-022f-47c4-bb69-212a840e896a" />
+</p>
 
 ## Configuration
 
 Bibliomap Viewer needs two environment variables:
-| Name | Description |
-| -- | -- |
-| VITE_ENRICHER_WEBSOCKET_URL | The URL of the enricher's websocket server. Needed to get the EC consultation events. |
-| VITE_REPLAY_MODE | Boolean indicating the Bibliomap mode. Needed to know which view to use (how to display certain components). |
+| Name | Description | Default value |
+| -- | -- | -- |
+| VITE_ENRICHER_WEBSOCKET_URL | The URL of the enricher's websocket server. Needed to get the EC consultation events. | localhost:27780 |
+| VITE_REPLAY_MODE | Boolean indicating the Bibliomap mode. Needed to know which view to use (how to display certain components). | false |
 
 ## Customization
 
-With this new version of Bibliomap Viewer, it is possible to configure each of the page's modules, which make it easy to create a custom version of the user interface.
+Since Bibliomap 6.0.0, it is possible to configure each of the page's modules, which make it easy to create a custom version of the user interface.
 
 **All of the customization options are done in the file src/assets/config.json.**
 
