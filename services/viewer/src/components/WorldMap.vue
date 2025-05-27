@@ -100,22 +100,29 @@
       if (usePlatformFilterStore().getFilter() && log.platform_name && !((usePlatformFilterStore().getFilter().toUpperCase().includes(log.platform_name.toUpperCase()) || log.platform_name.toUpperCase().includes(usePlatformFilterStore().getFilter().toUpperCase())))) return;
       let color;
       let gradient;
-      try {
-        const portalParams = config.value.drawerParams.portalSection.portals;
-        const logPortals = portalParams.filter(portal => log.ezproxyName?.toUpperCase().includes(portal.name.toUpperCase()));
-        const logColors = logPortals.map(portal => portal.color);
-        
-        if (logColors.length > 1) {
-          color = logColors[0];
-          gradient = 'linear-gradient(to right, ' + logColors.join(', ') + ')';
-        }
 
-        else {
-          color = logColors[0];
-        }
+      if (onlyPortal) {
+        color = config.value.drawerParams.portalSection.portals[0].color;
       }
-      catch {
-        return;
+
+      else {
+        try {
+          const portalParams = config.value.drawerParams.portalSection.portals;
+          const logPortals = portalParams.filter(portal => log.ezproxyName?.toUpperCase().includes(portal.name.toUpperCase()));
+          const logColors = logPortals.map(portal => portal.color);
+
+          if (logColors.length > 1) {
+            color = logColors[0];
+            gradient = 'linear-gradient(to right, ' + logColors.join(', ') + ')';
+          }
+
+          else {
+            color = logColors[0];
+          }
+        }
+        catch {
+          return;
+        }
       }
 
       const bubble = L.divIcon({
