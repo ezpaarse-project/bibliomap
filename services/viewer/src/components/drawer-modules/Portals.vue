@@ -66,31 +66,16 @@
 
 <script setup lang="ts">
   import { useViewerConfigStore } from '@/stores/viewer-config';
-  import type { Log } from '@/main';
-  import { useSocketStore } from '@/stores/socket';
-  import { usePlatformFilterStore } from '@/stores/platform-filter';
+  import { useLogEventsStore } from '@/stores/log-events';
   import { useI18n } from 'vue-i18n';
 
-  const config = ref(useViewerConfigStore().config);
+  const config = useViewerConfigStore().config;
   const { t } = useI18n();
 
-  const counts = reactive({} as Record<string, Record<string, number>>);
+  const counts = useLogEventsStore().count;
 
-  config.value.drawerParams.portalSection.portals.forEach(p => {
+  config.drawerParams.portalSection.portals.forEach(p => {
     counts[p.name.toUpperCase()] = {};
-  });
-
-  const io = useSocketStore().getSocket();
-  io?.on('log', (log: Log) => {
-    if (usePlatformFilterStore().getFilter() && log.platform_name && !((usePlatformFilterStore().getFilter().toUpperCase().includes(log.platform_name.toUpperCase()) || log.platform_name.toUpperCase().includes(usePlatformFilterStore().getFilter().toUpperCase())))) return;
-    const logPortals = log.ezproxyName.toUpperCase().split('+');
-    const displayedLogPortals = logPortals.filter(portal => Object.keys(counts).includes(portal.toUpperCase()));
-    const mime = log.mime;
-    if (!displayedLogPortals || displayedLogPortals.length === 0 || !mime) return;
-    displayedLogPortals.forEach(portal => {
-      if (!counts[portal.toUpperCase()][mime]) counts[portal.toUpperCase()][mime] = 0;
-      counts[portal.toUpperCase()][mime] += 1;
-    })
   });
 
   const getIconUrl = (iconName: string): string => {

@@ -3,9 +3,9 @@ import LogIoListener from 'log.io-server-parser';
 import pino from 'pino';
 import http from 'http';
 import { Server } from 'socket.io';
-import FileReaderListener from './file_reader_listener.js';
 import PaarseQueue from './paarse-queue.js';
 import config from '../config/config.json' with { type: 'json' };
+import ReplayManager from './replay-manager.js';
 
 const logger = pino();
 
@@ -43,14 +43,15 @@ const harvesterConfig = {
 };
 
 const logIoListener = process.env.REPLAY_MODE === 'true'
-  ? new FileReaderListener()
+  ? new ReplayManager()
   : new LogIoListener(harvesterConfig);
 
 logIoListener.listen(() => {
-  logger.info(`Waiting for harvester at ${JSON.stringify(harvesterConfig)}`);
+  if (process.env.REPLAY_MODE !== 'true') logger.info(`Waiting for harvester at ${JSON.stringify(harvesterConfig)}`);
+  else logger.info('Replay sessions starting');
 });
 
-logIoListener.server.on('connection', (logListenerSocket) => {
+ if (process.env.REPLAY_MODE !== 'true') logIoListener.server.on('connection', (logListenerSocket) => {
   logger.info('Harvester connected');
 
   logListenerSocket.on('close', () => {

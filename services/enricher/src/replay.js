@@ -15,14 +15,15 @@ async function handleGzFile(stream) {
   return stream.pipe(zlib.createGunzip());
 }
 
-class FileReaderListener extends EventEmitter {
-  constructor() {
+class Replay extends EventEmitter {
+  constructor(replayStartTime, replayMultiplier, replayFiles, replayDuration, description) {
     super();
-    this.replayStartTime = process.env.REPLAY_START_TIME;
-    this.replayMultiplier = process.env.REPLAY_MULTIPLIER || 1;
-    this.replayFiles = (process.env.REPLAY_FILE_PATHS).split(',').map((p) => path.join('./data/replay_files/', p));
-    this.duration = process.env.REPLAY_DURATION || 1;
-    if (this.duration < 1) this.duration = 1;
+    this.replayStartDatetime = replayStartTime;
+    this.replayMultiplier = replayMultiplier || 1;
+    this.replayFiles = replayFiles;
+    this.replayDuration = replayDuration;
+    if (this.replayDuration < 1) this.replayDuration = 1;
+    this.description = description;
 
     this.loading = true;
 
@@ -45,24 +46,16 @@ class FileReaderListener extends EventEmitter {
 
     this.initInterval(1000 / this.replayMultiplier);
 
-    this.on('isReady', (socketId) => {
-      if (!this.loading) this.emit('ready', socketId);
-    });
-
-    this.on('timeRequest', (socketId) => {
-      this.emit('timeResponse', socketId, this.timer, this.startTimerAt, this.dayEnd, this.replayMultiplier);
-    });
-
     return cb();
   }
 
   initTimer() {
     if (process.env.REPLAY_START_DATETIME) {
       this.dayStart = startOfDay(TZDate.tz('Europe/Paris', new Date(process.env.REPLAY_START_DATETIME))).getTime();
-      this.dayEnd = endOfDay(addDays(TZDate.tz('Europe/Paris', new Date(process.env.REPLAY_START_DATETIME)), this.duration - 1)).getTime();
+      this.dayEnd = endOfDay(addDays(TZDate.tz('Europe/Paris', new Date(process.env.REPLAY_START_DATETIME)), this.replayDuration - 1)).getTime();
       this.startTimerAt = new Date(process.env.REPLAY_START_DATETIME).getTime();
       this.timer = this.startTimerAt;
-      this.loading = false;
+      this.loading = false; 
       this.emit('ready', null);
       return;
     }
@@ -71,11 +64,11 @@ class FileReaderListener extends EventEmitter {
       .reduce((acc, reader) => Math.min(acc, reader.firstLog.date.getTime()), Infinity);
 
     this.dayStart = startOfDay(TZDate.tz('Europe/Paris', firstLogDate)).getTime();
-    this.dayEnd = endOfDay(addDays(TZDate.tz('Europe/Paris', firstLogDate), this.duration - 1)).getTime();
+    this.dayEnd = endOfDay(addDays(TZDate.tz('Europe/Paris', firstLogDate), this.replayDuration - 1)).getTime();
 
     this.loading = false;
 
-    this.startTimerAt = this.dayStart + (this.replayStartTime ? new Date(`1970-01-01T${this.replayStartTime}`).getTime() : 0);
+    this.startTimerAt = this.dayStart + (this.replayStartDatetime ? new Date(`1970-01-01T${this.replayStartDatetime}`).getTime() : 0);
 
     this.timer = this.startTimerAt;
 
@@ -94,7 +87,10 @@ class FileReaderListener extends EventEmitter {
 
   initInterval(timeout) {
     return setInterval(() => {
-      if (this.timer >= this.dayEnd) return;
+      if (this.timer >= this.dayEnd) {
+        this.emit('timerEnd');
+        return;
+      };
 
       this.updateTimer();
 
@@ -120,4 +116,4 @@ class FileReaderListener extends EventEmitter {
   }
 }
 
-export default FileReaderListener;
+export default Replay;

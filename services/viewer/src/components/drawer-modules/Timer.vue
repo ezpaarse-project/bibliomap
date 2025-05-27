@@ -84,7 +84,7 @@
     }, 1000);
   } else {
     text.value = t('drawer.timer.loading');
-    const socket = useSocketStore().getSocket()
+    const socket = useSocketStore().socket
     socket?.emit('isReady', socket.id);
     socket?.on('ready', () => {
       socket?.emit('getTime');

@@ -7,21 +7,18 @@
   import { onMounted } from 'vue';
   import { useViewerConfigStore } from '@/stores/viewer-config';
   import type { Log } from '@/main';
-  import { useSocketStore } from '@/stores/socket'
   import { usePlatformFilterStore } from '@/stores/platform-filter';
   import useMitt from '@/composables/useMitt';
 
-  const socketStore = useSocketStore();
-  const io = socketStore.getSocket();
   const emitter = useMitt();
 
-  const config = ref(useViewerConfigStore().config);
-  const mapParams = config.value.mapParams;
-  const mimes = config.value.mapParams.attributesColors.mimes;
+  const config = useViewerConfigStore().config;
+  const mapParams = config.mapParams;
+  const mimes = config.mapParams.attributesColors.mimes;
 
-  const height = config.value.appbarParams.include ? 'calc(100vh - 48px)' : '100vh';
+  const height = config.appbarParams.include ? 'calc(100vh - 48px)' : '100vh';
 
-  const onlyPortal = Object.keys(config.value.drawerParams.portalSection.portals).length === 1 ? Object.keys(config.value.drawerParams.portalSection.portals)[0] : null;
+  const onlyPortal = Object.keys(config.drawerParams.portalSection.portals).length === 1 ? Object.keys(config.drawerParams.portalSection.portals)[0] : null;
 
   let map: L.Map;
 
@@ -96,18 +93,18 @@
       changeMapLayer(layers[layerName] as TileLayer);
     });
 
-    io?.on('log', (log: Log) => {
+    emitter.on('log', (log: Log) => {
       if (usePlatformFilterStore().getFilter() && log.platform_name && !((usePlatformFilterStore().getFilter().toUpperCase().includes(log.platform_name.toUpperCase()) || log.platform_name.toUpperCase().includes(usePlatformFilterStore().getFilter().toUpperCase())))) return;
       let color;
       let gradient;
 
       if (onlyPortal) {
-        color = config.value.drawerParams.portalSection.portals[0].color;
+        color = config.drawerParams.portalSection.portals[0].color;
       }
 
       else {
         try {
-          const portalParams = config.value.drawerParams.portalSection.portals;
+          const portalParams = config.drawerParams.portalSection.portals;
           const logPortals = portalParams.filter(portal => log.ezproxyName?.toUpperCase().includes(portal.name.toUpperCase()));
           const logColors = logPortals.map(portal => portal.color);
 
@@ -116,9 +113,11 @@
             gradient = 'linear-gradient(to right, ' + logColors.join(', ') + ')';
           }
 
-          else {
+          else if (logColors.length) {
             color = logColors[0];
           }
+
+          else return;
         }
         catch {
           return;
@@ -133,7 +132,7 @@
           <div class='container'>
             <div class='bubble-popup' ${mapParams.includePopup ? '' : 'style="display: none;"'}>
               <p ${mapParams.popupText.platform_name ? '' : 'style="display: none;"'}><strong>${log.platform_name}</strong></p>
-              <p ${config.value.mapParams.popupText.publication_title && log.publication_title ? '' : 'style="display: none;"'}>${log.publication_title}</p>
+              <p ${config.mapParams.popupText.publication_title && log.publication_title ? '' : 'style="display: none;"'}>${log.publication_title}</p>
               <div class='types-container'>
                 <p style='${mapParams.popupText.rtype && log.rtype ? '' : 'display: none;'} background-color: ${mapParams.attributesColors.rtype || '#7F8C8D'}'>${log.rtype}</p>
                 <p style='${mapParams.popupText.mime && log.mime ? '' : 'display: none;'} background-color: ${log.mime && mimes[log.mime as keyof typeof mimes].color || '#D35400'}'>${log.mime}</p>

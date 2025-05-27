@@ -22,30 +22,18 @@
 
 <script setup lang='ts'>
   import { useViewerConfigStore } from '@/stores/viewer-config';
-  import type { Log } from '@/main';
-  import { useSocketStore } from '@/stores/socket';
-  import { usePlatformFilterStore } from '@/stores/platform-filter';
   import { useI18n } from 'vue-i18n';
 
   const { t } = useI18n();
   const counts = reactive({} as Record<string, number>);
   const total = ref(0);
 
-  const config = ref(useViewerConfigStore().config);
-  const counterProps = config.value.drawerParams.counterSection;
-  const mimes = config.value.mapParams.attributesColors.mimes;
+  const config = useViewerConfigStore().config;
+  const counterProps = config.drawerParams.counterSection;
+  const mimes = config.mapParams.attributesColors.mimes;
 
   Object.keys(mimes).forEach(key => {
     if (mimes[key as keyof typeof mimes].count) counts[key] = 0;
-  });
-
-  const io = useSocketStore().getSocket();
-  io?.on('log', (log: Log) => {
-    if (usePlatformFilterStore().getFilter() && log.platform_name && !((usePlatformFilterStore().getFilter().toUpperCase().includes(log.platform_name.toUpperCase()) || log.platform_name.toUpperCase().includes(usePlatformFilterStore().getFilter().toUpperCase())))) return;
-    if (log.mime && Object.keys(counts).includes(log.mime)) {
-      counts[log.mime] += 1;
-      total.value += 1;
-    }
   });
 </script>
 

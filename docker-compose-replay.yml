@@ -27,10 +27,6 @@ services:
       HARVESTER_URL: "localhost:27777"
       WEBSOCKET_PORT: 27780
       REPLAY_MODE: true
-      REPLAY_FILE_PATHS: ${REPLAY_FILE_PATHS}
-      REPLAY_START_DATETIME: ${REPLAY_START_DATETIME}
-      REPLAY_MULTIPLIER: ${REPLAY_MULTIPLIER}
-      REPLAY_DURATION: ${REPLAY_DURATION}
     command: "npm run dev"
     working_dir: /usr/src/app
     volumes: 

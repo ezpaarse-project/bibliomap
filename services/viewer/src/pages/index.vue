@@ -15,16 +15,11 @@
   import Drawer from '@/components/Drawer.vue';
   import WorldMap from '@/components/WorldMap.vue';
   import { useSocketStore } from '@/stores/socket';
-  import { io } from 'socket.io-client';
   import { useViewerConfigStore } from '@/stores/viewer-config';
 
-  const websocketUrl = import.meta.env.VITE_ENRICHER_WEBSOCKET_URL;
-  const socket = io(websocketUrl);
+  const socket = useSocketStore().socket;
 
-  const socketStore = useSocketStore();
-  socketStore.setSocket(socket);
-
-  const config = ref(useViewerConfigStore().config);
+  const config = useViewerConfigStore().config;
 
   onMounted(() => {
     socket.on('connect', () => console.log('Enricher connected'));
