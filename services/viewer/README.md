@@ -217,11 +217,11 @@ The counter section configurations are done in the `"counterSection"` block, ins
 
 The portal section configurations are done in the `"descriptionSection"` block, inside the `"drawerParams"` block. Here are the different parameters:
 
-| Name | Description | Default | 
+| Name | Description | Default |
 | --- | --- | --- |
 | `include` | Indicates if the portal section should be shown or hidden. | `true` |
 | `index` | Indicates in which order this component should be in the drawer. | `3` |
-| `portals` | The included portals will be shown in the drawer, and their consultation events will be shown on the map using bubbles. Each portal should be of this format: `"nameOfPortal": {"color": "colorOfPortal", "icon": "iconOfPortal", "url": "urlOfPortal"}`. The icon can be null or undefined. If the user clicks on the portal description, the website redirects to the url parameter. The url can be null or undefined. | `{}` |
+| `portals` | The included portals will be shown in the drawer, and their consultation events will be shown on the map using bubbles. Each portal should be of this format: `{"name": "nameOfPortal", "color": "colorOfPortal", "icon": "iconOfPortal", "url": "urlOfPortal"}`. The icon can be null or undefined. If the user clicks on the portal description, the website redirects to the url parameter. The url can be null or undefined. | `{}` |
 
 ### Appbar configurations
 
