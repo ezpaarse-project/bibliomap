@@ -99,9 +99,20 @@
     io?.on('log', (log: Log) => {
       if (usePlatformFilterStore().getFilter() && log.platform_name && !((usePlatformFilterStore().getFilter().toUpperCase().includes(log.platform_name.toUpperCase()) || log.platform_name.toUpperCase().includes(usePlatformFilterStore().getFilter().toUpperCase())))) return;
       let color;
+      let gradient;
       try {
-        const portalParams = config.value.drawerParams.portalSection.portals as { [key: string]: { color: string } };
-        color = portalParams[onlyPortal || log.ezproxyName].color;
+        const portalParams = config.value.drawerParams.portalSection.portals;
+        const logPortals = portalParams.filter(portal => log.ezproxyName?.toUpperCase().includes(portal.name.toUpperCase()));
+        const logColors = logPortals.map(portal => portal.color);
+        
+        if (logColors.length > 1) {
+          color = logColors[0];
+          gradient = 'linear-gradient(to right, ' + logColors.join(', ') + ')';
+        }
+
+        else {
+          color = logColors[0];
+        }
       }
       catch {
         return;
@@ -122,7 +133,7 @@
               </div>
             </div>
             <div class='bubble'>
-              <div style='background-color: ${color}; width: ${size}px; height: ${size}px' class='bubble-circle'></div>
+              <div style='background: ${gradient || color}; width: ${size}px; height: ${size}px' class='bubble-circle'></div>
               <div style='box-shadow: 1px 1px 8px 0 ${color}; width: ${size*2}px; height: ${size*2}px' class='bubble-pulse'></div>
             </div>
           </div>

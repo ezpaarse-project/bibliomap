@@ -66,58 +66,68 @@
         "portalSection": {
             "include": true,
             "index": 3,
-            "portals": {
-                "insb": {
+            "portals": [
+                {
+                    "name": "insb",
                     "color": "#9C126D",
                     "icon": "portal_logos/bibcnrs-logo-biologie.png",
                     "url": "https://bib.cnrs.fr/category/biologie/"
                 },
-                "inc": {
+                {
+                    "name": "inc",
                     "color": "#007E94",
                     "icon": "portal_logos/bibcnrs-logo-chimie.png",
                     "url": "https://bib.cnrs.fr/category/chimie/"
                 },
-                "inee": {
+                {
+                    "name": "inee",
                     "color": "#62AE25",
                     "icon": "portal_logos/bibcnrs-logo-ecologie.png",
                     "url": "https://bib.cnrs.fr/category/ecologie/"
                 },
-                "inshs": {
+                {
+                    "name": "inshs",
                     "color": "#820E12",
                     "icon": "portal_logos/bibcnrs-logo-homme.png",
                     "url": "https://bib.cnrs.fr/category/homme/"
                 },
-                "INSIS": {
+                {
+                    "name": "insis",
                     "color": "#D4002D",
                     "icon": "portal_logos/bibcnrs-logo-ingenierie.png",
                     "url": "https://bib.cnrs.fr/category/ingenierie/"
                 },
-                "insmi": {
+                {
+                    "name": "insmi",
                     "color": "#547D3D",
                     "icon": "portal_logos/bibcnrs-logo-mathematiques.png",
                     "url": "https://bib.cnrs.fr/category/mathematiques/"
                 },
-                "in2p3": {
+                {
+                    "name": "in2p3",
                     "color": "#E75113",
                     "icon": "portal_logos/bibcnrs-logo-nucleaire.png",
                     "url": "https://bib.cnrs.fr/category/nucleaire/"
                 },
-                "inp": {
+                {
+                    "name": "inp",
                     "color": "#004494",
                     "icon": "portal_logos/bibcnrs-logo-physique.png",
                     "url": "https://bib.cnrs.fr/category/physique/"
                 },
-                "in2si": {
+                {
+                    "name": "in2si",
                     "color": "#562A84",
                     "icon": "portal_logos/bibcnrs-logo-information.png",
                     "url": "https://bib.cnrs.fr/category/information/"
                 },
-                "insu": {
+                {
+                    "name": "insu",
                     "color": "#CC2381",
                     "icon": "portal_logos/bibcnrs-logo-terre.png",
                     "url": "https://bib.cnrs.fr/category/terre/"
                 }
-            }
+            ]
         }
     },
     "appbarParams": {

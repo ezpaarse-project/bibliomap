@@ -1,8 +1,8 @@
 <template>
   <div class="portals-component">
     <a
-      v-for="(value, key) in config.drawerParams.portalSection.portals"
-      :key="key"
+      v-for="(value) in config.drawerParams.portalSection.portals"
+      :key="value.name"
       class="anchor"
       :href="value.url"
       target="_blank"
@@ -10,7 +10,7 @@
       <v-list-item class="portal-list-element">
 
         <v-tooltip
-          v-if="counts[key] && Object.keys(counts[key]).length > 0"
+          v-if="counts[value.name.toUpperCase()] && Object.keys(counts[value.name.toUpperCase()]).length > 0"
           location="right"
         >
           <template #activator="{ props }">
@@ -18,21 +18,21 @@
               <div class="portal-container">
                 <img v-if="value.icon" :src="getIconUrl(value.icon)">
                 <div>
-                  <h3>{{ t(`drawer-custom.portals.${key}.title`) }}</h3>
-                  <p>{{ t(`drawer-custom.portals.${key}.subtitle`) }}</p>
+                  <h3>{{ t(`drawer-custom.portals.${value.name}.title`) }}</h3>
+                  <p>{{ t(`drawer-custom.portals.${value.name}.subtitle`) }}</p>
                 </div>
               </div>
               <v-chip
-                :color="config.drawerParams.portalSection.portals[key].color"
+                :color="value.color"
                 variant="flat"
               >
-                {{ Object.values(counts[key]).reduce((a, b) => a + b, 0) }}
+                {{ Object.values(counts[value.name.toUpperCase()]).reduce((a, b) => a + b, 0) }}
               </v-chip>
             </div>
           </template>
           <div>
             <div
-              v-for="(val, subKey) in counts[key]"
+              v-for="(val, subKey) in counts[value.name.toUpperCase()]"
               :key="subKey"
             >
               {{ subKey }}: {{ val }}
@@ -45,16 +45,16 @@
               <img v-if="value.icon" :src="getIconUrl(value.icon)">
 
               <div>
-                <h3>{{ t(`drawer-custom.portals.${key}.title`) }}</h3>
-                <p>{{ t(`drawer-custom.portals.${key}.subtitle`) }}</p>
+                <h3>{{ t(`drawer-custom.portals.${value.name}.title`) }}</h3>
+                <p>{{ t(`drawer-custom.portals.${value.name}.subtitle`) }}</p>
               </div>
             </div>
             <v-chip
-              v-if="counts[key]"
-              :color="config.drawerParams.portalSection.portals[key].color"
+              v-if="counts[value.name.toUpperCase()]"
+              :color="value.color"
               variant="flat"
             >
-              {{ Object.values(counts[key]).reduce((a, b) => a + b, 0) }}
+              {{ Object.values(counts[value.name.toUpperCase()]).reduce((a, b) => a + b, 0) }}
             </v-chip>
           </div>
         </template>
@@ -76,16 +76,21 @@
 
   const counts = reactive({} as Record<string, Record<string, number>>);
 
-  Object.keys(config.value.drawerParams.portalSection.portals).forEach(key => {
-    counts[key] = {};
+  config.value.drawerParams.portalSection.portals.forEach(p => {
+    counts[p.name.toUpperCase()] = {};
   });
 
   const io = useSocketStore().getSocket();
   io?.on('log', (log: Log) => {
     if (usePlatformFilterStore().getFilter() && log.platform_name && !((usePlatformFilterStore().getFilter().toUpperCase().includes(log.platform_name.toUpperCase()) || log.platform_name.toUpperCase().includes(usePlatformFilterStore().getFilter().toUpperCase())))) return;
-    if (!log.ezproxyName || !Object.keys(counts).includes(log.ezproxyName.toUpperCase()) || !log.mime) return;
-    if (!counts[log.ezproxyName.toUpperCase()][log.mime]) counts[log.ezproxyName.toUpperCase()][log.mime] = 0;
-    counts[log.ezproxyName.toUpperCase()][log.mime] += 1;
+    const logPortals = log.ezproxyName.toUpperCase().split('+');
+    const displayedLogPortals = logPortals.filter(portal => Object.keys(counts).includes(portal.toUpperCase()));
+    const mime = log.mime;
+    if (!displayedLogPortals || displayedLogPortals.length === 0 || !mime) return;
+    displayedLogPortals.forEach(portal => {
+      if (!counts[portal.toUpperCase()][mime]) counts[portal.toUpperCase()][mime] = 0;
+      counts[portal.toUpperCase()][mime] += 1;
+    })
   });
 
   const getIconUrl = (iconName: string): string => {

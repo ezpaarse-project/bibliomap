@@ -2,43 +2,43 @@
   "drawer-custom": {
     "description": "Consultations en direct des articles de plusieurs milliers de revues scientifiques électroniques disponibles en texte intégral ainsi que des bases de données.",
     "portals": {
-      "INSB": {
+      "insb": {
         "title": "INSB",
         "subtitle": "Biologie"
       },
-      "INC": {
+      "inc": {
         "title": "INC",
         "subtitle": "Chimie"
       },
-      "INEE": {
+      "inee": {
         "title": "INEE",
         "subtitle": "Ecologie & Environnement"
       },
-      "INSHS": {
+      "inshs": {
         "title": "INSHS",
         "subtitle": "Homme & Société"
       },
-      "INSIS": {
+      "insis": {
         "title": "INSIS",
         "subtitle": "Ingénierie & systèmes"
       },
-      "INSMI": {
+      "insmi": {
         "title": "INSMI",
         "subtitle": "Mathématiques"
       },
-      "IN2P3": {
+      "in2p3": {
         "title": "IN2P3",
         "subtitle": "Nucléaire & Particules"
       },
-      "INP": {
+      "inp": {
         "title": "INP",
         "subtitle": "Physique"
       },
-      "IN2SI": {
+      "in2si": {
         "title": "IN2SI",
         "subtitle": "Sciences de l'information"
       },
-      "INSU": {
+      "insu": {
         "title": "INSU",
         "subtitle": "Terre & Univers"
       }
