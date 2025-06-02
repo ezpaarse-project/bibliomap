@@ -59,12 +59,18 @@ export default class ReplayManager extends EventEmitter {
       if (!replay.loading) this.emit('ready', socketId);
     });
 
-      this.on('configRequest', (socketId) => {
-        this.emit('configResponse', socketId, replay.timer, replay.startTimerAt, replay.dayEnd, replay.replayMultiplier, replay.description);
-      });
-
-      replay.on('configResponse', (socketId, timer, startTimerAt, dayEnd, replayMultiplier, description) => {
-        this.emit('configResponse', socketId, timer, startTimerAt, dayEnd, replayMultiplier, description);
+      this.on('replayConfigRequest', (socketId) => {
+        this.emit('replayConfig', socketId, 
+          { 
+            replayStartDatetime: replay.startTimerAt, 
+            replayEndDatetime: replay.dayEnd, 
+            replayMultiplier: replay.replayMultiplier, 
+            replayDuration: replay.replayDuration, 
+            description: replay.description, 
+            timerStart: replay.startTimerAt 
+          }
+        );
+        this.emit('timeUpdate', replay.timer);
       });
 
       replay.on('timeUpdate', (time) => {

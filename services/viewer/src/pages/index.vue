@@ -16,13 +16,18 @@
   import WorldMap from '@/components/WorldMap.vue';
   import { useSocketStore } from '@/stores/socket';
   import { useViewerConfigStore } from '@/stores/viewer-config';
+  import { type ReplayConfig, useReplayConfigStore } from '@/stores/replay-config';
 
   const socket = useSocketStore().socket;
-
+  const replayConfigStore = useReplayConfigStore();
   const config = useViewerConfigStore().config;
 
   onMounted(() => {
-    socket.on('connect', () => console.log('Enricher connected'));
+    socket.on('connect', async () => {
+      console.log('Enricher connected');
+      replayConfigStore.setConfig(await replayConfigStore.fetchReplayConfig() as ReplayConfig);
+      console.log('replayConfig:', replayConfigStore.config);
+    });
   })
 
   onUnmounted(() => {

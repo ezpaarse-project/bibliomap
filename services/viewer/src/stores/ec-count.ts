@@ -31,7 +31,7 @@ export const useEcCountStore = defineStore('ec-count', () => {
   }
 
   function getCountOfMime (mime: string) {
-    return Object.values(count).reduce((a, b) => a + b[mime], 0);
+    return Object.values(count).reduce((a, b) => a + (b[mime.toUpperCase()] || 0), 0);
   }
 
   function getTotalCount () {

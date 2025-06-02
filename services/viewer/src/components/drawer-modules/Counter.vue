@@ -1,8 +1,8 @@
 <template>
   <div class="counter-container">
-    <v-tooltip v-for="(value, key) in counts" :key="key" location="top" :text="t('drawer.counter.tooltips.file-type-consultations', {n: value, type: key})">
-      <template #activator="{ props }">
-        <v-badge :content="value">
+    <v-tooltip v-for="value, key in mimes" :key="key" location="top" :text="t('drawer.counter.tooltips.file-type-consultations', {n: countStore.getCountOfMime(key), type: key})">
+      <template v-if="value.count" #activator="{ props }">
+        <v-badge :content="countStore.getCountOfMime(key)">
           <v-chip v-bind="props" :color="mimes[key as keyof typeof mimes].color" variant="flat">
             {{ key }}
           </v-chip>
@@ -10,9 +10,9 @@
       </template>
     </v-tooltip>
 
-    <v-tooltip v-if="counterProps.showTotal" location="top" :text="t('drawer.counter.tooltips.total-consultations', {n: total})">
+    <v-tooltip v-if="counterProps.showTotal" location="top" :text="t('drawer.counter.tooltips.total-consultations', {n: countStore.getTotalCount()})">
       <template #activator="{ props }">
-        <v-badge :content="total">
+        <v-badge :content="countStore.getTotalCount()">
           <v-chip v-bind="props">{{ t('drawer.counter.total') }}</v-chip>
         </v-badge>
       </template>
@@ -21,20 +21,16 @@
 </template>
 
 <script setup lang='ts'>
+  import { useEcCountStore } from '@/stores/ec-count';
   import { useViewerConfigStore } from '@/stores/viewer-config';
   import { useI18n } from 'vue-i18n';
 
   const { t } = useI18n();
-  const counts = reactive({} as Record<string, number>);
-  const total = ref(0);
 
   const config = useViewerConfigStore().config;
   const counterProps = config.drawerParams.counterSection;
   const mimes = config.mapParams.attributesColors.mimes;
-
-  Object.keys(mimes).forEach(key => {
-    if (mimes[key as keyof typeof mimes].count) counts[key] = 0;
-  });
+  const countStore = useEcCountStore();
 </script>
 
 <style lang="scss">

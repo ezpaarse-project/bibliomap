@@ -56,12 +56,15 @@
 
 
 <script setup lang="ts">
-  import config from '@/assets/config.json';
+  import { useViewerConfigStore } from '@/stores/viewer-config';
   import { format } from 'date-fns';
   import { useSocketStore } from '@/stores/socket';
   import { TZDate } from '@date-fns/tz';
   import { useI18n } from 'vue-i18n';
+  import { useReplayTimerStore } from '@/stores/replay-timer';
   const replayMode = import.meta.env.VITE_REPLAY_MODE === 'true';
+
+  const config = useViewerConfigStore().config;
 
   const params = config.drawerParams.timerSection;
   const { t } = useI18n();
@@ -76,6 +79,8 @@
   let startTime: number;
   let endTime: number;
   const multiplier = ref<number>(1);
+
+  const timer = (await useReplayTimerStore())?.timer;
 
   if (!replayMode) {
     text.value = `0${params.dayLetter} 0${params.hourLetter} 0${params.minuteLetter} 0${params.secondLetter}`;
@@ -96,10 +101,6 @@
         percentage.value = ((timer - startTime) / (endTime - startTime)) * 100;
         startTimeText.value = getDateText(new Date(startTime), params.startEndDatesFormat);
         endTimeText.value = getDateText(new Date(endTime), params.startEndDatesFormat);
-      })
-      socket?.on('timeUpdate', time => {
-        percentage.value = ((new Date(time).getTime() - startTime) / (endTime - startTime)) * 100;
-        text.value = getDateText(time, params.timerDateFormat);
       })
     })
   }

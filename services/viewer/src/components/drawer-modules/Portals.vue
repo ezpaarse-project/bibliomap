@@ -10,7 +10,7 @@
       <v-list-item class="portal-list-element">
 
         <v-tooltip
-          v-if="counts[value.name.toUpperCase()] && Object.keys(counts[value.name.toUpperCase()]).length > 0"
+          v-if="countStore.getCountOfPortal(value.name.toUpperCase()) > 0"
           location="right"
         >
           <template #activator="{ props }">
@@ -26,16 +26,16 @@
                 :color="value.color"
                 variant="flat"
               >
-                {{ Object.values(counts[value.name.toUpperCase()]).reduce((a, b) => a + b, 0) }}
+                {{ countStore.getCountOfPortal(value.name.toUpperCase()) }}
               </v-chip>
             </div>
           </template>
           <div>
             <div
-              v-for="(val, subKey) in counts[value.name.toUpperCase()]"
-              :key="subKey"
+              v-for="mime in countStore.getMimeInPortal(value.name.toUpperCase())"
+              :key="mime"
             >
-              {{ subKey }}: {{ val }}
+              {{ mime }}: {{ countStore.getCountOfPortalAndMime(value.name.toUpperCase(), mime) }}
             </div>
           </div>
         </v-tooltip>
@@ -50,11 +50,10 @@
               </div>
             </div>
             <v-chip
-              v-if="counts[value.name.toUpperCase()]"
               :color="value.color"
               variant="flat"
             >
-              {{ Object.values(counts[value.name.toUpperCase()]).reduce((a, b) => a + b, 0) }}
+              {{ countStore.getCountOfPortal(value.name.toUpperCase()) }}
             </v-chip>
           </div>
         </template>
@@ -66,17 +65,13 @@
 
 <script setup lang="ts">
   import { useViewerConfigStore } from '@/stores/viewer-config';
-  import { useLogEventsStore } from '@/stores/log-events';
+  import { useEcCountStore } from '@/stores/ec-count';
   import { useI18n } from 'vue-i18n';
 
   const config = useViewerConfigStore().config;
   const { t } = useI18n();
 
-  const counts = useLogEventsStore().count;
-
-  config.drawerParams.portalSection.portals.forEach(p => {
-    counts[p.name.toUpperCase()] = {};
-  });
+  const countStore = useEcCountStore();
 
   const getIconUrl = (iconName: string): string => {
     const str = `../../assets/${iconName}`

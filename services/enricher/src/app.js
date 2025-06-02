@@ -70,10 +70,10 @@ io.on('connection', (viewerSocket) => {
 
   viewerSocket.on('isReady', (socketId) => {
     logIoListener.emit('isReady', socketId);
+  });
 
-    viewerSocket.on('getTime', () => {
-      logIoListener.emit('timeRequest', socketId);
-    });
+  viewerSocket.on('replayConfigRequest', (socketId) => {
+    logIoListener.emit('replayConfigRequest', socketId);
   });
 });
 
@@ -115,7 +115,11 @@ logIoListener.on('ready', (socketId) => {
 
 logIoListener.on('timeUpdate', (time) => io.emit('timeUpdate', time));
 
-logIoListener.on('timeResponse', (socketId, timer, start, end, multiplier) => {
-  const socket = [...viewers].filter((s) => s.id === socketId);
-  if (socket) io.to(socket).emit('timeResponse', timer, start, end, multiplier);
+logIoListener.on('replayConfig', (socketId, replayConfig) => {
+  const socket = [...viewers].find((s) => s.id === socketId);
+  if (socket) {
+    socket.emit('replayConfig', replayConfig);
+  } else {
+    console.warn(`Socket with ID ${socketId} not found in viewers set`);
+  }
 });

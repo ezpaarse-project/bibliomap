@@ -29,6 +29,7 @@
   "drawer": {
     "timer": {
       "tooltips": {
+        "live-timer": "You have been connected for {time}",
         "simulation-datetime": "Date and time of simulation",
         "multiplier": "Time is {multiplier} faster than real time",
         "simulation-percentage": "Simulation progress: {percentage}%",

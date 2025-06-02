@@ -9,8 +9,10 @@
   import type { Log } from '@/main';
   import { usePlatformFilterStore } from '@/stores/platform-filter';
   import useMitt from '@/composables/useMitt';
+  import { useSocketStore } from '@/stores/socket';
 
   const emitter = useMitt();
+  const io = useSocketStore().socket;
 
   const config = useViewerConfigStore().config;
   const mapParams = config.mapParams;
@@ -93,7 +95,7 @@
       changeMapLayer(layers[layerName] as TileLayer);
     });
 
-    emitter.on('log', (log: Log) => {
+    io.on('log', (log: Log) => {
       if (usePlatformFilterStore().getFilter() && log.platform_name && !((usePlatformFilterStore().getFilter().toUpperCase().includes(log.platform_name.toUpperCase()) || log.platform_name.toUpperCase().includes(usePlatformFilterStore().getFilter().toUpperCase())))) return;
       let color;
       let gradient;

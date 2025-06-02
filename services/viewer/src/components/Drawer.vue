@@ -13,7 +13,7 @@
         <v-divider />
       </div>
       <div v-if="props.timerSection.include" :style="{ order: props.timerSection.index }">
-        <Timer />
+        <ReplayTimer />
         <v-divider />
       </div>
       <div v-if="props.counterSection.include" :style="{ order: props.counterSection.index }">

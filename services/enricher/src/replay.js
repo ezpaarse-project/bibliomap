@@ -71,6 +71,7 @@ class Replay extends EventEmitter {
     this.startTimerAt = this.dayStart + (this.replayStartDatetime ? new Date(`1970-01-01T${this.replayStartDatetime}`).getTime() : 0);
 
     this.timer = this.startTimerAt;
+    this.initSendTimerInterval();
 
     this.emit('ready', null);
   }
@@ -82,7 +83,6 @@ class Replay extends EventEmitter {
     }
     this.timer += 1000;
     logger.debug('[debug] timer:', new Date(this.timer));
-    this.emit('timeUpdate', new Date(this.timer));
   }
 
   initInterval(timeout) {
@@ -113,6 +113,12 @@ class Replay extends EventEmitter {
   parseLine(log) {
     if (!log) return;
     this.emit('+exported_log', log.ezproxyName, 'bibliomap', 'info', log);
+  }
+
+  initSendTimerInterval() {
+    return setInterval(() => {
+      this.emit('timeUpdate', this.timer);
+    }, 10000);
   }
 }
 
