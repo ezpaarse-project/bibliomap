@@ -44,6 +44,9 @@
         "total-consultations": "Nombre total de consultations : {n}"
       },
       "total": "Total"
+    },
+    "replay-description": {
+      "replay-label": "Replay : "
     }
   },
   "version-card": {

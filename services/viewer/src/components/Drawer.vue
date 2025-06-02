@@ -24,6 +24,10 @@
         <Portals />
         <v-divider />
       </div>
+      <div v-if="props.replayDescription.include" :style="{ order: props.replayDescription.index }">
+        <ReplayDescription />
+        <v-divider />
+      </div>
     </div>
   </v-navigation-drawer>
   <ModeCard v-if="!usingPhone || (usingPhone && !drawer)" />

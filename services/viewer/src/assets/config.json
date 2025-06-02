@@ -128,6 +128,10 @@
                     "url": "https://bib.cnrs.fr/category/terre/"
                 }
             ]
+        },
+        "replayDescription": {
+            "include": true,
+            "index": 0.5
         }
     },
     "appbarParams": {

@@ -51,5 +51,8 @@
     "img1-caption": "Les plateformes des portails d’accès spécialisés sont gérées par l'<a href=\"http://www.inist.fr/\">Inist-CNRS</a>.",
     "p2": "Les visualisations disponibles dans <a href=\"https://github.com/ezpaarse-project/bibliomap\">BiblioMap</a> sont rendues possible par l’utilisation d’<a href=\"http://ezpaarse.couperin.org/\">ezPAARSE</a>, un <a href=\"https://github.com/ezpaarse-project/ezpaarse\">logiciel libre</a> développé conjointement par <a href=\"http://www.couperin.org/presentation\">COUPERIN</a>, l'<a href=\"http://www.inist.fr/\">INIST-CNRS</a> et l’<a href=\"http://www.univ-lorraine.fr/\">Université de Lorraine</a> comme site pilote. <a href=\"http://analogist.couperin.org/\">AnalogIST</a> est le portail collaboratif de l’Enseignement Supérieur et Recherche dédié à la problématique de la mesure des usages des ressources électroniques. Les développements associés à cette collaboration sont disponibles sous forme de logiciel libre au sein d’<a href=\"https://github.com/ezpaarse-project/\">ezPAARSE-project</a>.",
     "comment": "Remarque : la localisation des consultations apparaissant sur la carte est volontairement approximative."
+  },
+  "replay-descriptions":{
+    "2020-03-08_csv": "Jour de simulation durant la pandémie du Covid-19"
   }
 }
