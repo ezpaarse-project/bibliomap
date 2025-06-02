@@ -20,10 +20,12 @@
 
     <v-tooltip
       location="top"
-      :text="t(percentage < 0 ? 'drawer.timer.loading' : t('drawer.timer.tooltips.simulation-percentage', {percentage}))"
+      :text="percentage < 0
+        ? t('drawer.timer.loading')
+        : t('drawer.timer.tooltips.simulation-percentage', { percentage })"
     >
       <template #activator="{ props }">
-        <v-progress-linear v-bind="props" :indeterminate="getPercentage(timer, replayConfig?.replayStartDatetime, replayConfig?.replayEndDatetime) < 0" :model-value="getPercentage(timer, replayConfig?.replayStartDatetime, replayConfig?.replayEndDatetime)" />
+        <v-progress-linear v-bind="props" :indeterminate="percentage < 0" :model-value="percentage" />
       </template>
     </v-tooltip>
 
