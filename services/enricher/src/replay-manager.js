@@ -30,7 +30,7 @@ function loadConfigJson(dirPath) {
 }
 
 export default class ReplayManager extends EventEmitter {
-  constructor () {
+  constructor() {
     super();
     this.replays = [];
     const replayDirs = getDirectories('./data/replay_files/');
@@ -52,37 +52,56 @@ export default class ReplayManager extends EventEmitter {
   async listen(cb) {
     this.server = net.createServer();
 
-    for (const replay of this.replays) {
-      replay.listen(cb);
+    try{
+      while (true) {
+        for (const replay of this.replays) {
+          replay.listen(cb);
+          this.emit('replayConfig', null,
+              {
+                replayStartDatetime: replay.startTimerAt,
+                replayEndDatetime: replay.dayEnd,
+                replayMultiplier: replay.replayMultiplier,
+                replayDuration: replay.replayDuration,
+                description: replay.description,
+                timerStart: replay.startTimerAt
+              }
+            );
 
-      this.on('isReady', (socketId) => {
-      if (!replay.loading) this.emit('ready', socketId);
-    });
+          this.on('isReady', (socketId) => {
+            if (!replay.loading) this.emit('ready', socketId);
+          });
 
-      this.on('replayConfigRequest', (socketId) => {
-        this.emit('replayConfig', socketId, 
-          { 
-            replayStartDatetime: replay.startTimerAt, 
-            replayEndDatetime: replay.dayEnd, 
-            replayMultiplier: replay.replayMultiplier, 
-            replayDuration: replay.replayDuration, 
-            description: replay.description, 
-            timerStart: replay.startTimerAt 
-          }
-        );
-        this.emit('timeUpdate', replay.timer);
-      });
+          this.on('replayConfigRequest', (socketId) => {
+            this.emit('replayConfig', socketId,
+              {
+                replayStartDatetime: replay.startTimerAt,
+                replayEndDatetime: replay.dayEnd,
+                replayMultiplier: replay.replayMultiplier,
+                replayDuration: replay.replayDuration,
+                description: replay.description,
+                timerStart: replay.startTimerAt
+              }
+            );
+            this.emit('timeUpdate', replay.timer);
+          });
 
-      replay.on('timeUpdate', (time) => {
-        this.emit('timeUpdate', time);
-      });
+          replay.on('timeUpdate', (time) => {
+            this.emit('timeUpdate', time);
+          });
 
-      replay.on('+exported_log', (ezproxyName, logType, logLevel, log) => {
-        this.emit('+exported_log', ezproxyName, logType, logLevel, log);
-      });
+          replay.on('+exported_log', (ezproxyName, logType, logLevel, log) => {
+            this.emit('+exported_log', ezproxyName, logType, logLevel, log);
+          });
 
-      await once(replay, 'timerEnd');
+          await once(replay, 'timerEnd');
+        }
+      }
     }
-    return cb();
+    catch(err) {
+      console.error(err);
+    }
+    finally {
+      return cb();
+    }
   }
 }

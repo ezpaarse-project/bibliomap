@@ -51,7 +51,7 @@ logIoListener.listen(() => {
   else logger.info('Replay sessions starting');
 });
 
- if (process.env.REPLAY_MODE !== 'true') logIoListener.server.on('connection', (logListenerSocket) => {
+if (process.env.REPLAY_MODE !== 'true') logIoListener.server.on('connection', (logListenerSocket) => {
   logger.info('Harvester connected');
 
   logListenerSocket.on('close', () => {
@@ -116,6 +116,7 @@ logIoListener.on('ready', (socketId) => {
 logIoListener.on('timeUpdate', (time) => io.emit('timeUpdate', time));
 
 logIoListener.on('replayConfig', (socketId, replayConfig) => {
+  if(!socketId) return io.emit('replayConfig', replayConfig);
   const socket = [...viewers].find((s) => s.id === socketId);
   if (socket) {
     socket.emit('replayConfig', replayConfig);

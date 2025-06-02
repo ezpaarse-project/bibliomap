@@ -53,16 +53,17 @@ export const useEcCountStore = defineStore('ec-count', () => {
   }
 
   const socketStore = useSocketStore();
-  const io = socketStore.socket;
+  const socket = socketStore.socket;
 
-  io.on('log', log => {
+  socket.on('log', log => {
     if (filter && log.platform_name && !((filter.toUpperCase().includes(log.platform_name.toUpperCase()) || log.platform_name.toUpperCase().includes(filter.toUpperCase())))) return;
     log.ezproxyName.split('+').forEach((portal: string) => {
       increment(portal.toUpperCase(), log.mime || 'unknown');
     })
   });
 
-  io.on('reset', () => {
+  socket.on('replayConfig', () => {
+    console.log('RESET')
     reset();
   });
 

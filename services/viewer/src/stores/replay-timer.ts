@@ -1,4 +1,4 @@
-import { useReplayConfigStore } from './replay-config';
+import { useReplayConfigStore, type ReplayConfig } from './replay-config';
 import { useSocketStore } from './socket';
 
 export const useReplayTimerStore = defineStore('timer', () => {
@@ -8,6 +8,10 @@ export const useReplayTimerStore = defineStore('timer', () => {
 
   io.on('timeUpdate', (t: number) => {
     timer.value = t;
+  });
+
+  io.on('replayConfig', (config: ReplayConfig) => {
+    timer.value = config.replayStartDatetime;
   });
 
   watchEffect(onCleanup => {

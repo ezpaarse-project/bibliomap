@@ -13,7 +13,7 @@
         <v-divider />
       </div>
       <div v-if="props.timerSection.include" :style="{ order: props.timerSection.index }">
-        <ReplayTimer />
+        <Timer />
         <v-divider />
       </div>
       <div v-if="props.counterSection.include" :style="{ order: props.counterSection.index }">
@@ -24,7 +24,7 @@
         <Portals />
         <v-divider />
       </div>
-      <div v-if="props.replayDescription.include" :style="{ order: props.replayDescription.index }">
+      <div v-if="replayMode && props.replayDescription.include" :style="{ order: props.replayDescription.index }">
         <ReplayDescription />
         <v-divider />
       </div>
@@ -37,6 +37,7 @@
   import { useViewerConfigStore } from '@/stores/viewer-config';
   import useMitt from '@/composables/useMitt';
 
+  const replayMode = import.meta.env.VITE_REPLAY_MODE === 'true';
   const config = useViewerConfigStore().config;
   const props = config.drawerParams;
   const emitter = useMitt();
