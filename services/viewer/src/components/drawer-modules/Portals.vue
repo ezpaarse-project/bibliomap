@@ -10,16 +10,16 @@
       <v-list-item class="portal-list-element">
 
         <v-tooltip
-          v-if="countStore.getCountOfPortal(value.name.toUpperCase()) > 0"
+          :disabled="!countStore.getCountOfPortal(value.name.toUpperCase())"
           location="right"
         >
           <template #activator="{ props }">
             <div class="portal-list-item" v-bind="props">
               <div class="portal-container">
                 <img v-if="value.icon" :src="getIconUrl(value.icon)">
-                <div>
+                <div class="portal-title-container">
                   <h3>{{ t(`drawer-custom.portals.${value.name}.title`) }}</h3>
-                  <p>{{ t(`drawer-custom.portals.${value.name}.subtitle`) }}</p>
+                  <p v-if="t(`drawer-custom.portals.${value.name}.subtitle`)">{{ t(`drawer-custom.portals.${value.name}.subtitle`) }}</p>
                 </div>
               </div>
               <v-chip
@@ -39,25 +39,6 @@
             </div>
           </div>
         </v-tooltip>
-        <template v-else>
-          <div class="portal-list-item">
-            <div class="portal-container">
-              <img v-if="value.icon" :src="getIconUrl(value.icon)">
-
-              <div>
-                <h3>{{ t(`drawer-custom.portals.${value.name}.title`) }}</h3>
-                <p>{{ t(`drawer-custom.portals.${value.name}.subtitle`) }}</p>
-              </div>
-            </div>
-            <v-chip
-              :color="value.color"
-              variant="flat"
-            >
-              {{ countStore.getCountOfPortal(value.name.toUpperCase()) }}
-            </v-chip>
-          </div>
-        </template>
-
       </v-list-item>
     </a>
   </div>
@@ -107,7 +88,11 @@
     height: 3rem;
     margin: .1rem 0;
     gap: 1rem;
-
+  }
+  .portal-title-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     h3{
       font-size: 16px;
       font-weight: normal;
