@@ -57,6 +57,8 @@ export const useEcCountStore = defineStore('ec-count', () => {
 
   socket.on('log', log => {
     if (filter && log.platform_name && !((filter.toUpperCase().includes(log.platform_name.toUpperCase()) || log.platform_name.toUpperCase().includes(filter.toUpperCase())))) return;
+    if (portals.length === 1) return increment(portals[0].toUpperCase(), log.mime || 'unknown');
+    if (!log.ezproxyName) return;
     log.ezproxyName.split('+').forEach((portal: string) => {
       increment(portal.toUpperCase(), log.mime || 'unknown');
     })
