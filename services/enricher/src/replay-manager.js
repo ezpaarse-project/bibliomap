@@ -39,7 +39,7 @@ export default class ReplayManager extends EventEmitter {
       if (!config) return;
       this.replays.push(
         new Replay(
-          config.replayStartTime,
+          config.replayStartDatetime,
           config.replayMultiplier,
           getLogFiles(dir),
           config.replayDuration,

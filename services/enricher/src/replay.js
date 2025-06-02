@@ -5,7 +5,6 @@ import net from 'net';
 import { startOfDay, endOfDay, addDays } from 'date-fns';
 import { TZDate } from '@date-fns/tz';
 import zlib from 'zlib';
-import path from 'path';
 import pino from 'pino';
 import EventFileReader from './event_file_reader.js';
 
@@ -50,10 +49,10 @@ class Replay extends EventEmitter {
   }
 
   initTimer() {
-    if (process.env.REPLAY_START_DATETIME) {
-      this.dayStart = startOfDay(TZDate.tz('Europe/Paris', new Date(process.env.REPLAY_START_DATETIME))).getTime();
-      this.dayEnd = endOfDay(addDays(TZDate.tz('Europe/Paris', new Date(process.env.REPLAY_START_DATETIME)), this.replayDuration - 1)).getTime();
-      this.startTimerAt = new Date(process.env.REPLAY_START_DATETIME).getTime();
+    if (this.replayStartDatetime) {
+      this.dayStart = startOfDay(TZDate.tz('Europe/Paris', new Date(this.replayStartDatetime))).getTime();
+      this.dayEnd = endOfDay(addDays(TZDate.tz('Europe/Paris', new Date(this.replayStartDatetime)), this.replayDuration - 1)).getTime();
+      this.startTimerAt = new Date(this.replayStartDatetime).getTime();
       this.timer = this.startTimerAt;
       this.loading = false; 
       this.emit('ready', null);
@@ -97,7 +96,7 @@ class Replay extends EventEmitter {
       this.logReaders = this.logReaders.filter((reader) => !reader.eof);
 
       if (this.loading) {
-        if ((process.env.REPLAY_START_DATETIME)
+        if ((this.replayStartDatetime)
         || this.logReaders.every((reader) => reader.firstLog)) {
           this.initTimer();
         } else return;
