@@ -126,6 +126,8 @@
         }
       }
 
+      const bubbleHtml = getBubbleHtml(gradient, color)
+
       const bubble = L.divIcon({
         className: 'leaflet-marker',
         iconSize: [size, size],
@@ -140,10 +142,7 @@
                 <p style='${mapParams.popupText.mime && log.mime ? '' : 'display: none;'} background-color: ${log.mime && mimes[log.mime as keyof typeof mimes].color || '#D35400'}'>${log.mime}</p>
               </div>
             </div>
-            <div class='bubble'>
-              <div style='background: ${gradient || color}; width: ${size}px; height: ${size}px' class='bubble-circle'></div>
-              <div style='box-shadow: 1px 1px 8px 0 ${color}; width: ${size*2}px; height: ${size*2}px' class='bubble-pulse'></div>
-            </div>
+            ${bubbleHtml}
           </div>
         `,
       });
@@ -163,7 +162,33 @@
         emitter.emit('minimap', { log, bubble });
       }
     });
-  })
+  });
+
+  function getBubbleHtml (gradient: string | undefined, color: string) {
+    let classes = '';
+    let backgroundColor = '';
+    switch (color) {
+      case 'random': {
+        backgroundColor = getRandomHexColor();
+        break;
+      }
+      case 'rgb':
+      case'multicolor': {
+        classes += 'multicolor';
+        break;
+      }
+      default: backgroundColor = color;
+    }
+    return `<div class='bubble'>
+              <div style='background: ${gradient || backgroundColor || 'transparent'}; width: ${size}px; height: ${size}px' class='bubble-circle ${classes}'></div>
+              <div style='box-shadow: 1px 1px 8px 0 ${backgroundColor || 'gray'}; width: ${size*2}px; height: ${size*2}px' class='bubble-pulse'></div>
+            </div>`
+  }
+
+  function getRandomHexColor () {
+    const hex = Math.floor(Math.random() * 0xFFFFFF).toString(16);
+    return `#${hex.padStart(6, '0')}`;
+  }
 </script>
 
 <style lang="scss">
@@ -245,7 +270,28 @@
         box-sizing: border-box;
       }
     }
+  }
 
+  .multicolor {
+    animation: multicolor-animation 7s ease-in-out infinite;
+  }
+
+  @keyframes multicolor-animation {
+    0% {
+      background-color: hsl(0, 100%, 50%);
+    }
+    25% {
+      background-color: hsl(90, 100%, 50%);
+    }
+    50% {
+      background-color: hsl(180, 100%, 50%);
+    }
+    75% {
+      background-color: hsl(270, 100%, 50%);
+    }
+    100% {
+      background-color: hsl(360, 100%, 50%);
+    }
   }
 
   @keyframes pulsate {
