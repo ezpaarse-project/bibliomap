@@ -1,4 +1,4 @@
-import { useReplayConfigStore, type ReplayConfig } from './replay-config';
+import { type ReplayConfig, useReplayConfigStore } from './replay-config';
 import { useSocketStore } from './socket';
 
 export const useReplayTimerStore = defineStore('timer', () => {

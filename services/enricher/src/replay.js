@@ -15,10 +15,11 @@ async function handleGzFile(stream) {
 }
 
 class Replay extends EventEmitter {
-  constructor(replayStartTime, replayMultiplier, replayFiles, replayDuration, description) {
+  constructor(replayStartTime, replayEndTime, replayMultiplier, replayFiles, replayDuration, description) {
     super();
     this.replayStartDatetime = replayStartTime;
     this.replayMultiplier = replayMultiplier || 1;
+    this.replayEndTime = replayEndTime;
     this.replayFiles = replayFiles;
     this.replayDuration = replayDuration;
     if (this.replayDuration < 1) this.replayDuration = 1;
@@ -48,31 +49,30 @@ class Replay extends EventEmitter {
     return cb();
   }
 
+  setReplayConfig(startTimerAt, endTimerAt) {
+    this.startTimerAt = new Date(startTimerAt).getTime();
+    this.endTimerAt = new Date(endTimerAt).getTime();
+    this.timer = this.startTimerAt;
+    this.loading = false;
+    this.initSendTimerInterval();
+    this.emit('ready', null);
+  }
+
   initTimer() {
     if (this.replayStartDatetime) {
-      this.dayStart = startOfDay(TZDate.tz('Europe/Paris', new Date(this.replayStartDatetime))).getTime();
-      this.dayEnd = endOfDay(addDays(TZDate.tz('Europe/Paris', new Date(this.replayStartDatetime)), this.replayDuration - 1)).getTime();
-      this.startTimerAt = new Date(this.replayStartDatetime).getTime();
-      this.timer = this.startTimerAt;
-      this.loading = false; 
-      this.emit('ready', null);
+      if (this.replayEndTime && this.replayStartDatetime < this.replayEndTime) return this.setReplayConfig(this.replayStartDatetime, this.replayEndTime);
+      const dayEnd = endOfDay(addDays(TZDate.tz('Europe/Paris', new Date(this.replayStartDatetime)), this.replayDuration - 1)).getTime();
+      this.setReplayConfig(this.replayStartDatetime, dayEnd);
       return;
     }
 
     const firstLogDate = this.logReaders
       .reduce((acc, reader) => Math.min(acc, reader.firstLog.date.getTime()), Infinity);
 
-    this.dayStart = startOfDay(TZDate.tz('Europe/Paris', firstLogDate)).getTime();
-    this.dayEnd = endOfDay(addDays(TZDate.tz('Europe/Paris', firstLogDate), this.replayDuration - 1)).getTime();
+    const dayEnd = endOfDay(addDays(TZDate.tz('Europe/Paris', firstLogDate), this.replayDuration - 1)).getTime();
+    const startTimerAt = this.dayStart + (this.replayStartDatetime ? new Date(`1970-01-01T${this.replayStartDatetime}`).getTime() : 0);
 
-    this.loading = false;
-
-    this.startTimerAt = this.dayStart + (this.replayStartDatetime ? new Date(`1970-01-01T${this.replayStartDatetime}`).getTime() : 0);
-
-    this.timer = this.startTimerAt;
-    this.initSendTimerInterval();
-
-    this.emit('ready', null);
+    this.setReplayConfig(startTimerAt, dayEnd);
   }
 
   updateTimer() {
@@ -86,7 +86,7 @@ class Replay extends EventEmitter {
 
   initInterval(timeout) {
     return setInterval(() => {
-      if (this.timer >= this.dayEnd) {
+      if (this.timer >= this.endTimerAt) {
         this.emit('timerEnd');
         return;
       };
