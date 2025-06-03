@@ -47,7 +47,7 @@ export default class ReplayManager extends EventEmitter {
           this.emit('replayConfig', null,
               {
                 replayStartDatetime: replay.startTimerAt,
-                replayEndDatetime: replay.dayEnd,
+                replayEndDatetime: replay.endTimerAt,
                 replayMultiplier: replay.replayMultiplier,
                 replayDuration: replay.replayDuration,
                 description: replay.description,
@@ -63,7 +63,7 @@ export default class ReplayManager extends EventEmitter {
             this.emit('replayConfig', socketId,
               {
                 replayStartDatetime: replay.startTimerAt,
-                replayEndDatetime: replay.dayEnd,
+                replayEndDatetime: replay.endTimerAt,
                 replayMultiplier: replay.replayMultiplier,
                 replayDuration: replay.replayDuration,
                 description: replay.description,
@@ -101,6 +101,7 @@ export default class ReplayManager extends EventEmitter {
         replays.push(
           new Replay(
             config.replayStartDatetime,
+            config.replayEndDatetime,
             config.replayMultiplier,
             getLogFiles(dir),
             config.replayDuration,
