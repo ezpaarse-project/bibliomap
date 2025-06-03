@@ -18,3 +18,23 @@
     return new URL(`../../assets/${iconName}`, import.meta.url).href;
   };
 </script>
+<style lang="scss">
+    .description-section-item{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    img{
+      height: 20%;
+      width: 20%;
+      margin: .5rem;
+      max-height: 128px;
+    }
+
+    span{
+      text-align: center;
+      font-size: 14px;
+      margin: .5rem;
+    }
+  }
+</style>
