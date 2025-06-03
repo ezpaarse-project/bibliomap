@@ -97,6 +97,7 @@
 
     io.on('log', (log: Log) => {
       if (usePlatformFilterStore().getFilter() && log.platform_name && !((usePlatformFilterStore().getFilter().toUpperCase().includes(log.platform_name.toUpperCase()) || log.platform_name.toUpperCase().includes(usePlatformFilterStore().getFilter().toUpperCase())))) return;
+      if (!log || !log['geoip-latitude'] || !log['geoip-longitude']) return;
       let color;
       let gradient;
 
