@@ -14,7 +14,7 @@
 
         <SettingsButton />
 
-        <InfoButton />
+        <InfoButton v-if="config.dialogDrawerParams.include" />
       </div>
 
     </div>
