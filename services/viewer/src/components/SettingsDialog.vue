@@ -40,7 +40,7 @@
             class="ma-0"
             :color="value.color || 'primary'"
             hide-details
-            :label="t(`drawer-custom.portals.${index}.title`)"
+            :label="t(`drawer-custom.portals.${value.name}.title`)"
           />
         </div>
         <div class="pa-4">
@@ -95,36 +95,36 @@
   import { useI18n } from 'vue-i18n';
 
   const { t } = useI18n();
-  const currentConfig = useViewerConfigStore().config;
-  const allPortals: Record<string, { color: string; icon?: string }> = initialConfig.drawerParams.portalSection.portals;
+  const { config: currentConfig } = storeToRefs(useViewerConfigStore());
+  const allPortals = initialConfig.drawerParams.portalSection.portals;
   const emitter = useMitt();
   const active = ref(false);
   emitter.on('showSettings', () => {
     active.value = true;
   });
 
-  const showMinimap = ref(currentConfig.minimapParams.include as boolean);
+  const showMinimap = ref(currentConfig.value.minimapParams.include as boolean);
   const shownPortals = reactive<Record<string, boolean>>(
     Object.keys(initialConfig.drawerParams.portalSection.portals).reduce((acc: Record<string, boolean>, key) => {
       acc[key] = true
       return acc
     }, {})
   );
-  const showTitles = ref(currentConfig.mapParams.popupText.publication_title as boolean);
+  const showTitles = ref(currentConfig.value.mapParams.popupText.publication_title as boolean);
   const filter = ref(usePlatformFilterStore().getFilter());
 
   watch(showMinimap, () => {
-    currentConfig.minimapParams.include = showMinimap.value;
+    currentConfig.value.minimapParams.include = showMinimap.value;
   });
 
   watch(shownPortals, () => {
-    currentConfig.drawerParams.portalSection.portals = Object.fromEntries(
+    currentConfig.value.drawerParams.portalSection.portals = Object.fromEntries(
       Object.entries(allPortals).filter(([key]) => shownPortals[key])
-    ) as typeof currentConfig.drawerParams.portalSection.portals;
+    ) as unknown as typeof currentConfig.value.drawerParams.portalSection.portals;
   });
 
   watch(showTitles, () => {
-    currentConfig.mapParams.popupText.publication_title = showTitles.value;
+    currentConfig.value.mapParams.popupText.publication_title = showTitles.value;
   });
 
   watch(filter, () => {
