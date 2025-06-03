@@ -4,7 +4,7 @@
       <v-list-item>
         <v-card :flat="true">
           <v-card-title
-            class="text-h4 justify-center"
+            class="text-h4 justify-center title-font bold"
             style="white-space: normal; overflow: visible;"
           >{{ t('info-card.title') }}</v-card-title>
           <v-card-text><p v-html="t('info-card.p1')" /></v-card-text>
