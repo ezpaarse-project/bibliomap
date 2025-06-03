@@ -116,7 +116,9 @@ logIoListener.on('ready', (socketId) => {
 logIoListener.on('timeUpdate', (time) => io.emit('timeUpdate', time));
 
 logIoListener.on('replayConfig', (socketId, replayConfig) => {
-  if(!socketId) return io.emit('replayConfig', replayConfig);
+  if(!socketId) {
+    return io.emit('replayConfig', replayConfig);
+  }
   const socket = [...viewers].find((s) => s.id === socketId);
   if (socket) {
     socket.emit('replayConfig', replayConfig);

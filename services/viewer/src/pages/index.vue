@@ -26,7 +26,6 @@
     socket.on('connect', async () => {
       console.log('Enricher connected');
       replayConfigStore.setConfig(await replayConfigStore.fetchReplayConfig() as ReplayConfig);
-      console.log('replayConfig:', replayConfigStore.config);
     });
   })
 

@@ -21,7 +21,7 @@ export const useReplayTimerStore = defineStore('timer', () => {
     const intervalWaitTime = 1000 / config.replayMultiplier;
 
     const interval = setInterval(() => {
-      if (timer.value !== null) {
+      if (timer.value !== null && timer.value < config.replayEndDatetime) {
         timer.value += 1000;
       }
     }, intervalWaitTime);

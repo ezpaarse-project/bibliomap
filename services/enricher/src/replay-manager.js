@@ -32,21 +32,7 @@ function loadConfigJson(dirPath) {
 export default class ReplayManager extends EventEmitter {
   constructor() {
     super();
-    this.replays = [];
-    const replayDirs = getDirectories('./data/replay_files/');
-    replayDirs.forEach(dir => {
-      const config = loadConfigJson(dir);
-      if (!config) return;
-      this.replays.push(
-        new Replay(
-          config.replayStartDatetime,
-          config.replayMultiplier,
-          getLogFiles(dir),
-          config.replayDuration,
-          config.description
-        )
-      );
-    });
+    this.replayDirs = getDirectories('./data/replay_files/');
   }
 
   async listen(cb) {
@@ -54,8 +40,10 @@ export default class ReplayManager extends EventEmitter {
 
     try{
       while (true) {
-        for (const replay of this.replays) {
+        const replays = this.getReplayObjectsFromDirs();
+        for (const replay of replays) {
           replay.listen(cb);
+          await once(replay, 'ready');
           this.emit('replayConfig', null,
               {
                 replayStartDatetime: replay.startTimerAt,
@@ -103,5 +91,23 @@ export default class ReplayManager extends EventEmitter {
     finally {
       return cb();
     }
+  }
+
+    getReplayObjectsFromDirs(){
+      const replays = [];
+      this.replayDirs.forEach(dir => {
+        const config = loadConfigJson(dir);
+        if (!config) return;
+        replays.push(
+          new Replay(
+            config.replayStartDatetime,
+            config.replayMultiplier,
+            getLogFiles(dir),
+            config.replayDuration,
+            config.description
+          )
+        );
+      });
+      return replays;
   }
 }

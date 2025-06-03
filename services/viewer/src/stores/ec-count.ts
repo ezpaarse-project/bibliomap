@@ -65,7 +65,6 @@ export const useEcCountStore = defineStore('ec-count', () => {
   });
 
   socket.on('replayConfig', () => {
-    console.log('RESET')
     reset();
   });
 
