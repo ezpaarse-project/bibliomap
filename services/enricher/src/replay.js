@@ -115,10 +115,16 @@ class Replay extends EventEmitter {
   }
 
   initSendTimerInterval() {
-    return setInterval(() => {
+  const intervalId = setInterval(() => {
+    if (this.timer > this.endTimerAt) {
       this.emit('timeUpdate', this.timer);
-    }, 10000);
-  }
+    } else {
+      clearInterval(intervalId);
+    }
+  }, 10000);
+
+  return intervalId;
+}
 }
 
 export default Replay;
