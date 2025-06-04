@@ -19,6 +19,7 @@ Bibliomap Viewer is composed of interface modules, each having a descriptive rol
   - `Timer section`
   - `Counter section`
   - `Portal section`
+  - `Replay description section`
 - `Appbar`
 - `Minimap`
 - `Information drawer`
@@ -76,6 +77,14 @@ It is a subsection of the Drawer module. It displays a count of different docume
 </p>
 
 It is a subsection of the Drawer module. It displays a count of articles from all the different Bib-CNRS portals. Hovering on a portal element will show more detail information such as the count of the document types for this specific one. Clicking on it redirects to the portal's web page. Code is available in `src/components/drawer-modules/Portals.vue`.
+
+### Replay description section
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/617002e9-11ee-4282-829d-848745abf63f" />
+</p>
+
+It is a subsection of the Drawer module. It displays a description about the current replay session. It does not appear on Live mode. Code is available in `src/components/drawer-modules/ReplayDescription.vue`.
 
 ### Appbar
 
@@ -156,7 +165,9 @@ The map configurations are done in the `"mapParams"` block. Here are the differe
 | `bubbleSize` | The size of a bubble appearing on the map in pixels. | `60` |
 | `includePopup` | Indicates if the popup should be shown or hidden. If false, only bubbles will be shown and not their popups. | `true` |
 | `popupText` | The fields that should appear on a bubble popup. Set to true to show them, false (or nothing) to hide them. | `{"datetime": false, "ezproxyName": false, "geoip-pos": true, "mime": true, "platform_name": true, "rtype": true, "publication_title": false}` |
+| `defaultMimeColor` | Fields that indicates in which color the mimes that are not listed should be displayed. | `"#7F8C8D"` |
 | `attributesColors` | Colors of the fields in popupText. | `{"rtype": "#7F8C8D"}` |
+| `colorBy` | Indicates what field will color the bubble. Supports "mime" and "portal", defaults to "portal". | "portal" |
 
 ### Drawer configuration
 
@@ -173,6 +184,7 @@ The drawer contains several subsections:
 - `Timer`
 - `Counter`
 - `Portals`
+- `Replay description`
 
 They all contain an `"index"` parameter, which indicates in what order they should be shown, from top to bottom.
 
@@ -215,13 +227,22 @@ The counter section configurations are done in the `"counterSection"` block, ins
 
 ### Portal section configuration
 
-The portal section configurations are done in the `"descriptionSection"` block, inside the `"drawerParams"` block. Here are the different parameters:
+The portal section configurations are done in the `"portalSection"` block, inside the `"drawerParams"` block. Here are the different parameters:
 
 | Name | Description | Default |
 | --- | --- | --- |
 | `include` | Indicates if the portal section should be shown or hidden. | `true` |
 | `index` | Indicates in which order this component should be in the drawer. | `3` |
 | `portals` | The included portals will be shown in the drawer, and their consultation events will be shown on the map using bubbles. Each portal should be of this format: `{"name": "nameOfPortal", "color": "colorOfPortal", "icon": "iconOfPortal", "url": "urlOfPortal"}`. The icon can be null or undefined. If the user clicks on the portal description, the website redirects to the url parameter. The url can be null or undefined. | `{}` |
+
+### Replay description section configuration
+
+The description section configuration are done in the `"replayDescriptionSection"` block, inside the `"drawerParams"` block. Here are the different parameters:
+
+| Name | Description | Default |
+| --- | --- | --- |
+| `include` | Indicates if the portal section should be shown or hidden. | `true` |
+| `index` | Indicates in which order this component should be in the drawer. | `0.5` |
 
 ### Appbar configurations
 
@@ -260,6 +281,34 @@ It is possible to configure customizable text fields thanks to the use of i18n. 
 | -- | -- |
 | `description` | Text of the description section in the drawer. |
 | `portals` | Portals can have a title and a subtitle. They must be of this format: `"nameOfPortal": {"title": "titleOfPortal", "subtitle": "subtitleOfPortal"}` |
+
+### Replay customizable text
+
+You can use internationalization in the replay description by writing it in the custom locales files, in the `"replay-descriptions"` block. After that, you need to take the key name of the description and put it in the replay config file as the description, with a dollar character before it.
+
+Example:
+
+`viewer/src/locales/custom/en.json`
+```json
+{
+  ...
+  "replay-descriptions":{
+    "2025-05-23": "Replay of Friday 23rd May 2025."
+  }
+}
+```
+
+`enricher/data/replay_files/2025-05-26/config.json`
+```json
+{
+  "replayStartDatetime": "2025-05-23T09:00:00+01:00",
+  "replayEndDatetime": "2025-05-23T19:00:00+01:00",
+  "replayMultiplier": 100,
+  "replayDuration": 1,
+  "description": "$2025-05-23"
+}
+```
+
 
 ## Information card
 
