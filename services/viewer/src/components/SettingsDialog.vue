@@ -27,7 +27,7 @@
         </div>
       </v-card>
       <v-divider />
-      <v-card :flat="true">
+      <v-card v-if="allPortals.length > 1" :flat="true">
         <v-card-text class="text-h6">{{ t('appbar.settings-dialog.portals-section.title') }}</v-card-text>
         <div
           class="d-flex flex-column flex-wrap px-4"

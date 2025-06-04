@@ -27,9 +27,9 @@
 
   const { t } = useI18n();
 
-  const config = useViewerConfigStore().config;
-  const counterProps = config.drawerParams.counterSection;
-  const mimes = config.mapParams.attributesColors.mimes;
+  const { config } = storeToRefs(useViewerConfigStore());
+  const counterProps = config.value.drawerParams.counterSection;
+  const mimes = config.value.mapParams.attributesColors.mimes;
   const countStore = useEcCountStore();
 </script>
 

@@ -33,7 +33,7 @@
       <div>
         <v-tooltip location="top" :text="t('drawer.timer.tooltips.start-datetime')">
           <template #activator="{ props }">
-            <span v-bind="props">{{ startTimeText }}</span>
+            <span v-bind="props">{{ getDateText(new Date(replayConfig.replayStartDatetime), config.drawerParams.timerSection.startEndDatesFormat) }}</span>
           </template>
         </v-tooltip>
       </div>
@@ -43,7 +43,7 @@
       <div>
         <v-tooltip location="top" :text="t('drawer.timer.tooltips.end-datetime')">
           <template #activator="{ props }">
-            <span v-bind="props">{{ endTimeText }}</span>
+            <span v-bind="props">{{ getDateText(new Date(replayConfig.replayEndDatetime), config.drawerParams.timerSection.startEndDatesFormat) }}</span>
           </template>
         </v-tooltip>
       </div>
@@ -68,7 +68,7 @@
   const percentage = ref(0);
   const timerText = ref(getDateText(new Date(timer.value || 0), params.timerDateFormat));
 
-  watch(timer, () => {
+  watch([timer, replayConfig], () => {
     timerText.value = getDateText(new Date(timer.value || 0), params.timerDateFormat)
     percentage.value = getPercentage(timer.value || 0, (replayConfig.value ? replayConfig.value.replayStartDatetime : null) || 0, (replayConfig.value ? replayConfig.value.replayEndDatetime : null) || 0);
   })
