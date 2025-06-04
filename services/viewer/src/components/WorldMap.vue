@@ -16,7 +16,7 @@
 
   const config = useViewerConfigStore().config;
   const mapParams = config.mapParams;
-  const mimes = config.mapParams.attributesColors.mimes;
+  const mimes = config.mapParams.attributesColors.mimes as Record<string, { count: boolean, color: string }>;
 
   const height = config.appbarParams.include ? 'calc(100vh - 48px)' : '100vh';
 
@@ -95,37 +95,31 @@
       changeMapLayer(layers[layerName] as TileLayer);
     });
 
+    function getBubbleColor (log: Log) {
+      const colorBy = config.mapParams.colorBy;
+      switch(colorBy) {
+        case 'mime':
+          if (!log.mime || !Object.keys(mimes).includes(log.mime.toUpperCase())) return config.mapParams.attributesColors.defaultMimeColor || '#7F8C8D';
+          return (mimes[log.mime.toUpperCase()] as { color: string }).color;
+        case 'portal':
+        default:
+          if (onlyPortal) return config.drawerParams.portalSection.portals[0].color;
+          const colors: string[] = [];
+          log.ezproxyName.split('+').forEach((portal: string) => {
+            if (Object.keys(config.drawerParams.portalSection.portals).includes(portal.toUpperCase())) colors.push(config.drawerParams.portalSection.portals.filter(p => p.name.toUpperCase() === portal.toUpperCase())[0].color);
+          })
+          if (!colors) return config.drawerParams.portalSection.defaultPortalColor || 'random';
+          if (colors.length === 1) return colors[0];
+          return 'linear-gradient(to right, ' + colors.join(', ') + ')';
+      }
+    }
+
     io.on('log', (log: Log) => {
       if (usePlatformFilterStore().getFilter() && log.platform_name && !((usePlatformFilterStore().getFilter().toUpperCase().includes(log.platform_name.toUpperCase()) || log.platform_name.toUpperCase().includes(usePlatformFilterStore().getFilter().toUpperCase())))) return;
       if (!log || !log['geoip-latitude'] || !log['geoip-longitude']) return;
-      let color;
-      let gradient;
 
-      if (onlyPortal) {
-        color = config.drawerParams.portalSection.portals[0].color;
-      }
-
-      else {
-        try {
-          const portalParams = config.drawerParams.portalSection.portals;
-          const logPortals = portalParams.filter(portal => log.ezproxyName?.toUpperCase().includes(portal.name.toUpperCase()));
-          const logColors = logPortals.map(portal => portal.color);
-
-          if (logColors.length > 1) {
-            color = logColors[0];
-            gradient = 'linear-gradient(to right, ' + logColors.join(', ') + ')';
-          }
-
-          else if (logColors.length) {
-            color = logColors[0];
-          }
-
-          else return;
-        }
-        catch {
-          return;
-        }
-      }
+      const color = getBubbleColor(log);
+      const gradient = color.includes('linear-gradient') ? color : undefined;
 
       const bubbleHtml = getBubbleHtml(gradient, color)
 

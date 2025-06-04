@@ -1,7 +1,7 @@
 <template>
   <div class="counter-container">
     <v-tooltip v-for="value, key in mimes" :key="key" location="top" :text="t('drawer.counter.tooltips.file-type-consultations', {n: countStore.getCountOfMime(key), type: key})">
-      <template v-if="value.count" #activator="{ props }">
+      <template v-if="config.drawerParams.counterSection.countAllMimes || value.count" #activator="{ props }">
         <v-badge :content="countStore.getCountOfMime(key)">
           <v-chip v-bind="props" :color="mimes[key as keyof typeof mimes].color" variant="flat">
             {{ key }}
