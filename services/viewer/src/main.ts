@@ -14,6 +14,7 @@ import App from './App.vue'
 import { createApp } from 'vue'
 
 import i18n from './i18n'
+import './assets/styles.scss'
 
 export type Log = {
   datetime: string,

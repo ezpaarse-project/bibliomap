@@ -64,25 +64,6 @@
     display: flex;
     flex-direction: column;
   }
-  .description-section-item{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-
-    img{
-      height: 100%;
-      width: 100%;
-      margin: .5rem;
-      max-height: 128px;
-    }
-
-    span{
-      text-align: center;
-      font-size: 14px;
-      margin: .5rem;
-    }
-  }
-
   .app-bar-content{
     width: 100%;
     padding: 0 1em;

@@ -130,11 +130,11 @@
         html: `
           <div class='container'>
             <div class='bubble-popup' ${mapParams.includePopup ? '' : 'style="display: none;"'}>
-              <p ${mapParams.popupText.platform_name ? '' : 'style="display: none;"'}><strong>${log.platform_name}</strong></p>
-              <p ${config.mapParams.popupText.publication_title && log.publication_title ? '' : 'style="display: none;"'}>${log.publication_title}</p>
+              <p ${mapParams.popupText.platform_name ? '' : 'style="display: none;"'} class='title-font popup-title'><strong>${log.platform_name}</strong></p>
+              <p ${config.mapParams.popupText.publication_title && log.publication_title ? '' : 'style="display: none;"'} class='body-font'>${log.publication_title}</p>
               <div class='types-container'>
-                <p style='${mapParams.popupText.rtype && log.rtype ? '' : 'display: none;'} background-color: ${mapParams.attributesColors.rtype || '#7F8C8D'}'>${log.rtype}</p>
-                <p style='${mapParams.popupText.mime && log.mime ? '' : 'display: none;'} background-color: ${log.mime && mimes[log.mime as keyof typeof mimes].color || '#D35400'}'>${log.mime}</p>
+                <p style='${mapParams.popupText.rtype && log.rtype ? '' : 'display: none;'} background-color: ${mapParams.attributesColors.rtype || '#7F8C8D'}' class='title-font'>${log.rtype}</p>
+                <p style='${mapParams.popupText.mime && log.mime ? '' : 'display: none;'} background-color: ${log.mime && mimes[log.mime as keyof typeof mimes].color || '#D35400'}' class='title-font'>${log.mime}</p>
               </div>
             </div>
             ${bubbleHtml}
@@ -269,6 +269,10 @@
 
   .multicolor {
     animation: multicolor-animation 7s ease-in-out infinite;
+  }
+
+  .popup-title {
+    font-size: 14px;
   }
 
   @keyframes multicolor-animation {

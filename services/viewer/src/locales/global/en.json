@@ -13,7 +13,7 @@
         "title": "Show minimap"
       },
       "portals-section": {
-        "title": "Institutes to display",
+        "title": "Disciplines to display",
         "select-all": "Select all",
         "select-none": "Select none"
       },
@@ -33,7 +33,7 @@
         "simulation-datetime": "Date and time of simulation",
         "multiplier": "Time is {multiplier} faster than real time",
         "simulation-percentage": "Simulation progress: {percentage}%",
-        "start-datetime": "Data and time of start of the simulation",
+        "start-datetime": "Date and time of start of the simulation",
         "end-datetime": "Date and time of end of the simulation"
       },
       "loading": "Loading..."

@@ -18,7 +18,7 @@
               <div class="portal-container">
                 <img v-if="value.icon" :src="getIconUrl(value.icon)">
                 <div class="portal-title-container">
-                  <h3>{{ t(`drawer-custom.portals.${value.name}.title`) }}</h3>
+                  <h3 class="title-font">{{ t(`drawer-custom.portals.${value.name}.title`) }}</h3>
                   <p v-if="t(`drawer-custom.portals.${value.name}.subtitle`)">{{ t(`drawer-custom.portals.${value.name}.subtitle`) }}</p>
                 </div>
               </div>
@@ -95,7 +95,7 @@
     justify-content: center;
     h3{
       font-size: 16px;
-      font-weight: normal;
+      font-weight: bold;
     }
     p{
       font-size: 12px;
