@@ -39,8 +39,8 @@ For each replay session, the file(s) should be located in one folder, inside `en
 | -- | -- | -- |
 | `disable` | Indicates if Bibliomap should omit this replay. | `undefined` |
 | `index` | Indicates the order of each replay session. | `0` |
-| `replayStartDatetime` | Indicates when the replay session should start. If undefined, it will look for the first event in each of the files, but it is far less efficient. | `"2025-04-16T16:00:00+01:00"` |
-| `replayEndDatetime` | Indicates when the replay session should end. If undefined, it will use the replayDuration variable to know when to stop. | `"2025-04-16T16:30:00+01:00"` |
+| `replayStartDatetime` | Indicates when the replay session should start. If undefined, it will look for the first event in each of the files, but it is far less efficient. It must be using the __standard ISO 8601 format__. | `"2025-04-16T16:00:00+01:00"` |
+| `replayEndDatetime` | Indicates when the replay session should end. If undefined, it will use the replayDuration variable to know when to stop. It must be using the __standard ISO 8601 format__. | `"2025-04-16T16:30:00+01:00"` |
 | `replayDuration` | Indicates in days how long should the replay session be. If replayEndDatetime is set, this variable will not be used. If replayEndDatetime and replayDuration is not set, the simulation will last for one day. | `1` |
 | `description` | Replay description displayed in the corresponding section of the viewer. If the description starts by the `$` character, it will look for the corresponding values in the customizable locale json files of the viewer to make it internationalized with i18n (more details in the Internationalized replay description part). | `"$2025-04-16"` |
 
