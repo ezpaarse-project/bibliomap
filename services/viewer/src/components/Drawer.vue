@@ -12,16 +12,12 @@
         <Player />
         <v-divider />
       </div>
-      <div v-if="props.counterSection.include">
+      <div v-if="props.counterSection.include && playState !== PlayState.STOPPED">
         <Counter />
         <v-divider />
       </div>
-      <div v-if="props.portalSection.include && usePortalsStore().getAllPortalNames().length > 0">
+      <div v-if="props.portalSection.include && usePortalsStore().getAllPortalNames().length > 0 && playState !== PlayState.STOPPED">
         <Portals />
-        <v-divider />
-      </div>
-      <div v-if="replayMode && props.replayDescription.include">
-        <ReplayDescription />
         <v-divider />
       </div>
     </div>
@@ -33,11 +29,12 @@
   import { useViewerConfigStore } from '@/stores/viewer-config';
   import useMitt from '@/composables/useMitt';
   import { usePortalsStore } from '@/stores/portals.ts';
+  import { PlayState, usePlayStateStore } from '@/stores/play-state.ts';
 
-  const replayMode = import.meta.env.VITE_REPLAY_MODE === 'true';
   const config = useViewerConfigStore().config;
   const props = config.drawerParams;
   const emitter = useMitt();
+  const { state: playState } = storeToRefs(usePlayStateStore());
 
   const include = !(!props || props.include === false);
 
