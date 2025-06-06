@@ -47,6 +47,15 @@
     },
     "replay-description": {
       "replay-label": "Replay: "
+    },
+    "player": {
+      "title": "Event file player",
+      "choose-file": "Please select a consultation event file.",
+      "file-input-placeholder": "example.csv",
+      "play": "Play simulation",
+      "error": {
+        "invalid-file": "Invalid file: {name}"
+      }
     }
   },
   "version-card": {

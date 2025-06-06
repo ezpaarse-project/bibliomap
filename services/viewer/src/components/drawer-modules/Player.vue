@@ -1,9 +1,53 @@
 <template>
-  <div />
+  <v-card :flat="true">
+    <v-card-title>
+      {{ t('drawer.player.title') }}
+    </v-card-title>
+    <v-card-text>
+      {{ t('drawer.player.choose-file') }}
+    </v-card-text>
+    <v-file-input
+      v-model="files"
+      accept=".csv"
+      chips
+      class="mx-auto"
+      :label="t('drawer.player.file-input-placeholder')"
+      multiple
+      style="max-width: 300px"
+      :truncate-length="20"
+      variant="underlined"
+    />
+    <v-btn class="mx-auto d-block mb-2" color="green" flat> {{ t('drawer.player.play') }}</v-btn>
+    <v-snackbar-queue
+      :key="index"
+      v-model="messages"
+      color="red"
+      :timeout="3000"
+      width="500"
+    />
+  </v-card>
 </template>
 
 <script setup lang="ts">
+  import { useI18n } from 'vue-i18n';
+  import { usePlayerFilesStore } from '@/stores/player-files.ts';
 
+  const { t } = useI18n();
+  const { files } = storeToRefs(usePlayerFilesStore());
+  const messages = ref([]);
+
+  watch(files, () => {
+    if (!files.value) return
+    files.value.forEach(file => {
+      if (!file.name.endsWith('.csv')) {
+        const message =
+          t('drawer.player.error.invalid-file', { name: file.name })
+        ;
+        messages.value.push(message)
+        files.value = files.value.filter(f => f !== file);
+      }
+    })
+  });
 </script>
 
 <style scoped lang="scss">

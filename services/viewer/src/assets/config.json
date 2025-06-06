@@ -1,9 +1,9 @@
 {
     "mapParams": {
         "include": true,
-        "defaultX": 46.603354,
-        "defaultY": 1.888334,
-        "defaultZoom": 6,
+        "defaultX": 0,
+        "defaultY": -30,
+        "defaultZoom": 3,
         "minZoom": 3,
         "maxZoom": 9,
         "defaultPhoneZoom": 5,
