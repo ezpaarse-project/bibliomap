@@ -10,17 +10,17 @@
   import { usePlatformFilterStore } from '@/stores/platform-filter';
   import useMitt from '@/composables/useMitt';
   import { useSocketStore } from '@/stores/socket';
+  import { usePortalsStore } from '@/stores/portals.ts';
 
   const emitter = useMitt();
   const io = useSocketStore().socket;
 
   const config = useViewerConfigStore().config;
+  const portalsStore = usePortalsStore();
   const mapParams = config.mapParams;
   const mimes = config.mapParams.attributesColors.mimes as Record<string, { count: boolean, color: string }>;
 
   const height = config.appbarParams.include ? 'calc(100vh - 48px)' : '100vh';
-
-  const onlyPortal = Object.keys(config.drawerParams.portalSection.portals).length === 1 ? Object.keys(config.drawerParams.portalSection.portals)[0] : null;
 
   let map: L.Map;
 
@@ -96,25 +96,10 @@
     });
 
     function getBubbleColor (log: Log) {
-      const colorBy = config.mapParams.colorBy;
-      switch(colorBy) {
-        case 'mime':
-          if (!log.mime || !Object.keys(mimes).includes(log.mime.toUpperCase())) return config.mapParams.attributesColors.defaultMimeColor || '#7F8C8D';
-          return (mimes[log.mime.toUpperCase()] as { color: string }).color;
-        case 'portal':
-        default:
-          if (onlyPortal) return config.drawerParams.portalSection.portals[0].color;
-          const colors: string[] = [];
-          log.ezproxyName.split('+').forEach((portal: string) => {
-            if (Object.keys(config.drawerParams.portalSection.portals).includes(portal.toUpperCase())) colors.push(config.drawerParams.portalSection.portals.filter(p => p.name.toUpperCase() === portal.toUpperCase())[0].color);
-          })
-          if (!colors) return config.drawerParams.portalSection.defaultPortalColor || 'random';
-          if (colors.length === 1) return colors[0];
-          return 'linear-gradient(to right, ' + colors.join(', ') + ')';
-      }
+      return portalsStore.getPortalColor(log.portal_name) || config.mapParams.attributesColors.defaultColor
     }
 
-    io.on('log', (log: Log) => {
+    emitter.on('log', (log: Log) => {
       if (usePlatformFilterStore().getFilter() && log.platform_name && !((usePlatformFilterStore().getFilter().toUpperCase().includes(log.platform_name.toUpperCase()) || log.platform_name.toUpperCase().includes(usePlatformFilterStore().getFilter().toUpperCase())))) return;
       if (!log || !log['geoip-latitude'] || !log['geoip-longitude']) return;
 
@@ -209,7 +194,7 @@
   }
 
   .bubble {
-    position: absoute;
+    position: absolute;
     display: flex;
     flex-direction: column;
     align-items: center;

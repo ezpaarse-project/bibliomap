@@ -1,0 +1,89 @@
+version: "3.3"
+
+services:
+
+  viewer:
+    image: node:22.14.0
+    container_name: bibliomap-viewer-dev
+    environment:
+      VITE_ENRICHER_WEBSOCKET_URL: localhost:27780
+      VITE_REPLAY_MODE: true
+    command: "npm run dev"
+    working_dir: /usr/src/app
+    volumes: 
+      - ./services/viewer:/usr/src/app
+    ports:
+      - 3000:3000
+    restart: unless-stopped
+    depends_on:
+      enricher:
+        condition: service_healthy
+
+  enricher:
+    image: node:22.14.0
+    container_name: bibliomap-enricher-dev
+    environment:
+      EZPAARSE_URL: "ezpaarse:59599"
+      HARVESTER_URL: "localhost:27777"
+      WEBSOCKET_PORT: 27780
+      REPLAY_MODE: true
+    command: "npm run dev"
+    working_dir: /usr/src/app
+    volumes: 
+      - ./services/enricher:/usr/src/app
+    restart: unless-stopped
+    depends_on:
+      ezpaarse:
+        condition: service_healthy
+    ports:
+      - 27780:27780
+      - 9229:9229
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -Y off --no-verbose --tries=1 --spider http://localhost:27780 || exit 1"
+        ]
+      interval: 2s
+      timeout: 2s
+      retries: 10
+
+  ezpaarse:
+    container_name: bibliomap-ezpaarse-dev
+    image: ezpaarseproject/ezpaarse:3.10.5
+    environment:
+      http_proxy:  ${http_proxy}
+      https_proxy: ${https_proxy}
+      no_proxy: ${no_proxy}
+      NODE_ENV: "production"
+      EZPAARSE_MONGO_URL: "mongodb://ezpaarse_db:27017/ezpaarse"
+    volumes:
+      - ./data/ezpaarse/platforms:/opt/ezpaarse/platforms
+      - ./data/ezpaarse/middlewares:/opt/ezpaarse/middlewares
+      - ./data/ezpaarse/resources:/opt/ezpaarse/resources
+      - ./data/ezpaarse/exclusions:/opt/ezpaarse/exclusions
+    ports:
+      - 59599:59599
+    depends_on:
+      - ezpaarse_db
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -Y off --no-verbose --tries=1 --spider http://localhost:59599 || exit 1"
+        ]
+      interval: 2s
+      timeout: 2s
+      retries: 10
+    #restart: unless-stopped
+
+  ezpaarse_db:
+    image: mongo:7.0.20
+    container_name: bibliomap-ezpaarse-db-dev
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 2s
+      timeout: 2s
+      retries: 10
+      start_period: 10s
