@@ -1,0 +1,55 @@
+{
+  "appbar": {
+    "tooltips": {
+      "center-map": "Recentrer la carte",
+      "translation": "Traduction",
+      "change-map": "Changer de fond de carte",
+      "settings": "Paramètres",
+      "info": "A propos de BiblioMap"
+    },
+    "settings-dialog": {
+      "title": "Paramètres",
+      "minimap-section": {
+        "title": "Afficher la minimap"
+      },
+      "portals-section": {
+        "title": "Disciplines à afficher",
+        "select-all": "Tout cocher",
+        "select-none": "Tout décocher"
+      },
+      "review-titles-section": {
+        "title": "Afficher le titre des revues"
+      },
+      "filter-section": {
+        "title": "Filtrer par plateforme éditeur",
+        "placeholder": "ex: Wiley"
+      }
+    }
+  },
+  "drawer": {
+    "timer": {
+      "tooltips": {
+        "live-timer": "Vous avez été connecté pendant {time}",
+        "simulation-datetime": "Date et heure de la simulation",
+        "multiplier": "Le temps passe {multiplier} fois plus vite qu'en temps réel",
+        "simulation-percentage": "Pourcentage de la simulation : {percentage}%",
+        "start-datetime": "Date et heure de début de la simulation",
+        "end-datetime": "Date et heure de fin de la simulation"
+      },
+      "loading": "Chargement en cours..."
+    },
+    "counter": {
+      "tooltips": {
+        "file-type-consultations": "{n} consultations de fichiers {type}",
+        "total-consultations": "Nombre total de consultations : {n}"
+      },
+      "total": "Total"
+    },
+    "replay-description": {
+      "replay-label": "Replay : "
+    }
+  },
+  "version-card": {
+    "connection": "Connecté à ezPAARSE"
+  }
+}

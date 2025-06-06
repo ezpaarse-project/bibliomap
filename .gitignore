@@ -1,3 +1,10 @@
 .ezpaarse/
 node_modules/
 build.sh
+setup_replay.sh
+node_modules/.package-lock.json
+data/
+old_config_files/
+setup*
+.idea
+/.idea/
