@@ -1,5 +1,5 @@
 <template>
-  <div class="counter-container">
+  <div v-if="playStateStore.state !== PlayState.STOPPED" class="counter-container">
     <v-tooltip v-for="key in mimeStore.getAllMimeNames()" :key="key" location="top" :text="t('drawer.counter.tooltips.file-type-consultations', {n: countStore.getCountOfMime(key), type: key})">
       <template v-if="config.drawerParams.counterSection.countAllMimes || value.count" #activator="{ props }">
         <v-badge :content="countStore.getCountOfMime(key)">
@@ -24,6 +24,7 @@
   import { useEcCountStore } from '@/stores/ec-count';
   import { useViewerConfigStore } from '@/stores/viewer-config';
   import { useMimesStore } from '@/stores/mimes.ts';
+  import { PlayState, usePlayStateStore } from '@/stores/play-state';
   import { useI18n } from 'vue-i18n';
 
   const { t } = useI18n();
@@ -32,6 +33,7 @@
   const counterProps = config.value.drawerParams.counterSection;
   const mimeStore = useMimesStore();
   const countStore = useEcCountStore();
+  const playStateStore = usePlayStateStore();
 </script>
 
 <style lang="scss">
