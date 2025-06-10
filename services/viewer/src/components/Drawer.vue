@@ -33,12 +33,10 @@
   import { useViewerConfigStore } from '@/stores/viewer-config';
   import useMitt from '@/composables/useMitt';
   import { usePortalsStore } from '@/stores/portals.ts';
-  import { PlayState, usePlayStateStore } from '@/stores/play-state.ts';
 
   const config = useViewerConfigStore().config;
   const props = config.drawerParams;
   const emitter = useMitt();
-  const { state: playState } = storeToRefs(usePlayStateStore());
 
   const include = !(!props || props.include === false);
 
