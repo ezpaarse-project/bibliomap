@@ -106,9 +106,9 @@
           if (onlyPortal) return config.drawerParams.portalSection.portals[0].color;
           const colors: string[] = [];
           log.ezproxyName.split('+').forEach((portal: string) => {
-            if (Object.keys(config.drawerParams.portalSection.portals).includes(portal.toUpperCase())) colors.push(config.drawerParams.portalSection.portals.filter(p => p.name.toUpperCase() === portal.toUpperCase())[0].color);
+            if (config.drawerParams.portalSection.portals.filter(p => p.name.toUpperCase() === portal.toUpperCase()).length > 0) colors.push(config.drawerParams.portalSection.portals.filter(p => p.name.toUpperCase() === portal.toUpperCase())[0].color);
           })
-          if (!colors) return config.drawerParams.portalSection.defaultPortalColor || 'random';
+          if (!colors || colors.length === 0) return config.drawerParams.portalSection.defaultPortalColor || 'random';
           if (colors.length === 1) return colors[0];
           return 'linear-gradient(to right, ' + colors.join(', ') + ')';
       }
