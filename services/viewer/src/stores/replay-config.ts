@@ -11,9 +11,13 @@ export type ReplayConfig = {
 
 export const useReplayConfigStore = defineStore('replay-config', () => {
   const config = ref(null as ReplayConfig | null);
+  const socket = useSocketStore().socket;
+
+  socket.on('replayConfig', (replayConfig: ReplayConfig) => {
+    config.value = replayConfig;
+  });
 
   function fetchReplayConfig () {
-    const socket = useSocketStore().socket;
 
     return new Promise(resolve => {
       socket.emit('replayConfigRequest', socket.id);

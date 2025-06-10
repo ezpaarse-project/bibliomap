@@ -26,22 +26,9 @@ Examples:
   - http://bibliomap.inist.fr?e (the same but with a shortcut)  
   - http://bibliomap.inist.fr?expo=20,120 (activates customized expo mode: 20 sec shown / 120 sec hidden)  
 
-## Technical architecture
-
-Bibliomap uses these softwares:
-  * [bibliomap-harvester](https://github.com/ezpaarse-project/bibliomap-harvester) for real-time listening lines of log comming from ezproxys
-  * [bibliomap-enricher](https://github.com/ezpaarse-project/bibliomap-enricher) listening for bibliomap-harvester data, sending it to ezpaarse and sending the result to you this bibliomap
-  * [bibliomap-viewer](https://github.com/ezpaarse-project/bibliomap-viewer) for the front end web interface showing ezPAARSE EC's in real time thanks to websocket protocol
-  * [Log.io](http://logio.org/) protocol for all the communication between these scripts
-
-<p align="center">
-<img src="https://docs.google.com/drawings/d/1bkxEEBL1kLzH76dkIYFzspYHOVajDjQHCijU3mxJLnM/pub?w=694&h=519" />
-</p>
-
 ## Prerequisites
 
   * Docker
-
   * Configuration file to set the environment variables (setup_*.sh)
 
 ## Installation and running a quick demo
@@ -64,7 +51,7 @@ Then browse to http://127.0.0.1:50197
 
 ## Developers
 
-## Installation for developing
+## Installation for development
 
 ```bash
 # Clone all the required repositories
@@ -106,29 +93,4 @@ BiblioMap now has a replay mode: provide it with log files and it will play in r
 
 __How to use the replay mode?__
 
-You will need to specify some special variables in your configuration file: 
-
-```bash
-export REPLAY_FILE_PATHS='example.csv'
-export REPLAY_FIRST_DATE="2020-03-08"
-export REPLAY_START_TIME="06:00:00"
-export REPLAY_MULTIPLIER=2
-export REPLAY_MODE=true
-export REPLAY_DURATION=1
-```
-
-* __REPLAY_FILE_PATHS__: Paths of the files you want to play. 
-    - Files should be located at __bibliomap/sevices/enricher/data/replay_files__.
-    - __All files should be from the same day__.
-    - The list must be separated with commas.
-    - The player can read log files (.log), EC files (.csv) and works with compressed  files (.gz).
-* __REPLAY_START_DATE__: The date at which you want the player to start at. It must be using the __standard ISO 8601 format__. Starts the day of the first log if undefined.
-* __REPLAY_START_TIME__: The time at which you want the player to start at. It must be using the __standard ISO 8601 format__. Starts at midnight if undefined.
-* __REPLAY_MULTIPLIER__: How many times faster you want the player to be. __WARNING__: A multiplier too big can make the program or the browser crash.
-* __REPLAY_MODE__: Boolean specifying if BiblioMap should be in replay mode. To not use the player mode, making it undefined works as well as setting it to false.
-* __REPLAY_DURATION__: The number of days of the replay (1 if undefined).
-
-After writing these variables in the file, you should source it:
-```bash
-source ./setup_example.sh
-```
+You will need to configure the Enricher and Viewer services. All the needed details are written in each of their README.md files.

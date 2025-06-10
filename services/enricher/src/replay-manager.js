@@ -37,41 +37,45 @@ export default class ReplayManager extends EventEmitter {
 
   async listen(cb) {
     this.server = net.createServer();
+    let replay;
 
-    try{
+    this.on('isReady', (socketId) => {
+      if (!replay) return;
+      if (!replay.loading) this.emit('ready', socketId);
+    });
+
+    this.on('replayConfigRequest', (socketId) => {
+      if (!replay) return;
+      this.emit('replayConfig', socketId,
+        {
+          replayStartDatetime: replay.startTimerAt,
+          replayEndDatetime: replay.endTimerAt,
+          replayMultiplier: replay.replayMultiplier,
+          replayDuration: replay.replayDuration,
+          description: replay.description,
+          timerStart: replay.startTimerAt
+        }
+      );
+      this.emit('timeUpdate', replay.timer);
+    });
+
+    try {
       while (true) {
         const replays = this.getReplayObjectsFromDirs();
-        for (const replay of replays) {
+
+        for (replay of replays) {
           replay.listen(cb);
           await once(replay, 'ready');
           this.emit('replayConfig', null,
-              {
-                replayStartDatetime: replay.startTimerAt,
-                replayEndDatetime: replay.endTimerAt,
-                replayMultiplier: replay.replayMultiplier,
-                replayDuration: replay.replayDuration,
-                description: replay.description,
-                timerStart: replay.startTimerAt
-              }
-            );
-
-          this.on('isReady', (socketId) => {
-            if (!replay.loading) this.emit('ready', socketId);
-          });
-
-          this.on('replayConfigRequest', (socketId) => {
-            this.emit('replayConfig', socketId,
-              {
-                replayStartDatetime: replay.startTimerAt,
-                replayEndDatetime: replay.endTimerAt,
-                replayMultiplier: replay.replayMultiplier,
-                replayDuration: replay.replayDuration,
-                description: replay.description,
-                timerStart: replay.startTimerAt
-              }
-            );
-            this.emit('timeUpdate', replay.timer);
-          });
+            {
+              replayStartDatetime: replay.startTimerAt,
+              replayEndDatetime: replay.endTimerAt,
+              replayMultiplier: replay.replayMultiplier,
+              replayDuration: replay.replayDuration,
+              description: replay.description,
+              timerStart: replay.startTimerAt
+            }
+          );
 
           replay.on('timeUpdate', (time) => {
             this.emit('timeUpdate', time);
@@ -85,7 +89,7 @@ export default class ReplayManager extends EventEmitter {
         }
       }
     }
-    catch(err) {
+    catch (err) {
       console.error(err);
     }
     finally {
@@ -93,9 +97,12 @@ export default class ReplayManager extends EventEmitter {
     }
   }
 
-    getReplayObjectsFromDirs(){
-      const replays = [];
-      this.replayDirs.forEach(dir => {
+  getReplayObjectsFromDirs() {
+    const replays = [];
+    this.replayDirs
+      .filter(r => loadConfigJson(r) != null && loadConfigJson(r).disable !== false)
+      .sort((a, b) => loadConfigJson(a).replayStartDatetime - loadConfigJson(b).replayStartDatetime)
+      .forEach(dir => {
         const config = loadConfigJson(dir);
         if (!config) return;
         replays.push(
@@ -109,6 +116,6 @@ export default class ReplayManager extends EventEmitter {
           )
         );
       });
-      return replays;
+    return replays;
   }
 }
