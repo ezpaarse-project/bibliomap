@@ -22,7 +22,7 @@
       </v-list-item>
       <v-list-item>
         <v-card :flat="true">
-          <v-card-text>{{ t('info-card.comment') }}</v-card-text>
+          <v-card-text><p>{{ t('info-card.comment') }}</p></v-card-text>
         </v-card>
       </v-list-item>
       <v-list-item>
@@ -44,6 +44,12 @@
 </script>
 
 <style lang="scss">
+
+.drawer-elements-container {
+  p {
+    text-align: justify;
+  }
+}
 
   a{
     color: #039be5;
