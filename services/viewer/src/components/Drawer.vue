@@ -12,11 +12,15 @@
         <Player />
         <v-divider />
       </div>
-      <div v-if="props.counterSection.include && playState !== PlayState.STOPPED">
+      <div>
+        <Timer />
+        <v-divider />
+      </div>
+      <div v-if="props.counterSection.include">
         <Counter />
         <v-divider />
       </div>
-      <div v-if="props.portalSection.include && usePortalsStore().getAllPortalNames().length > 0 && playState !== PlayState.STOPPED">
+      <div v-if="props.portalSection.include && usePortalsStore().getAllPortalNames().length > 0">
         <Portals />
         <v-divider />
       </div>

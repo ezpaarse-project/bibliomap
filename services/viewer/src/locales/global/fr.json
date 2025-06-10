@@ -34,9 +34,11 @@
         "multiplier": "Le temps passe {multiplier} fois plus vite qu'en temps réel",
         "simulation-percentage": "Pourcentage de la simulation : {percentage}%",
         "start-datetime": "Date et heure de début de la simulation",
-        "end-datetime": "Date et heure de fin de la simulation"
+        "end-datetime": "Date et heure de fin de la simulation",
+        "stopped": "Jouez une simulation pour accéder au timer"
       },
-      "loading": "Chargement en cours..."
+      "loading": "Chargement en cours...",
+      "multiplier-field": "Vitesse de la simulation"
     },
     "counter": {
       "tooltips": {

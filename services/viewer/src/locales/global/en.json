@@ -34,9 +34,11 @@
         "multiplier": "Time is {multiplier} faster than real time",
         "simulation-percentage": "Simulation progress: {percentage}%",
         "start-datetime": "Date and time of start of the simulation",
-        "end-datetime": "Date and time of end of the simulation"
+        "end-datetime": "Date and time of end of the simulation",
+        "stopped": "Play a simulation to access the timer"
       },
-      "loading": "Loading..."
+      "loading": "Loading...",
+      "multiplier-field": "Simulation speed"
     },
     "counter": {
       "tooltips": {
