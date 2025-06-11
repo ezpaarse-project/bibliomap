@@ -19,12 +19,23 @@
     />
     <div class="d-flex flex-row">
       <v-btn
+        v-if="playState !== PlayState.PLAYING"
         class="mx-auto d-block mb-2"
         color="green"
         :disabled="!files.length"
         flat
         @click="handleStart"
       ><v-icon>mdi-play-circle</v-icon></v-btn>
+
+      <v-btn
+        v-else
+        class="mx-auto d-block mb-2"
+        color="grey"
+        :disabled="!files.length"
+        flat
+        @click="handlePause"
+      ><v-icon>mdi-pause-circle</v-icon></v-btn>
+
       <v-btn
         class="mx-auto d-block mb-2"
         color="red"
@@ -56,6 +67,7 @@
   const messages = ref([]);
 
   watch(files, () => {
+    emitter.emit('filesChanged', files.value);
     if (!files.value) return
     files.value.forEach(file => {
       if (!file.name.endsWith('.csv')) {
@@ -74,6 +86,10 @@
 
   const handleStop = () => {
     emitter.emit('stop', null);
+  }
+
+  const handlePause = () => {
+    emitter.emit('pause', null);
   }
 </script>
 

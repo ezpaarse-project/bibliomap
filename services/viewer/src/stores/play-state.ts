@@ -33,6 +33,7 @@ export const usePlayStateStore = defineStore('play-state', () => {
   emitter.on('pause', pause);
   emitter.on('stop', stop);
   emitter.on('loading', loading);
+  emitter.on('filesChanged', stop);
 
   return { state, play, pause, stop, loading };
 });
