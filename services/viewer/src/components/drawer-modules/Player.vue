@@ -30,7 +30,7 @@
         color="red"
         :disabled="playState === PlayState.STOPPED"
         flat
-        @click="handleStart"
+        @click="handleStop"
       ><v-icon>mdi-stop-circle</v-icon></v-btn>
     </div>
     <v-snackbar-queue
@@ -67,10 +67,14 @@
     filesStore.setFiles(files.value);
   });
 
-  const handleStart = async () => {
+  const handleStart = () => {
     if (!files.value) return
     emitter.emit('play', null);
   };
+
+  const handleStop = () => {
+    emitter.emit('stop', null);
+  }
 </script>
 
 <style scoped lang="scss">
