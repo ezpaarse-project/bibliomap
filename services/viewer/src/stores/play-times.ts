@@ -1,10 +1,13 @@
 import { usePlayerFilesStore } from './player-files';
 import { defineStore } from 'pinia';
 import Papa from 'papaparse';
+import useMitt from '@/composables/useMitt';
 
 export const usePlayTimesStore = defineStore('play-times', () => {
   const startDatetime = ref(null);
   const endDatetime = ref(null);
+
+  const emitter = useMitt();
 
   async function getStartEndDatetimeOfFile (file: File) {
     return new Promise(resolve => {
@@ -31,6 +34,7 @@ export const usePlayTimesStore = defineStore('play-times', () => {
     const files = usePlayerFilesStore().files;
     if (!files.length) return;
 
+    emitter.emit('loading', null);
     const startEndDatetimesPromises = []
     const startEndDatetimes = []
 
@@ -44,6 +48,7 @@ export const usePlayTimesStore = defineStore('play-times', () => {
 
     startDatetime.value = Math.min(...startEndDatetimes.map(startEndDatetime => startEndDatetime.startDatetime));
     endDatetime.value = Math.max(...startEndDatetimes.map(startEndDatetime => startEndDatetime.endDatetime));
+    emitter.emit('play', null);
   }
 
   async function getStartEndDatetime () {

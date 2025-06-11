@@ -53,7 +53,7 @@
 
 <script setup lang="ts">
   import { useReplayConfigStore } from '@/stores/replay-config';
-  import { useReplayTimerStore } from '@/stores/replay-timer';
+  import { useReplayTimerStore } from '@/stores/player-timer.ts';
   import { useViewerConfigStore } from '@/stores/viewer-config';
   import { format } from 'date-fns';
   import { TZDate } from '@date-fns/tz';

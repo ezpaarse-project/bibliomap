@@ -3,13 +3,17 @@
     <template #activator="{ props }">
       <div class="time-container" v-bind="props">
         <div class="timer-multiplier-container">
-          <v-chip :hidden="playState === PlayState.STOPPED">{{ timer }}</v-chip>
+          <v-chip :disabled="!timer">{{ timer ? new Date(timer).toLocaleString() : "" }}</v-chip>
         </div>
 
         <v-slider
+          v-model="timer"
           class="w-100"
           :disabled="playState === PlayState.STOPPED"
+          :max="sliderMax"
+          :min="sliderMin"
           prepend-icon="mdi-play"
+          :step="1000"
         />
 
         <v-number-input
@@ -19,6 +23,7 @@
           :disabled="playState === PlayState.STOPPED"
           hide-details="auto"
           :label="t('drawer.timer.multiplier-field')"
+          :min="1"
         />
       </div>
     </template>
@@ -28,19 +33,40 @@
 
 
 <script setup lang="ts">
-  import { useReplayTimerStore } from '@/stores/replay-timer';
+  import { useReplayTimerStore } from '@/stores/player-timer.ts';
+  import { usePlayTimesStore } from '@/stores/play-times.ts';
   import { PlayState, usePlayStateStore } from '@/stores/play-state.ts';
   import { useI18n } from 'vue-i18n';
+  import useMitt from '@/composables/useMitt';
 
   const { t } = useI18n();
+  const emitter = useMitt();
 
   const { timer } = storeToRefs(useReplayTimerStore());
   const { state: playState } = storeToRefs(usePlayStateStore());
   const multiplier = ref(1);
 
+  const sliderMin = ref(0);
+  const sliderMax = ref(0);
+  const timerValue = ref(0);
+
+  watch(timer, () => {
+    timerValue.value = new Date(timer.value);
+  });
+
+  watch(multiplier, () => {
+    emitter.emit('setMultiplier', multiplier.value);
+  })
+
+  emitter.on('play', async () => {
+    const playTimes = await usePlayTimesStore().getStartEndDatetime();
+    sliderMin.value = playTimes.startDatetime;
+    sliderMax.value = playTimes.endDatetime;
+  })
+
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .time-container {
   display: flex;
   flex-direction: column;

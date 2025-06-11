@@ -1,0 +1,55 @@
+import useMitt from '@/composables/useMitt';
+import { usePlayTimesStore } from '@/stores/play-times.ts';
+import { usePlayerMultiplierStore } from '@/stores/player-multiplier.ts';
+
+export const useReplayTimerStore = defineStore('timer', () => {
+  const timer = ref<number | null>(null);
+  let interval;
+
+  const emitter = useMitt();
+
+  emitter.on('filesChanged', () => {
+    clearInterval(interval);
+    timer.value = null;
+    interval = null;
+  });
+
+  function createInterval (m) {
+
+    return setInterval(() => {
+      timer.value = timer.value + 1000;
+    }, 1000 / m)
+  }
+
+  emitter.on('play', async () => {
+    if (!timer.value) {
+      const times = await usePlayTimesStore().getStartEndDatetime();
+      timer.value = times.startDatetime;
+    }
+
+    if (!interval) interval = createInterval(usePlayerMultiplierStore().getMultiplier());
+  });
+
+  emitter.on('pause', () => {
+    clearInterval(interval);
+    interval = null;
+  });
+
+  emitter.on('loading', () => {
+    clearInterval(interval);
+    interval = null;
+  });
+
+  emitter.on('stop', () => {
+    clearInterval(interval);
+    timer.value = null;
+    interval = null;
+  });
+
+  emitter.on('setMultiplier', m => {
+    clearInterval(interval);
+    interval = createInterval(m)
+  });
+
+  return { timer };
+});
