@@ -1,5 +1,16 @@
+import { usePlayTimesStore } from './play-times';
+
 export const usePlayerFilesStore = defineStore('player-files', () => {
   const files = ref([]);
 
-  return { files };
+  function getFiles () {
+    return files.value;
+  }
+
+  function setFiles (files) {
+    this.files = files;
+    usePlayTimesStore().resetStartEndDatetime();
+  }
+
+  return { getFiles, setFiles };
 });

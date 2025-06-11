@@ -1,3 +1,5 @@
+import useMitt from '@/composables/useMitt';
+
 export enum PlayState {
   PLAYING = 'PLAYING',
   PAUSED = 'PAUSED',
@@ -6,6 +8,9 @@ export enum PlayState {
 }
 
 export const usePlayStateStore = defineStore('play-state', () => {
+
+  const emitter = useMitt();
+
   const state = ref(PlayState.STOPPED);
 
   function play () {
@@ -23,6 +28,11 @@ export const usePlayStateStore = defineStore('play-state', () => {
   function loading () {
     state.value = PlayState.LOADING;
   }
+
+  emitter.on('play', play);
+  emitter.on('pause', pause);
+  emitter.on('stop', stop);
+  emitter.on('loading', loading);
 
   return { state, play, pause, stop, loading };
 });

@@ -17,9 +17,23 @@
       :truncate-length="20"
       variant="underlined"
     />
-    <v-btn class="mx-auto d-block mb-2" color="green" flat> {{ t('drawer.player.play') }}</v-btn>
+    <div class="d-flex flex-row">
+      <v-btn
+        class="mx-auto d-block mb-2"
+        color="green"
+        :disabled="!files.length"
+        flat
+        @click="handleStart"
+      ><v-icon>mdi-play-circle</v-icon></v-btn>
+      <v-btn
+        class="mx-auto d-block mb-2"
+        color="red"
+        :disabled="playState === PlayState.STOPPED"
+        flat
+        @click="handleStart"
+      ><v-icon>mdi-stop-circle</v-icon></v-btn>
+    </div>
     <v-snackbar-queue
-      :key="index"
       v-model="messages"
       color="red"
       :timeout="3000"
@@ -31,23 +45,32 @@
 <script setup lang="ts">
   import { useI18n } from 'vue-i18n';
   import { usePlayerFilesStore } from '@/stores/player-files.ts';
+  import useMitt from '@/composables/useMitt';
+  import { PlayState, usePlayStateStore } from '@/stores/play-state.ts';
 
   const { t } = useI18n();
-  const { files } = storeToRefs(usePlayerFilesStore());
+  const emitter = useMitt();
+  const filesStore = usePlayerFilesStore();
+  const files = ref([]);
+  const { state: playState } = storeToRefs(usePlayStateStore());
   const messages = ref([]);
 
   watch(files, () => {
     if (!files.value) return
     files.value.forEach(file => {
       if (!file.name.endsWith('.csv')) {
-        const message =
-          t('drawer.player.error.invalid-file', { name: file.name })
-        ;
+        const message = t('drawer.player.error.invalid-file', { name: file.name });
         messages.value.push(message)
         files.value = files.value.filter(f => f !== file);
       }
-    })
+    });
+    filesStore.setFiles(files.value);
   });
+
+  const handleStart = async () => {
+    if (!files.value) return
+    emitter.emit('play', null);
+  };
 </script>
 
 <style scoped lang="scss">
