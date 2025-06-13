@@ -9,7 +9,7 @@
   import type { Log } from '@/main';
   import { usePlatformFilterStore } from '@/stores/platform-filter';
   import useMitt from '@/composables/useMitt';
-  import { useSocketStore } from '@/stores/socket';
+  import { useBubblesStore } from '@/stores/bubbles';
   import { usePortalsStore } from '@/stores/portals.ts';
 
   const emitter = useMitt();
@@ -20,6 +20,7 @@
   const mimes = config.mapParams.attributesColors.mimes as Record<string, { count: boolean, color: string }>;
 
   const height = config.appbarParams.include ? 'calc(100vh - 48px)' : '100vh';
+  useBubblesStore();
 
   let map: L.Map;
 
@@ -98,7 +99,7 @@
       return portalsStore.getPortalColor(log.portal_name) || config.mapParams.attributesColors.defaultColor
     }
 
-    emitter.on('showLog', (log: Log) => {
+    emitter.on('EC', (log: Log) => {
       if (usePlatformFilterStore().getFilter() && log.platform_name && !((usePlatformFilterStore().getFilter().toUpperCase().includes(log.platform_name.toUpperCase()) || log.platform_name.toUpperCase().includes(usePlatformFilterStore().getFilter().toUpperCase())))) return;
       if (!log || !log['geoip-latitude'] || !log['geoip-longitude']) return;
 
@@ -118,7 +119,7 @@
               <p ${config.mapParams.popupText.publication_title && log.publication_title ? '' : 'style="display: none;"'} class='body-font'>${log.publication_title}</p>
               <div class='types-container'>
                 <p style='${mapParams.popupText.rtype && log.rtype ? '' : 'display: none;'} background-color: ${mapParams.attributesColors.rtype || '#7F8C8D'}' class='title-font'>${log.rtype}</p>
-                <p style='${mapParams.popupText.mime && log.mime ? '' : 'display: none;'} background-color: ${log.mime && mimes[log.mime as keyof typeof mimes].color || '#D35400'}' class='title-font'>${log.mime}</p>
+                <p style='${mapParams.popupText.mime && log.mime ? '' : 'display: none;'} background-color: ${log.mime && mimes[log.mime as keyof typeof mimes] && mimes[log.mime as keyof typeof mimes].color || '#D35400'}' class='title-font'>${log.mime}</p>
               </div>
             </div>
             ${bubbleHtml}

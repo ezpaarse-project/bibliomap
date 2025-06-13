@@ -8,12 +8,6 @@ export const useReplayTimerStore = defineStore('timer', () => {
 
   const emitter = useMitt();
 
-  emitter.on('filesChanged', () => {
-    clearInterval(interval);
-    timer.value = null;
-    interval = null;
-  });
-
   function createInterval (m) {
 
     return setInterval(() => {
