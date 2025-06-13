@@ -1,15 +1,15 @@
 <template>
-  <v-tooltip :disabled="playState !== PlayState.STOPPED" location="top">
+  <v-tooltip :disabled="playState !== PlayState.STOPPED && playState !== PlayState.LOADING" location="top">
     <template #activator="{ props }">
       <div class="time-container" v-bind="props">
         <div class="timer-multiplier-container">
-          <v-chip :disabled="!timer">{{ timer ? new Date(timer).toLocaleString() : "" }}</v-chip>
+          <v-chip :disabled="playState === PlayState.STOPPED || playState === PlayState.LOADING">{{ timer ? new Date(timer).toLocaleString() : "" }}</v-chip>
         </div>
 
         <v-slider
           v-model="timer"
           class="w-100"
-          :disabled="playState === PlayState.STOPPED"
+          :disabled="playState === PlayState.STOPPED || playState === PlayState.LOADING"
           :max="sliderMax"
           :min="sliderMin"
           prepend-icon="mdi-play"
@@ -20,7 +20,7 @@
           v-model="multiplier"
           class="w-100"
           dense
-          :disabled="playState === PlayState.STOPPED"
+          :disabled="playState === PlayState.STOPPED || playState === PlayState.LOADING"
           hide-details="auto"
           :label="t('drawer.timer.multiplier-field')"
           :min="1"
@@ -48,20 +48,16 @@
 
   const sliderMin = ref(0);
   const sliderMax = ref(0);
-  const timerValue = ref(0);
-
-  watch(timer, () => {
-    timerValue.value = new Date(timer.value);
-  });
 
   watch(multiplier, () => {
     emitter.emit('setMultiplier', multiplier.value);
   })
 
-  emitter.on('play', async () => {
+  emitter.on('files-loaded', async () => {
     const playTimes = await usePlayTimesStore().getStartEndDatetime();
     sliderMin.value = playTimes.startDatetime;
     sliderMax.value = playTimes.endDatetime;
+    timer.value = sliderMin.value;
   })
 
 </script>

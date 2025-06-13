@@ -18,6 +18,9 @@ export const useReplayTimerStore = defineStore('timer', () => {
 
     return setInterval(() => {
       timer.value = timer.value + 1000;
+      if (timer.value >= usePlayTimesStore().endDatetime) {
+        emitter.emit('stop');
+      }
     }, 1000 / m)
   }
 

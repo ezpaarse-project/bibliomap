@@ -11,6 +11,7 @@
       accept=".csv"
       chips
       class="mx-auto"
+      :disabled="playState === PlayState.LOADING"
       :label="t('drawer.player.file-input-placeholder')"
       multiple
       style="max-width: 300px"
@@ -22,7 +23,7 @@
         v-if="playState !== PlayState.PLAYING"
         class="mx-auto d-block mb-2"
         color="green"
-        :disabled="!files.length"
+        :disabled="!files.length || playState === PlayState.LOADING"
         flat
         @click="handleStart"
       ><v-icon>mdi-play-circle</v-icon></v-btn>
@@ -31,7 +32,6 @@
         v-else
         class="mx-auto d-block mb-2"
         color="grey"
-        :disabled="!files.length"
         flat
         @click="handlePause"
       ><v-icon>mdi-pause-circle</v-icon></v-btn>
@@ -39,7 +39,7 @@
       <v-btn
         class="mx-auto d-block mb-2"
         color="red"
-        :disabled="playState === PlayState.STOPPED"
+        :disabled="playState === PlayState.STOPPED || playState === PlayState.LOADING"
         flat
         @click="handleStop"
       ><v-icon>mdi-stop-circle</v-icon></v-btn>

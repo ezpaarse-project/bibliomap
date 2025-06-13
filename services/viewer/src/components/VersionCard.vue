@@ -1,5 +1,5 @@
 <template>
-  <div class="card-version-container">
+  <div class="card-container">
     <v-card density="comfortable" :flat="true" height="40" width="210">
       <v-card-title class="justify-center text-body-1 pb-0">Bibliomap Player 6.0.0</v-card-title>
     </v-card>
@@ -11,7 +11,7 @@
   const { t } = useI18n();
 </script>
 <style lang="scss">
-  .card-version-container{
+  .card-container{
     position: fixed;
     bottom: 20px;
     right: 20px;

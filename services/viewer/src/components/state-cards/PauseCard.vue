@@ -1,14 +1,15 @@
 <template>
   <div class="replay">
     <div class="replay-circle-container">
-      <span class="replay-circle"><v-icon icon="mdi-autorenew" /></span>
-      <span class="replay-circle-background"><v-icon icon="mdi-autorenew" /></span>
+      <span class="replay-circle"><v-icon icon="mdi-pause-circle" /></span>
+      <span class="replay-circle-background" />
+      <span class="second-replay-circle-background" />
     </div>
-    <span class="replay-text">REPLAY</span>
+    <span class="replay-text">PAUSED</span>
   </div>
 </template>
 
-<style lang='scss'>
+<style lang='scss' scoped>
   .replay {
     z-index: 1000;
     width: 110px;
@@ -29,8 +30,8 @@
     font-size: 20px;
     text-transform: uppercase;
     font-weight: bold;
-    color: blue;
-    text-shadow: 0px 0px 20px blue;
+    color: #555557;
+    text-shadow: 0px 0px 20px #555557;
     float: right;
     margin: -5px 0 5px;
     white-space: nowrap;
@@ -43,9 +44,8 @@
   .replay .replay-circle{
     height: 18px;
     width: 18px;
-    color: blue;
-    text-shadow: 0px 0px 20px blue;
-    display: inline-block;
+    color: #555557;
+    text-shadow: 0px 0px 20px #555557;
     margin-right: 10px;
     margin-bottom: 9px;
     border-radius: 50%;
@@ -60,8 +60,9 @@
     opacity: .5;
     height: 18px;
     width: 18px;
-    color: rgba(0, 0, 100, 1);
-    text-shadow: 0px 0px 20px rgba(0, 0, 100, 1);
+    background: rgba(0, 0, 0, 1);
+    border-radius: 50%;
+    text-shadow: 0px 0px 20px rgba(0, 0, 0, 1);
     position: absolute;
     display: flex;
     justify-content: center;
@@ -70,30 +71,45 @@
     z-index: 1001;
   }
 
+  .second-replay-circle-background {
+    opacity: 0;
+    height: 18px;
+    width: 18px;
+    background: rgba(0, 0, 0, 1);
+    border-radius: 50%;
+    text-shadow: 0px 0px 20px rgba(0, 0, 0, 1);
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: replay-background-animation ease-out 4s infinite;
+    z-index: 1001;
+    animation-delay: 2s;
+  }
+
   @keyframes replay-animation {
     0%{
-      transform: rotate(0deg) scale(1.8);
+      transform: scale(1.8);
     }
     50%{
-      transform: rotate(360deg) scale(1.2);
+      transform: scale(1.2);
     }
     100%{
-      transform: rotate(720deg) scale(1.2);
+      transform: scale(1.2);
     }
   }
 
   @keyframes replay-background-animation {
     0%{
-      transform: rotate(0deg) scale(1.5);
-      opacity: .5;
+      transform: scale(1.5);
+      opacity: .2;
     }
     50%{
-      transform: scale(3);
-      transform: rotate(360deg) scale(4);
+      transform: scale(4);
       opacity: 0;
     }
     100%{
-      transform: rotate(720deg) scale(3);
+      transform: scale(3);
       opacity: 0;
     }
   }

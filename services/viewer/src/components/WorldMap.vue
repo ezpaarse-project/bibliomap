@@ -13,7 +13,6 @@
   import { usePortalsStore } from '@/stores/portals.ts';
 
   const emitter = useMitt();
-  const io = useSocketStore().socket;
 
   const config = useViewerConfigStore().config;
   const portalsStore = usePortalsStore();
@@ -99,7 +98,7 @@
       return portalsStore.getPortalColor(log.portal_name) || config.mapParams.attributesColors.defaultColor
     }
 
-    emitter.on('log', (log: Log) => {
+    emitter.on('showLog', (log: Log) => {
       if (usePlatformFilterStore().getFilter() && log.platform_name && !((usePlatformFilterStore().getFilter().toUpperCase().includes(log.platform_name.toUpperCase()) || log.platform_name.toUpperCase().includes(usePlatformFilterStore().getFilter().toUpperCase())))) return;
       if (!log || !log['geoip-latitude'] || !log['geoip-longitude']) return;
 

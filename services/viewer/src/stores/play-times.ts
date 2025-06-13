@@ -1,7 +1,6 @@
-import { usePlayerFilesStore } from './player-files';
 import { defineStore } from 'pinia';
-import Papa from 'papaparse';
 import useMitt from '@/composables/useMitt';
+import { useIndexedDBStore } from './indexed-db';
 
 export const usePlayTimesStore = defineStore('play-times', () => {
   const startDatetime = ref(null);
@@ -9,46 +8,55 @@ export const usePlayTimesStore = defineStore('play-times', () => {
 
   const emitter = useMitt();
 
-  async function getStartEndDatetimeOfFile (file: File) {
+  async function setStartEndDatetime () {
+    emitter.emit('loading', null);
+    await getStartDatetimeFromDB();
+    await getEndDatetimeFromDB();
+    emitter.emit('stop', null);
+  }
+
+  async function getStartDatetimeFromDB () {
+    const db = await useIndexedDBStore().getDB();
     return new Promise(resolve => {
-      Papa.parse(file, {
-        header: true,
-        skipEmptyLines: true,
-        complete (results) {
-          const data = results.data as { datetime: string }[];
+      const tx = db.transaction('events', 'readonly');
+      const store = tx.objectStore('events');
+      const index = store.index('by_date');
 
-          if (data.length === 0) {
-            resolve({ startDatetime: null, endDatetime: null });
-            return;
-          }
+      const request = index.openCursor();
 
-          resolve({
-            startDatetime: new Date(data[0].datetime).getTime(),
-            endDatetime: new Date(data[data.length - 1].datetime).getTime(),
-          });
-        },
-      });
+      request.onsuccess = event => {
+        const cursor = event.target.result;
+        if (cursor) {
+          startDatetime.value = cursor.value.datetime;
+          resolve();
+        } else {
+          startDatetime.value = null;
+          resolve();
+        }
+      }
     });
   }
-  async function setStartEndDatetime () {
-    const files = usePlayerFilesStore().files;
-    if (!files.length) return;
 
-    emitter.emit('loading', null);
-    const startEndDatetimesPromises = []
-    const startEndDatetimes = []
+  async function getEndDatetimeFromDB () {
+    const db = await useIndexedDBStore().getDB();
+    return new Promise(resolve => {
+      const tx = db.transaction('events', 'readonly');
+      const store = tx.objectStore('events');
+      const index = store.index('by_date');
 
-    files.forEach(file => {
-      startEndDatetimesPromises.push(getStartEndDatetimeOfFile(file));
+      const request = index.openCursor(null, 'prev');
+
+      request.onsuccess = event => {
+        const cursor = event.target.result;
+        if (cursor) {
+          endDatetime.value = cursor.value.datetime;
+          resolve();
+        } else {
+          endDatetime.value = null;
+          resolve();
+        }
+      }
     });
-
-    for (const promise of startEndDatetimesPromises) {
-      startEndDatetimes.push(await promise);
-    }
-
-    startDatetime.value = Math.min(...startEndDatetimes.map(startEndDatetime => startEndDatetime.startDatetime));
-    endDatetime.value = Math.max(...startEndDatetimes.map(startEndDatetime => startEndDatetime.endDatetime));
-    emitter.emit('play', null);
   }
 
   async function getStartEndDatetime () {
@@ -59,10 +67,14 @@ export const usePlayTimesStore = defineStore('play-times', () => {
     };
   }
 
-  function resetStartEndDatetime () {
+  function clearTimes () {
     startDatetime.value = null;
     endDatetime.value = null;
   }
 
-  return { getStartEndDatetime, resetStartEndDatetime };
+  emitter.on('filesChanged', () => {
+    clearTimes();
+  });
+
+  return { getStartEndDatetime };
 });

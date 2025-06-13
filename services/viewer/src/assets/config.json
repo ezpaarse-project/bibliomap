@@ -8,7 +8,7 @@
         "maxZoom": 9,
         "defaultPhoneZoom": 5,
         "bubbleDuration": 5,
-        "bubbleSize": 60,
+        "bubbleSize": 30,
         "popupText": {
             "datetime": false,
             "ezproxyName": false,

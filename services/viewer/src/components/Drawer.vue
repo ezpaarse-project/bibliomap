@@ -26,7 +26,7 @@
       </div>
     </div>
   </v-navigation-drawer>
-  <ModeCard v-if="!usingPhone || (usingPhone && !drawer)" />
+  <StateCard v-if="!usingPhone || (usingPhone && !drawer)" />
 </template>
 
 <script setup lang="ts">

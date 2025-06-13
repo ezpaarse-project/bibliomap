@@ -1,5 +1,5 @@
 <template>
-  <div v-if="playStateStore.state !== PlayState.STOPPED" class="counter-container">
+  <div v-if="playStateStore.state === PlayState.PLAYING || playStateStore.state === PlayState.PAUSED" class="counter-container">
     <v-tooltip v-for="key in mimeStore.getAllMimeNames()" :key="key" location="top" :text="t('drawer.counter.tooltips.file-type-consultations', {n: countStore.getCountOfMime(key), type: key})">
       <template v-if="config.drawerParams.counterSection.countAllMimes || value.count" #activator="{ props }">
         <v-badge :content="countStore.getCountOfMime(key)">
