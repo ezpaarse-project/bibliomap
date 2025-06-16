@@ -78,15 +78,6 @@ Whenever you want you can git pull all the git repositories using one command:
 npm run pull
 ```
 
-
-### Upgrade
-
-To upgrade to the latest version of [bibliomap-harvester](https://github.com/ezpaarse-project/bibliomap-harvester), [bibliomap-enricher](https://github.com/ezpaarse-project/bibliomap-enricher), and [bibliomap-viewer](https://github.com/ezpaarse-project/bibliomap-viewer) in the docker-compose.yml, just git clone all of these into your bibliomap/ folder (see just above) and run this command:
-
-```
-npm version patch
-```
-
 ### BiblioMap Player
 
 BiblioMap now has a replay mode: provide it with log files and it will play in real time. The replay mode features a time multiplier, which makes it times faster to have a quicker preview of what happened during that day.
