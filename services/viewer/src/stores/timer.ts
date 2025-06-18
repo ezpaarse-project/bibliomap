@@ -1,8 +1,9 @@
 import useMitt from '@/composables/useMitt';
 import { usePlayTimesStore } from '@/stores/play-times.ts';
 import { usePlayerMultiplierStore } from '@/stores/player-multiplier.ts';
+import { PlayState, usePlayStateStore } from '@/stores/play-state.ts';
 
-export const useReplayTimerStore = defineStore('timer', () => {
+export const useTimerStore = defineStore('timer', () => {
   const timer = ref<number | null>(null);
   let interval;
 
@@ -44,6 +45,7 @@ export const useReplayTimerStore = defineStore('timer', () => {
   });
 
   emitter.on('setMultiplier', m => {
+    if (usePlayStateStore().state !== PlayState.PLAYING) return;
     clearInterval(interval);
     interval = createInterval(m)
   });

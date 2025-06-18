@@ -33,7 +33,7 @@
 
 
 <script setup lang="ts">
-  import { useReplayTimerStore } from '@/stores/player-timer.ts';
+  import { useTimerStore } from '@/stores/timer.ts';
   import { usePlayTimesStore } from '@/stores/play-times.ts';
   import { PlayState, usePlayStateStore } from '@/stores/play-state.ts';
   import { useI18n } from 'vue-i18n';
@@ -42,7 +42,7 @@
   const { t } = useI18n();
   const emitter = useMitt();
 
-  const { timer } = storeToRefs(useReplayTimerStore());
+  const { timer } = storeToRefs(useTimerStore());
   const { state: playState } = storeToRefs(usePlayStateStore());
   const multiplier = ref(1);
 

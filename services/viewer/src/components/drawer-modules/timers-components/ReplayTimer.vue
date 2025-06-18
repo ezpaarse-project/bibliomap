@@ -53,7 +53,7 @@
 
 <script setup lang="ts">
   import { useReplayConfigStore } from '@/stores/replay-config';
-  import { useReplayTimerStore } from '@/stores/player-timer.ts';
+  import { useTimerStore } from '@/stores/timer.ts';
   import { useViewerConfigStore } from '@/stores/viewer-config';
   import { format } from 'date-fns';
   import { TZDate } from '@date-fns/tz';
@@ -61,7 +61,7 @@
 
   const config = useViewerConfigStore().config;
   const { config: replayConfig } = storeToRefs(useReplayConfigStore());
-  const { timer } = storeToRefs(useReplayTimerStore());
+  const { timer } = storeToRefs(useTimerStore());
   const params = config.drawerParams.timerSection;
   const { t } = useI18n();
 
