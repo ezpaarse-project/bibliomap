@@ -27,12 +27,20 @@
                     "color": "#D35400"
                 },
                 "MISC": {
-                    "count": false,
+                    "count": true,
                     "color": "#16A085"
                 },
                 "PDF": {
                     "count": true,
                     "color": "#C0392B"
+                },
+                "PDFPLUS": {
+                    "count": true,
+                    "color": "#C0392B"
+                },
+                "JSON": {
+                    "count": true,
+                    "color": "#9076A6"
                 }
             }
         }

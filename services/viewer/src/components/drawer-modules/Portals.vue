@@ -1,39 +1,38 @@
 <template>
-  <div class="portals-component">
+  <div v-if="portals && portals.length > 0" class="portals-component">
     <a
-      v-for="portalName in portalStore.getAllPortalNames()"
-      :key="portalName"
+      v-for="{name, color} in portals"
+      :key="name"
       class="anchor"
       target="_blank"
     >
       <v-list-item class="portal-list-element">
 
         <v-tooltip
-          :disabled="!countStore.getCountOfPortal(portalName)"
+          :disabled="!countStore.getCountOfPortal(name)"
           location="right"
         >
           <template #activator="{ props }">
             <div class="portal-list-item" v-bind="props">
               <div class="portal-container">
                 <div class="portal-title-container">
-                  <h3 class="title-font">{{ t(`drawer-custom.portals.${portalName}.title`) }}</h3>
-                  <p v-if="t(`drawer-custom.portals.${portalName}.subtitle`)">{{ t(`drawer-custom.portals.${portalName}.subtitle`) }}</p>
+                  <h3 class="title-font">{{ name.toUpperCase() }}</h3>
                 </div>
               </div>
               <v-chip
-                :color="portalStore.getPortalColor(portalName)"
+                :color="color"
                 variant="flat"
               >
-                {{ countStore.getCountOfPortal(portalName) }}
+                {{ countStore.getCountOfPortal(name) }}
               </v-chip>
             </div>
           </template>
           <div>
             <div
-              v-for="mime in countStore.getMimeInPortal(portalName)"
+              v-for="mime in countStore.getMimeInPortal(name)"
               :key="mime"
             >
-              {{ mime }}: {{ countStore.getCountOfPortalAndMime(portalName, mime) }}
+              {{ mime }}: {{ countStore.getCountOfPortalAndMime(name, mime) }}
             </div>
           </div>
         </v-tooltip>
@@ -45,12 +44,18 @@
 <script setup lang="ts">
   import { useEcCountStore } from '@/stores/ec-count';
   import { usePortalsStore } from '@/stores/portals.ts';
-  import { useI18n } from 'vue-i18n';
+  import useMitt from '@/composables/useMitt';
 
-  const { t } = useI18n();
+  const emitter = useMitt();
 
   const countStore = useEcCountStore();
   const portalStore = usePortalsStore();
+
+  const portals = ref([])
+
+  emitter.on('files-loaded', async () => {
+    portals.value = await portalStore.getPortals();
+  })
 </script>
 
 <style lang="scss">

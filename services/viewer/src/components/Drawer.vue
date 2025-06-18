@@ -20,7 +20,7 @@
         <Counter />
         <v-divider />
       </div>
-      <div v-if="props.portalSection.include && usePortalsStore().getAllPortalNames().length > 0">
+      <div v-if="props.portalSection.include">
         <Portals />
         <v-divider />
       </div>
@@ -32,7 +32,6 @@
 <script setup lang="ts">
   import { useViewerConfigStore } from '@/stores/viewer-config';
   import useMitt from '@/composables/useMitt';
-  import { usePortalsStore } from '@/stores/portals.ts';
 
   const config = useViewerConfigStore().config;
   const props = config.drawerParams;

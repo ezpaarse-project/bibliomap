@@ -41,6 +41,7 @@
       "multiplier-field": "Simulation speed"
     },
     "counter": {
+      "title": "Count by mime",
       "tooltips": {
         "file-type-consultations": "{n} consultations of {type} documents",
         "total-consultations": "Total consultations: {n}"
@@ -58,6 +59,9 @@
       "error": {
         "invalid-file": "Invalid file: {name}"
       }
+    },
+    "portals": {
+      "title": "Count by portal"
     }
   },
   "version-card": {

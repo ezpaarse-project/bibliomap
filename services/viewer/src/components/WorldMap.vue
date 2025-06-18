@@ -96,15 +96,18 @@
     });
 
     function getBubbleColor (log: Log) {
-      return portalsStore.getPortalColor(log.portal_name) || config.mapParams.attributesColors.defaultColor
+      if (!log.ezproxyName.includes('+')) return portalsStore.getPortalColor(log.ezproxyName) || config.mapParams.attributesColors.defaultColor;
+      return 'linear-gradient(to right, ' + log.ezproxyName.split('+').map((portal: string) => portalsStore.getPortalColor(portal) || config.mapParams.attributesColors.defaultColor).join(', ') + ')';
     }
 
     emitter.on('EC', (log: Log) => {
       if (usePlatformFilterStore().getFilter() && log.platform_name && !((usePlatformFilterStore().getFilter().toUpperCase().includes(log.platform_name.toUpperCase()) || log.platform_name.toUpperCase().includes(usePlatformFilterStore().getFilter().toUpperCase())))) return;
       if (!log || !log['geoip-latitude'] || !log['geoip-longitude']) return;
 
-      const color = getBubbleColor(log);
+      let color = getBubbleColor(log);
       const gradient = color.includes('linear-gradient') ? color : undefined;
+
+      if (gradient) color = '';
 
       const bubbleHtml = getBubbleHtml(gradient, color)
 
@@ -161,7 +164,7 @@
     }
     return `<div class='bubble'>
               <div style='background: ${gradient || backgroundColor || 'transparent'}; width: ${size}px; height: ${size}px' class='bubble-circle ${classes}'></div>
-              <div style='box-shadow: 1px 1px 8px 0 ${backgroundColor || 'gray'}; width: ${size*2}px; height: ${size*2}px' class='bubble-pulse'></div>
+              <div style='box-shadow: 1px 1px 8px 0 ${backgroundColor || 'black'}; width: ${size*2}px; height: ${size*2}px' class='bubble-pulse'></div>
             </div>`
   }
 
@@ -221,10 +224,10 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    border-radius: 8px;
+    border-radius: 4px;
     z-index: 2;
     bottom: 100%;
-    padding: .5em 2.5em;
+    padding: .2em 1em;
     box-shadow: $box-shadow;
     min-width: 100px;
     max-width: 300px;

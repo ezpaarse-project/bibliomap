@@ -1,12 +1,11 @@
 import useMitt from '@/composables/useMitt';
-import { useReplayTimerStore } from './player-timer';
+import { useTimerStore } from './timer.ts';
 import { useIndexedDBStore } from './indexed-db';
 import { PlayState, usePlayStateStore } from '@/stores/play-state.ts';
 
 export const useBubblesStore = defineStore('bubbles', () => {
   const emitter = useMitt();
-  const { timer } = storeToRefs(useReplayTimerStore());
-  console.log(timer.value);
+  const { timer } = storeToRefs(useTimerStore());
 
   async function sendBubbles () {
     const db = await useIndexedDBStore().getDB();
@@ -21,7 +20,6 @@ export const useBubblesStore = defineStore('bubbles', () => {
       if (cursor && cursor.length) {
         cursor.forEach(bubble => {
           emitter.emit('EC', bubble.log);
-          console.log('EMITTED LOG', bubble.log);
         });
       }
     }

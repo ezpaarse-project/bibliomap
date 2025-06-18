@@ -1,22 +1,94 @@
+import useMitt from '@/composables/useMitt';
+import { useIndexedDBStore } from './indexed-db';
+
 export const usePortalsStore = defineStore('portals', () => {
-  const portals = [];
+  const emitter = useMitt();
+  const portals = ref([]);
 
-  function getRandomHexColor () {
-    const hex = Math.floor(Math.random() * 0xFFFFFF).toString(16);
-    return `#${hex.padStart(6, '0')}`;
+  function hslToHex (h, s, l) {
+    s /= 100;
+    l /= 100;
+
+    const c = (1 - Math.abs(2 * l - 1)) * s;
+    const x = c * (1 - Math.abs((h / 60) % 2 - 1));
+    const m = l - c / 2;
+
+    let r: number, g: number, b: number;
+
+    if (h >= 0 && h < 60) [r, g, b] = [c, x, 0];
+    else if (h < 120) [r, g, b] = [x, c, 0];
+    else if (h < 180) [r, g, b] = [0, c, x];
+    else if (h < 240) [r, g, b] = [0, x, c];
+    else if (h < 300) [r, g, b] = [x, 0, c];
+    else [r, g, b] = [c, 0, x];
+
+    r = Math.round((r + m) * 255);
+    g = Math.round((g + m) * 255);
+    b = Math.round((b + m) * 255);
+
+    const toHex = val => val.toString(16).padStart(2, '0');
+    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
   }
 
-  function getAllPortalNames () {
-    return portals.map(p => p.name);
+  function stringToColor (str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+      hash = hash & hash;
+    }
+
+    const hue = Math.abs(hash) % 360;
+    const saturation = 70 + (Math.abs(hash) % 30);
+    const lightness = 50 + (Math.abs(hash) % 10);
+
+    return hslToHex(hue, saturation, lightness);
   }
 
-  function appendPortal (name: string) {
-    portals.push({ name, color: getRandomHexColor() });
+  async function setPortals () {
+    const db = await useIndexedDBStore().getDB();
+    return new Promise(resolve => {
+      emitter.emit('loading', null);
+      const tx = db.transaction('events', 'readonly');
+      const store = tx.objectStore('events');
+      const request = store.getAll();
+
+      request.onsuccess = event => {
+        const allEvents = event.target.result;
+
+        const ezproxyNames = new Set(
+          allEvents
+            .map(event => event?.log?.ezproxyName.split('+'))
+            .flat()
+            .map(name => name.toUpperCase())
+            .filter(name => typeof name === 'string')
+            .filter(name => !name.includes('.'))
+        );
+
+        portals.value = Array.from(ezproxyNames).map(portalName => ({
+          name: portalName,
+          color: stringToColor(portalName),
+        })).sort((a, b) => a.name.localeCompare(b.name));
+
+        emitter.emit('stop', false);
+        resolve()
+      };
+    })
   }
 
-  function getPortalColor (name: string) {
-    return portals.filter(p => p.name === name);
+  async function getPortals () {
+    if (!portals.value) return;
+    if (portals.value.length === 0) {
+      await setPortals();
+    }
+    return portals.value;
   }
 
-  return { portals, appendPortal, getPortalColor, getAllPortalNames };
+  function getPortalColor (portalName) {
+    const portal = portals.value.find(portal => portal.name.toUpperCase() === portalName.toUpperCase());
+    return portal?.color;
+  }
+
+  emitter.on('files-loaded', () => { portals.value = [] })
+
+  return { getPortals, getPortalColor };
 })
