@@ -5,7 +5,7 @@ import { useTimerStore } from './timer.ts';
 import { useIndexedDBStore } from '@/stores/indexed-db.ts';
 import { PlayState, usePlayStateStore } from '@/stores/play-state.ts';
 import { usePlayTimesStore } from '@/stores/play-times.ts';
-import {useMimesStore} from "@/stores/mimes.ts";
+import { useMimesStore } from '@/stores/mimes.ts';
 
 export const useEcCountStore = defineStore('ec-count', () => {
   const count = reactive({} as Record<string, Record<string, number>>);
@@ -37,7 +37,9 @@ export const useEcCountStore = defineStore('ec-count', () => {
       const portal = event.ezproxyName.toUpperCase();
       const mime = event.mime.toUpperCase();
       portal.split('+').forEach((portal: string) => {
-        if (!countObject[portal]) return;
+        // console.log(portal, countObject[portal] !== undefined);
+        if (countObject[portal] === undefined) return;
+        // console.log(mime, countObject[portal][mime])
         if (!countObject[portal][mime]) countObject[portal][mime] = 0;
         countObject[portal][mime] += 1;
       });
@@ -57,14 +59,11 @@ export const useEcCountStore = defineStore('ec-count', () => {
         const portals = await portalsStore.getPortals();
 
         const newCompleteCount = {};
-        console.log(portals);
         portals.forEach(portal => {
           newCompleteCount[portal.name.toUpperCase()] = {};
-          console.log(portal.name.toUpperCase());
         });
         putEventsInCountObject(allEvents, newCompleteCount);
         if (usePlayStateStore().playState !== PlayState.PLAYING) emitter.emit('play', null);
-        console.log(newCompleteCount);
         resolve(newCompleteCount);
       }
     });
@@ -124,7 +123,7 @@ export const useEcCountStore = defineStore('ec-count', () => {
         } else {
           resolve(results);
         }
-      };
+      }
     });
   }
 
@@ -148,7 +147,7 @@ export const useEcCountStore = defineStore('ec-count', () => {
   async function updateTimer (timestamp: number) {
     const startEndTimes = await usePlayTimesStore().getStartEndDatetime();
 
-    if (!previousTimestamp.value || Math.abs(startEndTimes.startDatetime - timestamp) <= Math.abs(previousTimestamp.value - timestamp)) {
+    if (!previousTimestamp.value || Math.abs(startEndTimes.startDatetime - timestamp) <= Math.abs(startEndTimes.endDatetime - timestamp)) {
       console.log('HERE')
       const events = await getAllEventsBefore(timestamp);
       resetCount();
@@ -158,7 +157,7 @@ export const useEcCountStore = defineStore('ec-count', () => {
       }
       previousTimestamp.value = timestamp;
     }
-    if (Math.abs(startEndTimes.endDatetime - timestamp) <= Math.abs(previousTimestamp.value - timestamp)) {
+    else {
       console.log('ICI');
 
       const newCount = (await getCurrentEventCountFromCompleteCount(timestamp));
@@ -176,11 +175,10 @@ export const useEcCountStore = defineStore('ec-count', () => {
 
       previousTimestamp.value = timestamp;
     }
-    else {
-      console.log('THERE')
-      changeCountByRange(timestamp);
-      previousTimestamp.value = timestamp;
-    }
+    // else {
+    //   console.log('THERE');
+    //   changeCountByRange(timestamp);
+    // }
   }
 
   async function getAllEventsBefore (timestamp: number) {
