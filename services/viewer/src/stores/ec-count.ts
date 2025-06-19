@@ -17,6 +17,8 @@ export const useEcCountStore = defineStore('ec-count', () => {
   const { timer } = storeToRefs(useTimerStore());
   const { sections } = storeToRefs(useCountSectionsStore());
 
+  let currentRequestToken = 0;
+
   emitter.on('files-loaded', async () => {
     const portals = await portalsStore.getPortals();
     portals.forEach(portal => {
@@ -65,11 +67,7 @@ export const useEcCountStore = defineStore('ec-count', () => {
   }
 
   async function getEventsBetween (start: number, end: number, lowerOpen: boolean = true, upperOpen: boolean = true) {
-    if (start > end) {
-      const temp = start;
-      start = end;
-      end = temp;
-    }
+    if (start > end) return [];
     const db = await useIndexedDBStore().getDB();
     return new Promise(resolve => {
       const tx = db.transaction('events', 'readonly');
@@ -110,8 +108,10 @@ export const useEcCountStore = defineStore('ec-count', () => {
 
   async function updateCount (timestamp: number) {
     if (!timestamp) return;
+    const requestToken = ++currentRequestToken;
 
     const startEndTimes = await usePlayTimesStore().getStartEndDatetime();
+    if (requestToken !== currentRequestToken) return;
 
     if (Object.keys(timestampBorders.value).length === 0) {
       timestampBorders.value = { start: startEndTimes.startDatetime, end: sections.value[0].datetime };
@@ -122,8 +122,10 @@ export const useEcCountStore = defineStore('ec-count', () => {
     }
 
     const events = await getEventsBetween(sections.value[currentSection.value].datetime, timestamp, false);
+    if (requestToken !== currentRequestToken) return;
 
     const currentEventCount = await createCountFromEvents(events);
+    if (requestToken !== currentRequestToken) return;
 
     count.value = mergeCounts(currentSection.value > 0 ? sections.value[currentSection.value -1].count : {}, currentEventCount);
   }
