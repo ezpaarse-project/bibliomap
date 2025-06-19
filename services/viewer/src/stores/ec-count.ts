@@ -4,110 +4,72 @@ import useMitt from '@/composables/useMitt';
 import { useTimerStore } from './timer.ts';
 import { useIndexedDBStore } from '@/stores/indexed-db.ts';
 import { PlayState, usePlayStateStore } from '@/stores/play-state.ts';
+import { useCountSectionsStore } from './count-sections.ts';
 import { usePlayTimesStore } from '@/stores/play-times.ts';
-import { useMimesStore } from '@/stores/mimes.ts';
 
 export const useEcCountStore = defineStore('ec-count', () => {
-  const count = reactive({} as Record<string, Record<string, number>>);
-  const completeCount = ref({});
+  const count = ref({});
 
   const portalsStore = usePortalsStore();
 
   const emitter = useMitt();
 
   const { timer } = storeToRefs(useTimerStore());
+  const { sections } = storeToRefs(useCountSectionsStore());
 
   emitter.on('files-loaded', async () => {
     const portals = await portalsStore.getPortals();
     portals.forEach(portal => {
-      count[portal.name.toUpperCase()] = {};
+      count.value[portal.name.toUpperCase()] = {};
     })
   });
 
-  function increment (portal: string, mime: string) {
-    portal.split('+').forEach((portal: string) => {
-      if (!count[portal.toUpperCase()]) return;
-      if (!count[portal.toUpperCase()][mime]) count[portal.toUpperCase()][mime] = 0;
-      count[portal.toUpperCase()][mime] += 1;
+  async function createCountFromEvents (events) {
+    const countObject = {};
+    const portalNames = (await usePortalsStore().getPortals()).map(portal => portal.name.toUpperCase());
+    portalNames.forEach(portal => {
+      countObject[portal.toUpperCase()] = {};
     });
-  }
-
-  function putEventsInCountObject (events, countObject) {
     events.forEach(event => {
       const portal = event.ezproxyName.toUpperCase();
       const mime = event.mime.toUpperCase();
       portal.split('+').forEach((portal: string) => {
-        // console.log(portal, countObject[portal] !== undefined);
         if (countObject[portal] === undefined) return;
-        // console.log(mime, countObject[portal][mime])
         if (!countObject[portal][mime]) countObject[portal][mime] = 0;
         countObject[portal][mime] += 1;
       });
     });
-  }
-
-  async function getCompleteCount () {
-    if (usePlayStateStore().playState !== PlayState.LOADING) emitter.emit('loading', null);
-    const db = await useIndexedDBStore().getDB();
-    return new Promise(resolve => {
-      const tx = db.transaction('events', 'readonly');
-      const store = tx.objectStore('events');
-      const getAllRequest = store.getAll();
-
-      getAllRequest.onsuccess = async event => {
-        const allEvents = event.target.result.map(event => event.log);
-        const portals = await portalsStore.getPortals();
-
-        const newCompleteCount = {};
-        portals.forEach(portal => {
-          newCompleteCount[portal.name.toUpperCase()] = {};
-        });
-        putEventsInCountObject(allEvents, newCompleteCount);
-        if (usePlayStateStore().playState !== PlayState.PLAYING) emitter.emit('play', null);
-        resolve(newCompleteCount);
-      }
-    });
-  }
-
-  function decrement (portal: string, mime: string) {
-    portal.split('+').forEach((portal: string) => {
-      if (!count[portal.toUpperCase()]) return;
-      if (!count[portal.toUpperCase()][mime]) count[portal.toUpperCase()][mime] = 0;
-      count[portal.toUpperCase()][mime] -= 1;
-    });
-  }
-
-  function resetCount () {
-    Object.keys(count).forEach(portal => {
-      count[portal.toUpperCase()] = {};
-    });
+    return countObject;
   }
 
   function getCountOfPortal (portal: string) {
-    return Object.values(count[portal.toUpperCase()]).reduce((a, b) => a + b, 0);
+    return Object.values(count.value[portal.toUpperCase()]).reduce((a, b) => a + b, 0);
   }
 
   function getCountOfMime (mime: string) {
-    return Object.values(count).reduce((a, b) => a + (b[mime.toUpperCase()] || 0), 0);
+    return Object.values(count.value).reduce((a, b) => a + (b[mime.toUpperCase()] || 0), 0);
   }
 
   function getTotalCount () {
-    return Object.values(count)
+    return Object.values(count.value)
       .flatMap(Object.values)
       .reduce((sum, val) => sum + val, 0);
   }
 
   function getCountOfPortalAndMime (portal: string, mime: string) {
-    return count[portal.toUpperCase()][mime];
+    return count.value[portal.toUpperCase()][mime];
   }
 
   function getMimeInPortal (portal: string) {
-    return Object.keys(count[portal.toUpperCase()]);
+    return Object.keys(count.value[portal.toUpperCase()]);
   }
 
-  const previousTimestamp = ref(null);
-
   async function getEventsBetween (start: number, end: number, lowerOpen: boolean = true, upperOpen: boolean = true) {
+    if (start > end) {
+      const temp = start;
+      start = end;
+      end = temp;
+    }
     const db = await useIndexedDBStore().getDB();
     return new Promise(resolve => {
       const tx = db.transaction('events', 'readonly');
@@ -127,131 +89,63 @@ export const useEcCountStore = defineStore('ec-count', () => {
     });
   }
 
-  function changeCount (events, add: boolean) {
-    for (const event of events) {
-      if (!event.ezproxyName) continue;
-      if (add) {
-        increment(event.ezproxyName.toUpperCase(), event.mime || 'unknown');
-      } else {
-        decrement(event.ezproxyName.toUpperCase(), event.mime || 'unknown');
+  const previousTimestamp = ref(null);
+  const currentSection = ref(0);
+  const timestampBorders = ref({});
+
+  async function updateSection (timestamp: number) {
+    const previousSection = currentSection.value;
+    for(let i = 0; i < sections.value.length - 1; i++) {
+      if (timestamp >= sections.value[i].datetime) {
+        currentSection.value = i;
       }
     }
+    if (currentSection.value === previousSection) currentSection.value = sections.value.length - 1;
+    if (currentSection.value === -1) {
+      currentSection.value = 0;
+      timestampBorders.value = {};
+    }
+    timestampBorders.value = { start: sections.value[currentSection.value].datetime, end: currentSection.value + 1 < sections.value.length ? sections.value[currentSection.value + 1].datetime : Number.POSITIVE_INFINITY };
   }
 
-  async function changeCountByRange (timestamp: number) {
-    const forward = timestamp >= previousTimestamp.value;
-    const eventsPromise = getEventsBetween(Math.min(previousTimestamp.value, timestamp), Math.max(timestamp, previousTimestamp.value), forward, !forward);
-    changeCount((await eventsPromise), forward);
-  }
+  async function updateCount (timestamp: number) {
+    if (!timestamp) return;
 
-  async function updateTimer (timestamp: number) {
     const startEndTimes = await usePlayTimesStore().getStartEndDatetime();
 
-    if (!previousTimestamp.value || Math.abs(startEndTimes.startDatetime - timestamp) <= Math.abs(startEndTimes.endDatetime - timestamp)) {
-      console.log('HERE')
-      const events = await getAllEventsBefore(timestamp);
-      resetCount();
-      for (const event of events) {
-        if (!event.ezproxyName) continue;
-        increment(event.ezproxyName.toUpperCase(), event.mime || 'unknown');
-      }
-      previousTimestamp.value = timestamp;
+    if (Object.keys(timestampBorders.value).length === 0) {
+      timestampBorders.value = { start: startEndTimes.startDatetime, end: sections.value[0].datetime };
     }
-    else {
-      console.log('ICI');
 
-      const newCount = (await getCurrentEventCountFromCompleteCount(timestamp));
+    if (timestamp > timestampBorders.value.end || timestamp < timestampBorders.value.start) {
+      updateSection(timestamp);
+    }
 
-      const portalNames = (await usePortalsStore().getPortals()).map(portal => portal.name.toUpperCase());
-      const mimeNames = (await useMimesStore().getMimes()).map(mime => mime.name.toUpperCase());
+    const events = await getEventsBetween(sections.value[currentSection.value].datetime, timestamp, false);
 
-      portalNames.forEach(portal => {
-        mimeNames.forEach(mime => {
-          if (!newCount[portal]) count[portal] = {};
-          if (!newCount[portal][mime]) count[portal][mime] = 0;
-          else count[portal][mime] = newCount[portal][mime];
-        });
+    const currentEventCount = await createCountFromEvents(events);
+
+    count.value = mergeCounts(currentSection.value > 0 ? sections.value[currentSection.value -1].count : {}, currentEventCount);
+  }
+
+  function mergeCounts (previousSectionCount, currentCount) {
+    Object.keys(previousSectionCount).forEach(portal => {
+      Object.keys(previousSectionCount[portal]).forEach(mime => {
+        if (!currentCount[portal]) currentCount[portal] = {};
+        if (!currentCount[portal][mime]) currentCount[portal][mime] = 0;
+        if (previousSectionCount[portal] && previousSectionCount[portal][mime]) currentCount[portal][mime] = previousSectionCount[portal][mime] + currentCount[portal][mime];
       });
-
-      previousTimestamp.value = timestamp;
-    }
-    // else {
-    //   console.log('THERE');
-    //   changeCountByRange(timestamp);
-    // }
-  }
-
-  async function getAllEventsBefore (timestamp: number) {
-    const db = await useIndexedDBStore().getDB();
-    return new Promise(resolve => {
-      const tx = db.transaction('events', 'readonly');
-      const store = tx.objectStore('events');
-      const index = store.index('by_date');
-
-      const range = IDBKeyRange.upperBound(timestamp, true);
-
-      const results = [];
-      index.openCursor(range).onsuccess = event => {
-        const cursor = event.target.result;
-        if (cursor) {
-          results.push(cursor.value.log);
-          cursor.continue();
-        } else {
-          resolve(results);
-        }
-      };
     });
-  }
-
-  async function getAllEventsAfter (timestamp: number) {
-    const db = await useIndexedDBStore().getDB();
-    return new Promise(resolve => {
-      const tx = db.transaction('events', 'readonly');
-      const store = tx.objectStore('events');
-      const index = store.index('by_date');
-
-      const range = IDBKeyRange.lowerBound(timestamp, true);
-
-      const results = [];
-      index.openCursor(range).onsuccess = event => {
-        const cursor = event.target.result;
-        if (cursor) {
-          results.push(cursor.value.log);
-          cursor.continue();
-        } else {
-          resolve(results)
-        }
-      };
-    });
-  }
-
-  async function getCurrentEventCountFromCompleteCount (timestamp: number) {
-    const eventsAfterCount = {};
-    putEventsInCountObject(await getAllEventsAfter(timestamp), eventsAfterCount);
-    const newCount = {};
-    const portalNames = (await usePortalsStore().getPortals()).map(portal => portal.name.toUpperCase());
-    const mimeNames = (await useMimesStore().getMimes()).map(mime => mime.name.toUpperCase());
-
-    portalNames.forEach(portal => {
-      mimeNames.forEach(mime => {
-        if (!newCount[portal]) newCount[portal] = {};
-        if (!completeCount.value[portal][mime]) newCount[portal][mime] = 0;
-        else newCount[portal][mime] = completeCount.value[portal][mime] - (eventsAfterCount[portal] ? eventsAfterCount[portal][mime] : 0);
-      })
-    })
-    return newCount;
+    return currentCount;
   }
 
   watch(timer, () => {
     if (usePlayStateStore().state !== PlayState.PLAYING && usePlayStateStore().state !== PlayState.PAUSED) return;
-    updateTimer(timer.value)
+    updateCount(timer.value)
   });
 
   emitter.on('play', async () => {
-    console.log(useTimerStore().timer);
     previousTimestamp.value = useTimerStore().timer;
-    if (!Object.keys(completeCount.value).length) completeCount.value = await getCompleteCount();
-    updateTimer(timer.value);
   });
 
   return { getCountOfPortal, getCountOfMime, getTotalCount, getCountOfPortalAndMime, getMimeInPortal };
