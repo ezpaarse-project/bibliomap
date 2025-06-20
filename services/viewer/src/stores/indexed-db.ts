@@ -1,12 +1,14 @@
 export const useIndexedDBStore = defineStore('indexed-db', () => {
-  let db;
+  let db: IDBDatabase | null = null;
 
   function openDB () {
-    return new Promise(resolve => {
+    return new Promise<void>((resolve, rejects) => {
       const openRequest = indexedDB.open('ECs', 1);
 
       openRequest.onupgradeneeded = event => {
-        db = event.target.result;
+        const target = event.target as IDBOpenDBRequest;
+        if (!target) rejects();
+        db = target.result;
 
         if (!db.objectStoreNames.contains('events')) {
           const store = db.createObjectStore('events', { autoIncrement: true });

@@ -10,6 +10,7 @@ type Events = {
   showSettings: null;
   toggleDrawer: null;
   log: Log;
+  EC: Log;
 };
 
 const emitter = mitt<Events>();

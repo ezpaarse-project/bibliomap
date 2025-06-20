@@ -2,6 +2,7 @@ import useMitt from '@/composables/useMitt';
 import { useTimerStore } from './timer.ts';
 import { useIndexedDBStore } from './indexed-db';
 import { PlayState, usePlayStateStore } from '@/stores/play-state.ts';
+import { type EC } from './ec-count.ts';
 
 export const useBubblesStore = defineStore('bubbles', () => {
   const emitter = useMitt();
@@ -15,15 +16,14 @@ export const useBubblesStore = defineStore('bubbles', () => {
 
     const request = index.getAll(timer.value);
 
-    request.onsuccess = event => {
+    request.onsuccess = (event: { target: { result: Array<EC> } }) => {
       const cursor = event.target.result;
       if (cursor && cursor.length) {
-        cursor.forEach(bubble => {
+        cursor.forEach((bubble: EC) => {
           emitter.emit('EC', bubble.log);
         });
       }
     }
-
   }
 
   emitter.on('play', sendBubbles);

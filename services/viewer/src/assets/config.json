@@ -42,7 +42,8 @@
                     "count": true,
                     "color": "#9076A6"
                 }
-            }
+            },
+            "defaultColor": "#7F8C8D"
         }
     },
     "drawerParams": {

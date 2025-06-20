@@ -101,7 +101,7 @@
     }
 
     emitter.on('EC', (log: Log) => {
-      if (!usePlatformFilterStore().isNameOkay(log.platform_name)) return;
+      if (log.platform_name && !usePlatformFilterStore().isNameOkay(log.platform_name)) return;
       if (!log || !log['geoip-latitude'] || !log['geoip-longitude']) return;
 
       let color = getBubbleColor(log);

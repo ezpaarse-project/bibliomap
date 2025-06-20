@@ -7,7 +7,7 @@
         </div>
 
         <v-slider
-          v-model="timer"
+          v-model="timerValue"
           class="w-100"
           :disabled="playState === PlayState.STOPPED || playState === PlayState.LOADING"
           :max="sliderMax"
@@ -43,6 +43,8 @@
   const emitter = useMitt();
 
   const { timer } = storeToRefs(useTimerStore());
+  const timerValue = ref(0);
+
   const { state: playState } = storeToRefs(usePlayStateStore());
   const multiplier = ref(1);
 
@@ -53,10 +55,21 @@
     emitter.emit('setMultiplier', multiplier.value);
   })
 
+  watch(timer, () => {
+    if (!timer.value) {
+      timerValue.value = 0; return
+    }
+    timerValue.value = timer.value;
+  })
+
+  watch(timerValue , () => {
+    timer.value = timerValue.value;
+  })
+
   emitter.on('files-loaded', async () => {
     const playTimes = await usePlayTimesStore().getStartEndDatetime();
-    sliderMin.value = playTimes.startDatetime;
-    sliderMax.value = playTimes.endDatetime;
+    sliderMin.value = playTimes.startDatetime || 0;
+    sliderMax.value = playTimes.endDatetime || Number.POSITIVE_INFINITY;
     timer.value = sliderMin.value;
   })
 

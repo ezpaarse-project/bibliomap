@@ -2,10 +2,15 @@ import useMitt from '@/composables/useMitt';
 import { useIndexedDBStore } from './indexed-db';
 import { useViewerConfigStore } from './viewer-config';
 
+export type Mime = {
+  name: string;
+  color: string;
+}
+
 export const useMimeStore = defineStore('mime', () => {
 
   const emitter = useMitt();
-  const mimes = ref([]);
+  const mimes = ref([] as Mime[]);
 
   async function setMimes () {
     const { config: viewerConfig } = storeToRefs(useViewerConfigStore());
