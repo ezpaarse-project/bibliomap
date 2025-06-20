@@ -7,16 +7,21 @@ import Vue from '@vitejs/plugin-vue'
 import VueRouter from 'unplugin-vue-router/vite'
 import { VueRouterAutoImports } from 'unplugin-vue-router'
 import Vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
+import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 
 // Utilities
 import { defineConfig } from 'vite'
 import { fileURLToPath, URL } from 'node:url'
+import { dirname, resolve } from 'node:path'
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     VueRouter({
       dts: 'src/typed-router.d.ts',
+    }),
+    VueI18nPlugin({
+      include: resolve(dirname(fileURLToPath(import.meta.url)), './src/locales/*'),
     }),
     Layouts(),
     AutoImport({

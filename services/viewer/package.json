@@ -8,7 +8,7 @@
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "build-only": "vite build",
-    "type-check": "vue-tsc --build --force",
+    "type-check": "tsc --noEmit",
     "lint": "eslint . --fix"
   },
   "dependencies": {
@@ -21,17 +21,16 @@
     "papaparse": "^5.5.3",
     "pino": "^9.6.0",
     "roboto-fontface": "*",
-    "socket.io-client": "^4.8.1",
     "string-color-converter": "^2.0.3",
     "vue": "^3.5.13",
-    "vue-i18n": "^12.0.0-alpha.2",
+    "vue-i18n": "^11.1.6",
     "vuetify": "^3.8.1"
   },
   "devDependencies": {
+    "@intlify/unplugin-vue-i18n": "^6.0.8",
     "@tsconfig/node22": "^22.0.0",
     "@types/leaflet": "^1.9.17",
     "@types/node": "^22.9.0",
-    "@types/socket.io-client": "^1.4.36",
     "@vitejs/plugin-vue": "^5.2.3",
     "@vue/tsconfig": "^0.7.0",
     "eslint": "^9.23.0",
