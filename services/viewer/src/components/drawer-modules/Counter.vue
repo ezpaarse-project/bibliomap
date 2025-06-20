@@ -37,23 +37,16 @@
 <script setup lang='ts'>
   import { useEcCountStore } from '@/stores/ec-count';
   import { useViewerConfigStore } from '@/stores/viewer-config';
-  import { useMimesStore } from '@/stores/mimes.ts';
+  import { useMimeStore } from '@/stores/mime.ts';
   import { useI18n } from 'vue-i18n';
-  import useMitt from '@/composables/useMitt';
 
   const { t } = useI18n();
-  const emitter = useMitt();
 
   const { config } = storeToRefs(useViewerConfigStore());
   const counterProps = config.value.drawerParams.counterSection;
-  const mimeStore = useMimesStore();
   const countStore = useEcCountStore();
 
-  const mimes = ref([]);
-
-  emitter.on('files-loaded', async () => {
-    mimes.value = await mimeStore.getMimes();
-  });
+  const { mimes } = storeToRefs(useMimeStore());
 </script>
 
 <style lang="scss">

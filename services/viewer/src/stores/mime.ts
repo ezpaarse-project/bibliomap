@@ -2,7 +2,7 @@ import useMitt from '@/composables/useMitt';
 import { useIndexedDBStore } from './indexed-db';
 import { useViewerConfigStore } from './viewer-config';
 
-export const useMimesStore = defineStore('mimes', () => {
+export const useMimeStore = defineStore('mime', () => {
 
   const emitter = useMitt();
   const mimes = ref([]);
@@ -37,20 +37,13 @@ export const useMimesStore = defineStore('mimes', () => {
     });
   }
 
-  async function getMimes () {
-    if (!mimes.value.length) {
-      await setMimes();
-    }
-    return mimes.value;
-  }
-
-  function getMimeColor (name: string) {
-    return mimes.value.filter(m => m.color === name);
-  }
+  emitter.on('files-loaded', () => {
+    setMimes();
+  });
 
   emitter.on('files-loaded', () => {
     mimes.value = [];
   })
 
-  return { mimes, getMimes, getMimeColor };
+  return { mimes };
 })
