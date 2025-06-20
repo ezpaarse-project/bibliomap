@@ -19,7 +19,7 @@
               v-model="showMinimap"
               class="ma-0 pa-0"
               color="primary"
-              hide-details
+              :hide-details="true"
               inset
               style="margin-top: 2px;"
             />
@@ -39,7 +39,7 @@
             v-model="shownPortals[index]"
             class="ma-0"
             :color="value.color || 'primary'"
-            hide-details
+            :hide-details="true"
             :label="t(`drawer-custom.portals.${value.name}.title`)"
           />
         </div>
@@ -62,7 +62,7 @@
               v-model="showTitles"
               class="ma-0 pa-0"
               color="primary"
-              hide-details
+              :hide-details="true"
               inset
               style="margin-top: 2px;"
             />
@@ -111,7 +111,7 @@
     }, {})
   );
   const showTitles = ref(currentConfig.value.mapParams.popupText.publication_title as boolean);
-  const filter = ref(usePlatformFilterStore().getFilter());
+  const { filter } = storeToRefs(usePlatformFilterStore());
 
   watch(showMinimap, () => {
     currentConfig.value.minimapParams.include = showMinimap.value;
@@ -125,10 +125,6 @@
 
   watch(showTitles, () => {
     currentConfig.value.mapParams.popupText.publication_title = showTitles.value;
-  });
-
-  watch(filter, () => {
-    usePlatformFilterStore().setFilter(filter.value);
   });
 
   function changeAll (check: boolean) {
