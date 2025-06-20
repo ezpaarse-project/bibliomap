@@ -10,14 +10,19 @@ export const useBubblesStore = defineStore('bubbles', () => {
 
   async function sendBubbles () {
     const db = await useIndexedDBStore().getDB();
+    if (!db) return;
     const tx = db.transaction('events', 'readonly');
     const store = tx.objectStore('events');
     const index = store.index('by_date');
 
     const request = index.getAll(timer.value);
 
-    request.onsuccess = (event: { target: { result: Array<EC> } }) => {
-      const cursor = event.target.result;
+    request.onsuccess = (event: Event) => {
+      const target = event.target as IDBRequest<EC[]>;
+      if (!target) return;
+      const result = target.result;
+      if (!result) return;
+      const cursor = result;
       if (cursor && cursor.length) {
         cursor.forEach((bubble: EC) => {
           emitter.emit('EC', bubble.log);

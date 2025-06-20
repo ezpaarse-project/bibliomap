@@ -1,13 +1,14 @@
 import useMitt from '@/composables/useMitt';
 import Papa from 'papaparse';
 import { useIndexedDBStore } from '@/stores/indexed-db.ts';
+import type { Log } from '@/main';
 
 export const usePlayerFilesStore = defineStore('player-files', () => {
 
-  const files = ref([]);
+  const files = ref([] as File[]);
   const emitter = useMitt();
 
-  async function setFiles (newFiles) {
+  async function setFiles (newFiles: File[]) {
     files.value = newFiles;
     emitter.emit('loading', null);
     await clearDB();
@@ -16,12 +17,12 @@ export const usePlayerFilesStore = defineStore('player-files', () => {
     emitter.emit('files-loaded', null);
   }
 
-  async function insertEachLineIntoDB (file: File, db) {
-    return new Promise(resolve => {
+  async function insertEachLineIntoDB (file: File, db: IDBDatabase) {
+    return new Promise<void>(resolve => {
       Papa.parse(file, {
         header: true,
         skipEmptyLines: true,
-        async complete (results) {
+        async complete (results: Papa.ParseResult) {
           const data = results.data;
           for (const item of data) {
             await insertEventIntoDB(item, db);
@@ -32,8 +33,8 @@ export const usePlayerFilesStore = defineStore('player-files', () => {
     });
   }
 
-  async function insertEventIntoDB (item, db) {
-    return new Promise(resolve => {
+  async function insertEventIntoDB (item: Log, db: IDBDatabase) {
+    return new Promise<void>(resolve => {
       const tx = db.transaction('events', 'readwrite');
 
       const toInsert = {
@@ -57,6 +58,7 @@ export const usePlayerFilesStore = defineStore('player-files', () => {
 
   async function insertFilesIntoDB () {
     const db = await useIndexedDBStore().getDB();
+    if (!db) return;
     for (const file of files.value) {
       await insertEachLineIntoDB(file, db);
     }
@@ -64,7 +66,8 @@ export const usePlayerFilesStore = defineStore('player-files', () => {
 
   async function clearDB () {
     const db = await useIndexedDBStore().getDB();
-    return new Promise(resolve => {
+    if (!db) return;
+    return new Promise<void>(resolve => {
       const tx = db.transaction('events', 'readwrite');
       const store = tx.objectStore('events');
       const clearRequest = store.clear();

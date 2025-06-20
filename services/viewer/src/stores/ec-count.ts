@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia';
-import { usePortalsStore } from '@/stores/portals.ts';
+import { type Portal, usePortalsStore } from '@/stores/portals.ts';
 import useMitt from '@/composables/useMitt';
 import { useTimerStore } from './timer.ts';
 import { useIndexedDBStore } from '@/stores/indexed-db.ts';
 import { PlayState, usePlayStateStore } from '@/stores/play-state.ts';
-import { useCountSectionsStore } from './count-sections.ts';
+import { type Count, useCountSectionsStore } from './count-sections.ts';
 import { usePlayTimesStore } from '@/stores/play-times.ts';
 import type { Log } from '@/main.ts';
 
@@ -14,7 +14,7 @@ export type EC = {
 }
 
 export const useEcCountStore = defineStore('ec-count', () => {
-  const count = ref({});
+  const count = ref({} as Count);
 
   const portalsStore = usePortalsStore();
 
@@ -27,20 +27,20 @@ export const useEcCountStore = defineStore('ec-count', () => {
 
   emitter.on('files-loaded', async () => {
     const portals = await portalsStore.getPortals();
-    portals.forEach(portal => {
-      count.value[portal.name.toUpperCase()] = {};
+    portals.forEach((portal: Portal) => {
+      count.value[portal.name.toUpperCase() as string] = {};
     })
   });
 
-  async function createCountFromEvents (events) {
-    const countObject = {};
+  async function createCountFromEvents (events: Log[]) {
+    const countObject = {} as Count;
     const portalNames = (await usePortalsStore().getPortals()).map(portal => portal.name.toUpperCase());
     portalNames.forEach(portal => {
       countObject[portal.toUpperCase()] = {};
     });
     events.forEach(event => {
       const portal = event.ezproxyName.toUpperCase();
-      const mime = event.mime.toUpperCase();
+      const mime = event.mime ? event.mime.toUpperCase() : 'unknown';
       portal.split('+').forEach((portal: string) => {
         if (countObject[portal] === undefined) return;
         if (!countObject[portal][mime]) countObject[portal][mime] = 0;
@@ -75,14 +75,17 @@ export const useEcCountStore = defineStore('ec-count', () => {
   async function getEventsBetween (start: number, end: number, lowerOpen: boolean = true, upperOpen: boolean = true) {
     if (start > end) return [];
     const db = await useIndexedDBStore().getDB();
+    if (!db) return [];
     return new Promise(resolve => {
       const tx = db.transaction('events', 'readonly');
       const store = tx.objectStore('events');
       const index = store.index('by_date');
       const range = IDBKeyRange.bound(start, end, start !== end && lowerOpen, end !== start && upperOpen);
-      const results = [];
+      const results = [] as Log[];
       index.openCursor(range).onsuccess = event => {
-        const cursor = event.target.result;
+        const target = event.target as IDBOpenDBRequest;
+        if (!target) return;
+        const cursor = target.result instanceof IDBCursorWithValue ? target.result : null;
         if (cursor) {
           results.push(cursor.value.log);
           cursor.continue();
@@ -93,21 +96,21 @@ export const useEcCountStore = defineStore('ec-count', () => {
     });
   }
 
-  const previousTimestamp = ref(null);
   const currentSection = ref(0);
-  const timestampBorders = ref({});
+  const timestampBorders = ref({ start: null, end: null } as { start: number | null, end: number | null });
 
   async function updateSection (timestamp: number) {
     const previousSection = currentSection.value;
     for(let i = 0; i < sections.value.length - 1; i++) {
-      if (timestamp >= sections.value[i].datetime) {
+      const { datetime } = sections?.value?.[i] ?? {}
+      if (datetime && timestamp >= datetime) {
         currentSection.value = i;
       }
     }
     if (currentSection.value === previousSection) currentSection.value = sections.value.length - 1;
     if (currentSection.value === -1) {
       currentSection.value = 0;
-      timestampBorders.value = {};
+      timestampBorders.value = { start: null, end: null };
     }
     timestampBorders.value = { start: sections.value[currentSection.value].datetime, end: currentSection.value + 1 < sections.value.length ? sections.value[currentSection.value + 1].datetime : Number.POSITIVE_INFINITY };
   }
@@ -123,11 +126,14 @@ export const useEcCountStore = defineStore('ec-count', () => {
       timestampBorders.value = { start: startEndTimes.startDatetime, end: sections.value[0].datetime };
     }
 
-    if (timestamp > timestampBorders.value.end || timestamp < timestampBorders.value.start) {
+    if (timestamp > (timestampBorders.value.end ?? Number.POSITIVE_INFINITY) || timestamp < (timestampBorders.value.start ?? 0)) {
       updateSection(timestamp);
     }
 
-    const events = await getEventsBetween(sections.value[currentSection.value].datetime, timestamp, false);
+    const sectionTime = sections.value[currentSection.value].datetime;
+    if (!sectionTime) return;
+
+    const events = await getEventsBetween(sectionTime, timestamp, false) as Log[];
     if (requestToken !== currentRequestToken) return;
 
     const currentEventCount = await createCountFromEvents(events);
@@ -136,7 +142,7 @@ export const useEcCountStore = defineStore('ec-count', () => {
     count.value = mergeCounts(currentSection.value > 0 ? sections.value[currentSection.value -1].count : {}, currentEventCount);
   }
 
-  function mergeCounts (previousSectionCount, currentCount) {
+  function mergeCounts (previousSectionCount: Count, currentCount: Count) {
     Object.keys(previousSectionCount).forEach(portal => {
       Object.keys(previousSectionCount[portal]).forEach(mime => {
         if (!currentCount[portal]) currentCount[portal] = {};
@@ -148,12 +154,8 @@ export const useEcCountStore = defineStore('ec-count', () => {
   }
 
   watch(timer, () => {
-    if (usePlayStateStore().state !== PlayState.PLAYING && usePlayStateStore().state !== PlayState.PAUSED) return;
+    if ((usePlayStateStore().state !== PlayState.PLAYING && usePlayStateStore().state !== PlayState.PAUSED) || !timer.value) return;
     updateCount(timer.value)
-  });
-
-  emitter.on('play', async () => {
-    previousTimestamp.value = useTimerStore().timer;
   });
 
   return { getCountOfPortal, getCountOfMime, getTotalCount, getCountOfPortalAndMime, getMimeInPortal };

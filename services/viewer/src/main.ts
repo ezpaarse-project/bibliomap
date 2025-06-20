@@ -27,6 +27,7 @@ export type Log = {
   mime?: string,
   platform_name: string | null | undefined,
   rtype?: string,
+  'bib-groups'?: string
 }
 
 const app = createApp(App)

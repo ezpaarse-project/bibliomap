@@ -17,7 +17,8 @@ export const usePlayTimesStore = defineStore('play-times', () => {
 
   async function getStartDatetimeFromDB () {
     const db = await useIndexedDBStore().getDB();
-    return new Promise(resolve => {
+    if (!db) return;
+    return new Promise<void>(resolve => {
       const tx = db.transaction('events', 'readonly');
       const store = tx.objectStore('events');
       const index = store.index('by_date');
@@ -25,7 +26,9 @@ export const usePlayTimesStore = defineStore('play-times', () => {
       const request = index.openCursor();
 
       request.onsuccess = event => {
-        const cursor = event.target.result;
+        const target = event.target as IDBRequest<IDBCursorWithValue>;
+        if (!target) return;
+        const cursor = target.result;
         if (cursor) {
           startDatetime.value = cursor.value.datetime;
           resolve();
@@ -39,7 +42,8 @@ export const usePlayTimesStore = defineStore('play-times', () => {
 
   async function getEndDatetimeFromDB () {
     const db = await useIndexedDBStore().getDB();
-    return new Promise(resolve => {
+    if (!db) return;
+    return new Promise<void>(resolve => {
       const tx = db.transaction('events', 'readonly');
       const store = tx.objectStore('events');
       const index = store.index('by_date');
@@ -47,7 +51,9 @@ export const usePlayTimesStore = defineStore('play-times', () => {
       const request = index.openCursor(null, 'prev');
 
       request.onsuccess = event => {
-        const cursor = event.target.result;
+        const target = event.target as IDBRequest<IDBCursorWithValue>;
+        if (!target) return;
+        const cursor = target.result;
         if (cursor) {
           endDatetime.value = cursor.value.datetime;
           resolve();
