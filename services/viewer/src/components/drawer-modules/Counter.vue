@@ -15,7 +15,7 @@
       <template
         #activator="{ props }"
       >
-        <v-badge :content="0 || countStore.getCountOfMime(mime.name)">
+        <v-badge :content="countStore.getCountOfMime(mime.name) as number || 0">
           <v-chip v-bind="props" :color="mime.color" variant="flat">
             {{ mime.name }}
           </v-chip>

@@ -1,9 +1,14 @@
 import useMitt from '@/composables/useMitt';
 import { useIndexedDBStore } from './indexed-db';
 
+export type Portal = {
+  name: string;
+  color: string;
+};
+
 export const usePortalsStore = defineStore('portals', () => {
   const emitter = useMitt();
-  const portals = ref([]);
+  const portals = ref([] as Portal[]);
 
   function hslToHex (h, s, l) {
     s /= 100;
@@ -76,7 +81,7 @@ export const usePortalsStore = defineStore('portals', () => {
   }
 
   async function getPortals () {
-    if (!portals.value) return;
+    if (!portals.value) return [];
     if (portals.value.length === 0) {
       await setPortals();
     }

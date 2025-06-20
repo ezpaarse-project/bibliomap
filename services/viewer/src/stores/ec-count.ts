@@ -6,6 +6,12 @@ import { useIndexedDBStore } from '@/stores/indexed-db.ts';
 import { PlayState, usePlayStateStore } from '@/stores/play-state.ts';
 import { useCountSectionsStore } from './count-sections.ts';
 import { usePlayTimesStore } from '@/stores/play-times.ts';
+import type { Log } from '@/main.ts';
+
+export type EC = {
+  datetime: string,
+  log: Log,
+}
 
 export const useEcCountStore = defineStore('ec-count', () => {
   const count = ref({});

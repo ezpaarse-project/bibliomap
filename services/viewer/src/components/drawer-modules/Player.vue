@@ -62,9 +62,9 @@
   const { t } = useI18n();
   const emitter = useMitt();
   const filesStore = usePlayerFilesStore();
-  const files = ref([]);
+  const files = ref([] as File[]);
   const { state: playState } = storeToRefs(usePlayStateStore());
-  const messages = ref([]);
+  const messages = ref([] as string[]);
 
   watch(files, () => {
     emitter.emit('filesChanged', files.value);
