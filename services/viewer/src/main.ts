@@ -13,7 +13,6 @@ import App from './App.vue'
 // Composables
 import { createApp } from 'vue'
 
-import i18n from './i18n'
 import './assets/styles.scss'
 
 export type Log = {
@@ -33,7 +32,5 @@ export type Log = {
 const app = createApp(App)
 
 registerPlugins(app)
-
-app.use(i18n)
 
 app.mount('#app')
