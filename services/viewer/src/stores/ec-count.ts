@@ -100,19 +100,14 @@ export const useEcCountStore = defineStore('ec-count', () => {
   const timestampBorders = ref({ start: null, end: null } as { start: number | null, end: number | null });
 
   async function updateSection (timestamp: number) {
-    const previousSection = currentSection.value;
     for(let i = 0; i < sections.value.length - 1; i++) {
       const { datetime } = sections?.value?.[i] ?? {}
       if (datetime && timestamp >= datetime) {
         currentSection.value = i;
       }
     }
-    if (currentSection.value === previousSection) currentSection.value = sections.value.length - 1;
-    if (currentSection.value === -1) {
-      currentSection.value = 0;
-      timestampBorders.value = { start: null, end: null };
-    }
     timestampBorders.value = { start: sections.value[currentSection.value].datetime, end: currentSection.value + 1 < sections.value.length ? sections.value[currentSection.value + 1].datetime : Number.POSITIVE_INFINITY };
+    console.log(currentSection.value, timestampBorders.value);
   }
 
   async function updateCount (timestamp: number) {
@@ -122,7 +117,7 @@ export const useEcCountStore = defineStore('ec-count', () => {
     const startEndTimes = await usePlayTimesStore().getStartEndDatetime();
     if (requestToken !== currentRequestToken) return;
 
-    if (Object.keys(timestampBorders.value).length === 0) {
+    if (Object.values(timestampBorders.value).every(v => v === null)) {
       timestampBorders.value = { start: startEndTimes.startDatetime, end: sections.value[0].datetime };
     }
 
