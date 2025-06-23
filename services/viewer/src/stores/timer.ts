@@ -1,4 +1,3 @@
-import useMitt from '@/composables/useMitt';
 import { usePlayTimesStore } from '@/stores/play-times.ts';
 import { usePlayerMultiplierStore } from '@/stores/player-multiplier.ts';
 import { PlayState, usePlayStateStore } from '@/stores/play-state.ts';
@@ -7,7 +6,7 @@ export const useTimerStore = defineStore('timer', () => {
   const timer = ref<number | null>(null);
   let interval: ReturnType<typeof setInterval> | null = null;
 
-  const emitter = useMitt();
+  const { multiplier } = storeToRefs(usePlayerMultiplierStore());
   const { state } = storeToRefs(usePlayStateStore());
 
   function createInterval (multiplier: number) {
@@ -32,7 +31,7 @@ export const useTimerStore = defineStore('timer', () => {
           const times = await usePlayTimesStore().getStartEndDatetime();
           timer.value = times.startDatetime;
         }
-        if (!interval) interval = createInterval(usePlayerMultiplierStore().getMultiplier());
+        if (!interval) interval = createInterval(multiplier.value);
         break;
       case (PlayState.STOPPED):
         if (interval) clearInterval(interval);
@@ -50,7 +49,7 @@ export const useTimerStore = defineStore('timer', () => {
     }
   });
 
-  emitter.on('setMultiplier', m => {
+  watch (multiplier, (m: number) => {
     if (usePlayStateStore().state !== PlayState.PLAYING) return;
     if (interval) clearInterval(interval);
     interval = createInterval(m)

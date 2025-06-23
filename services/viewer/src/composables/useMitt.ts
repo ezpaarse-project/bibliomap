@@ -11,7 +11,6 @@ type Events = {
   toggleDrawer: null;
   log: Log;
   EC: Log;
-  setMultiplier: number;
 };
 
 const emitter = mitt<Events>();

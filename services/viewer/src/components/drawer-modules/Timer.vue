@@ -38,24 +38,19 @@
   import { usePlayerFilesStore } from '@/stores/player-files.ts';
   import { PlayState, usePlayStateStore } from '@/stores/play-state.ts';
   import { useI18n } from 'vue-i18n';
-  import useMitt from '@/composables/useMitt';
+  import { usePlayerMultiplierStore } from '@/stores/player-multiplier';
 
   const { t } = useI18n();
-  const emitter = useMitt();
 
   const { files } = storeToRefs(usePlayerFilesStore());
   const { timer } = storeToRefs(useTimerStore());
   const timerValue = ref(0);
 
   const { state: playState } = storeToRefs(usePlayStateStore());
-  const multiplier = ref(1);
+  const { multiplier } = storeToRefs(usePlayerMultiplierStore());
 
   const sliderMin = ref(0);
   const sliderMax = ref(0);
-
-  watch(multiplier, () => {
-    emitter.emit('setMultiplier', multiplier.value);
-  })
 
   watch(timer, () => {
     if (!timer.value) {
