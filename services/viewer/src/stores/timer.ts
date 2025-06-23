@@ -5,18 +5,20 @@ import { PlayState, usePlayStateStore } from '@/stores/play-state.ts';
 
 export const useTimerStore = defineStore('timer', () => {
   const timer = ref<number | null>(null);
-  let interval;
+  let interval: number | null = null;
 
   const emitter = useMitt();
 
-  function createInterval (m) {
-
-    return setInterval(() => {
+  function createInterval (multiplier: number) {
+    return setInterval(async () => {
+      if (!timer.value) return ;
       timer.value = timer.value + 1000;
-      if (timer.value >= usePlayTimesStore().endDatetime) {
+      const timeframe = await usePlayTimesStore().getStartEndDatetime()
+      if(!timeframe || !timeframe.endDatetime) return;
+      if (timer.value >= timeframe.endDatetime) {
         emitter.emit('stop');
       }
-    }, 1000 / m)
+    }, 1000 / multiplier)
   }
 
   emitter.on('play', async () => {
@@ -29,24 +31,24 @@ export const useTimerStore = defineStore('timer', () => {
   });
 
   emitter.on('pause', () => {
-    clearInterval(interval);
+    if (interval) clearInterval(interval);
     interval = null;
   });
 
   emitter.on('loading', () => {
-    clearInterval(interval);
+    if (interval) clearInterval(interval);
     interval = null;
   });
 
   emitter.on('stop', () => {
-    clearInterval(interval);
+    if (interval) clearInterval(interval);
     timer.value = null;
     interval = null;
   });
 
   emitter.on('setMultiplier', m => {
     if (usePlayStateStore().state !== PlayState.PLAYING) return;
-    clearInterval(interval);
+    if (interval) clearInterval(interval);
     interval = createInterval(m)
   });
 

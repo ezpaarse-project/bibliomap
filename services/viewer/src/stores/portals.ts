@@ -1,5 +1,6 @@
 import useMitt from '@/composables/useMitt';
 import { useIndexedDBStore } from './indexed-db';
+import type { EC } from './ec-count';
 
 export type Portal = {
   name: string;
@@ -10,7 +11,7 @@ export const usePortalsStore = defineStore('portals', () => {
   const emitter = useMitt();
   const portals = ref([] as Portal[]);
 
-  function hslToHex (h, s, l) {
+  function hslToHex (h: number, s: number, l: number) {
     s /= 100;
     l /= 100;
 
@@ -31,11 +32,11 @@ export const usePortalsStore = defineStore('portals', () => {
     g = Math.round((g + m) * 255);
     b = Math.round((b + m) * 255);
 
-    const toHex = val => val.toString(16).padStart(2, '0');
+    const toHex = (val: number) => val.toString(16).padStart(2, '0');
     return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
   }
 
-  function stringToColor (str) {
+  function stringToColor (str: string) {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       hash = str.charCodeAt(i) + ((hash << 5) - hash);
@@ -51,14 +52,17 @@ export const usePortalsStore = defineStore('portals', () => {
 
   async function setPortals () {
     const db = await useIndexedDBStore().getDB();
-    return new Promise(resolve => {
+    if (!db) return ;
+    return new Promise<void>(resolve => {
       emitter.emit('loading', null);
       const tx = db.transaction('events', 'readonly');
       const store = tx.objectStore('events');
       const request = store.getAll();
 
       request.onsuccess = event => {
-        const allEvents = event.target.result;
+        const target = event.target as IDBRequest<EC[]>;
+        if (!target) return;
+        const allEvents = target.result;
 
         const ezproxyNames = new Set(
           allEvents
@@ -88,7 +92,7 @@ export const usePortalsStore = defineStore('portals', () => {
     return portals.value;
   }
 
-  function getPortalColor (portalName) {
+  function getPortalColor (portalName: string) {
     const portal = portals.value.find(portal => portal.name.toUpperCase() === portalName.toUpperCase());
     return portal?.color;
   }
