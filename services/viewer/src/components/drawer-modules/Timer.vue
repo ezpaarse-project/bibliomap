@@ -35,15 +35,14 @@
 <script setup lang="ts">
   import { useTimerStore } from '@/stores/timer.ts';
   import { usePlayTimeframeStore } from '@/stores/play-timeframe';
-  import { usePlayerFileStore } from '@/stores/player-file';
   import { PlayState, usePlayStateStore } from '@/stores/play-state.ts';
   import { useI18n } from 'vue-i18n';
   import { usePlayerMultiplierStore } from '@/stores/player-multiplier';
 
   const { t } = useI18n();
 
-  const { files } = storeToRefs(usePlayerFileStore());
   const { timer } = storeToRefs(useTimerStore());
+  const { timeframe } = storeToRefs(usePlayTimeframeStore());
   const timerValue = ref(0);
 
   const { state: playState } = storeToRefs(usePlayStateStore());
@@ -59,14 +58,14 @@
     timerValue.value = timer.value;
   })
 
-  watch(timerValue , () => {
-    timer.value = timerValue.value;
+  watch(timerValue , (t: number) => {
+    console.log(t)
+    timer.value = t;
   })
 
-  watch (files, async () => {
-    const playTimes = await usePlayTimeframeStore().getTimeframe();
-    sliderMin.value = playTimes.startDatetime || 0;
-    sliderMax.value = playTimes.endDatetime || Number.POSITIVE_INFINITY;
+  watch (timeframe.value, () => {
+    sliderMin.value = timeframe.value.startDatetime || 0;
+    sliderMax.value = timeframe.value.endDatetime || Number.POSITIVE_INFINITY;
     timer.value = sliderMin.value;
   })
 

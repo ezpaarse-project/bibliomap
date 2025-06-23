@@ -23,6 +23,7 @@ export const useEcCountStore = defineStore('ec-count', () => {
   const { timer } = storeToRefs(useTimerStore());
   const { sections } = storeToRefs(useCountSectionStore());
   const { state } = storeToRefs(usePlayStateStore());
+  const { timeframe } = storeToRefs(usePlayTimeframeStore());
 
   let currentRequestToken = 0;
 
@@ -111,11 +112,10 @@ export const useEcCountStore = defineStore('ec-count', () => {
     if (!timestamp) return;
     const requestToken = ++currentRequestToken;
 
-    const startEndTimes = await usePlayTimeframeStore().getTimeframe();
     if (requestToken !== currentRequestToken) return;
 
     if (Object.values(timestampBorders.value).every(v => v === null)) {
-      timestampBorders.value = { start: startEndTimes.startDatetime, end: sections.value[0].datetime };
+      timestampBorders.value = { start: timeframe.value.startDatetime, end: sections.value[0].datetime };
     }
 
     if (timestamp > (timestampBorders.value.end ?? Number.POSITIVE_INFINITY) || timestamp < (timestampBorders.value.start ?? 0)) {

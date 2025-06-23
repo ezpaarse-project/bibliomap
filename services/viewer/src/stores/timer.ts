@@ -8,18 +8,17 @@ export const useTimerStore = defineStore('timer', () => {
 
   const { multiplier } = storeToRefs(usePlayerMultiplierStore());
   const { state } = storeToRefs(usePlayStateStore());
+  const { timeframe } = storeToRefs(usePlayTimeframeStore());
 
   function createInterval (multiplier: number) {
     return setInterval(async () => {
       if (!timer.value) return ;
       timer.value = timer.value + 1000;
-      const timeframe = await usePlayTimeframeStore().getTimeframe()
-      if(!timeframe || !timeframe.endDatetime) return;
-      if (timer.value >= timeframe.endDatetime) {
+      if(!timeframe || !timeframe.value.endDatetime) return;
+      if (timer.value >= timeframe.value.endDatetime) {
         usePlayStateStore().stop();
         if (interval) clearInterval(interval);
-        const timeframe = await usePlayTimeframeStore().getTimeframe();
-        timer.value = timeframe.startDatetime;
+        timer.value = timeframe.value.startDatetime;
       }
     }, 1000 / multiplier);
   }
@@ -28,8 +27,7 @@ export const useTimerStore = defineStore('timer', () => {
     switch(state.value) {
       case (PlayState.PLAYING):
         if (!timer.value) {
-          const times = await usePlayTimeframeStore().getTimeframe();
-          timer.value = times.startDatetime;
+          timer.value = timeframe.value.startDatetime;
         }
         if (!interval) interval = createInterval(multiplier.value);
         break;

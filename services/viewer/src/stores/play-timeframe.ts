@@ -4,8 +4,7 @@ import { usePlayStateStore } from './play-state';
 import { usePlayerFileStore } from './player-file';
 
 export const usePlayTimeframeStore = defineStore('play-timeframe', () => {
-  const startDatetime = ref(null);
-  const endDatetime = ref(null);
+  const timeframe = ref({ startDatetime: null, endDatetime: null });
 
   const { files } = storeToRefs(usePlayerFileStore());
 
@@ -31,10 +30,10 @@ export const usePlayTimeframeStore = defineStore('play-timeframe', () => {
         if (!target) return;
         const cursor = target.result;
         if (cursor) {
-          startDatetime.value = cursor.value.datetime;
+          timeframe.value.startDatetime = cursor.value.datetime;
           resolve();
         } else {
-          startDatetime.value = null;
+          timeframe.value.startDatetime = null;
           resolve();
         }
       }
@@ -56,32 +55,19 @@ export const usePlayTimeframeStore = defineStore('play-timeframe', () => {
         if (!target) return;
         const cursor = target.result;
         if (cursor) {
-          endDatetime.value = cursor.value.datetime;
+          timeframe.value.endDatetime = cursor.value.datetime;
           resolve();
         } else {
-          endDatetime.value = null;
+          timeframe.value.endDatetime = null;
           resolve();
         }
       }
     });
   }
 
-  async function getTimeframe () {
-    if (!startDatetime.value || !endDatetime.value) await setTimeframe();
-    return {
-      startDatetime: startDatetime.value,
-      endDatetime: endDatetime.value,
-    };
-  }
-
-  function clearTimeframe () {
-    startDatetime.value = null;
-    endDatetime.value = null;
-  }
-
   watch(files, () => {
-    clearTimeframe();
+    setTimeframe();
   });
 
-  return { getTimeframe };
+  return { timeframe };
 });
