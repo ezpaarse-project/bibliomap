@@ -17,7 +17,6 @@ declare module 'vue' {
     InfoButton: typeof import('./components/appbar-buttons/InfoButton.vue')['default']
     InformationContent: typeof import('./components/information-components/InformationContent.vue')['default']
     InformationDrawer: typeof import('./components/information-components/InformationDrawer.vue')['default']
-    LiveTimer: typeof import('./components/drawer-modules/timers-components/LiveTimer.vue')['default']
     LoadingCard: typeof import('./components/state-cards/LoadingCard.vue')['default']
     Minimap: typeof import('./components/Minimap.vue')['default']
     PauseCard: typeof import('./components/state-cards/PauseCard.vue')['default']
