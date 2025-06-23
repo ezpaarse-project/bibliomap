@@ -9,7 +9,7 @@
   import type { Log } from '@/main';
   import { usePlatformFilterStore } from '@/stores/platform-filter';
   import useMitt from '@/composables/useMitt';
-  import { useBubblesStore } from '@/stores/bubbles';
+  import { useBubbleStore } from '@/stores/bubble';
   import { usePortalsStore } from '@/stores/portals.ts';
 
   const emitter = useMitt();
@@ -20,7 +20,7 @@
   const mimes = config.mapParams.attributesColors.mimes as Record<string, { count: boolean, color: string }>;
 
   const height = config.appbarParams.include ? 'calc(100vh - 48px)' : '100vh';
-  useBubblesStore();
+  useBubbleStore();
 
   let map: L.Map;
 

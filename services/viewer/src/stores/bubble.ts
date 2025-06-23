@@ -1,10 +1,10 @@
 import useMitt from '@/composables/useMitt';
 import { useTimerStore } from './timer.ts';
-import { useIndexedDBStore } from './indexed-db';
+import { useIndexedDBStore } from './indexed-db.ts';
 import { PlayState, usePlayStateStore } from '@/stores/play-state.ts';
 import { type EC } from './ec-count.ts';
 
-export const useBubblesStore = defineStore('bubbles', () => {
+export const useBubbleStore = defineStore('bubble', () => {
   const emitter = useMitt();
   const { timer } = storeToRefs(useTimerStore());
   const { state } = storeToRefs(usePlayStateStore());
