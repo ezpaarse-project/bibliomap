@@ -22,14 +22,12 @@ export const useEcCountStore = defineStore('ec-count', () => {
 
   const { timer } = storeToRefs(useTimerStore());
   const { sections } = storeToRefs(useCountSectionStore());
+  const { state } = storeToRefs(usePlayStateStore());
 
   let currentRequestToken = 0;
 
   watch(files, async () => {
-    const portals = await portalsStore.getPortals();
-    portals.forEach((portal: Portal) => {
-      count.value[portal.name.toUpperCase() as string] = {};
-    })
+    await resetCount()
   });
 
   async function createCountFromEvents (events: Log[]) {
@@ -146,6 +144,17 @@ export const useEcCountStore = defineStore('ec-count', () => {
     });
     return currentCount;
   }
+
+  async function resetCount () {
+    const portals = await portalsStore.getPortals();
+    portals.forEach((portal: Portal) => {
+      count.value[portal.name.toUpperCase() as string] = {};
+    })
+  }
+
+  watch(state, async () => {
+    await resetCount()
+  })
 
   watch(timer, () => {
     if ((usePlayStateStore().state !== PlayState.PLAYING && usePlayStateStore().state !== PlayState.PAUSED) || !timer.value) return;
