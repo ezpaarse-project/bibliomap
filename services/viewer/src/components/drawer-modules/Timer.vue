@@ -59,7 +59,6 @@
   })
 
   watch(timerValue , (t: number) => {
-    console.log(t)
     timer.value = t;
   })
 
