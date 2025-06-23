@@ -16,7 +16,7 @@ export type EC = {
 export const useEcCountStore = defineStore('ec-count', () => {
   const count = ref({} as Count);
 
-  const portalsStore = usePortalStore();
+  const { portals } = storeToRefs(usePortalStore());
 
   const { files } = storeToRefs(usePlayerFileStore());
 
@@ -33,7 +33,7 @@ export const useEcCountStore = defineStore('ec-count', () => {
 
   async function createCountFromEvents (events: Log[]) {
     const countObject = {} as Count;
-    const portalNames = (await usePortalStore().getPortals()).map(portal => portal.name.toUpperCase());
+    const portalNames = portals.value.map(portal => portal.name.toUpperCase());
     portalNames.forEach(portal => {
       countObject[portal.toUpperCase()] = {};
     });
@@ -146,8 +146,7 @@ export const useEcCountStore = defineStore('ec-count', () => {
   }
 
   async function resetCount () {
-    const portals = await portalsStore.getPortals();
-    portals.forEach((portal: Portal) => {
+    portals.value.forEach((portal: Portal) => {
       count.value[portal.name.toUpperCase() as string] = {};
     })
   }

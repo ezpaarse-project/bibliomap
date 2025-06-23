@@ -85,20 +85,12 @@ export const usePortalStore = defineStore('portal', () => {
     })
   }
 
-  async function getPortals () {
-    if (!portals.value) return [];
-    if (portals.value.length === 0) {
-      await setPortals();
-    }
-    return portals.value;
-  }
-
   function getPortalColor (portalName: string) {
     const portal = portals.value.find(portal => portal.name.toUpperCase() === portalName.toUpperCase());
     return portal?.color;
   }
 
-  watch(files, () => { portals.value = [] })
+  watch(files, () => { setPortals() })
 
-  return { getPortals, getPortalColor };
+  return { portals, getPortalColor };
 })

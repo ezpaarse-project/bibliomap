@@ -43,21 +43,11 @@
 
 <script setup lang="ts">
   import { useEcCountStore } from '@/stores/ec-count';
-  import { usePlayerFileStore } from '@/stores/player-file';
-  import { type Portal, usePortalStore } from '@/stores/portal';
-
-  const { files } = storeToRefs(usePlayerFileStore());
+  import { usePortalStore } from '@/stores/portal';
 
   const countStore = useEcCountStore();
-  const portalStore = usePortalStore();
 
-  const portals = ref([] as Portal[])
-
-  watch (files, async () => {
-    const fetchedPortals = await portalStore.getPortals();
-    if (!fetchedPortals) return;
-    portals.value = fetchedPortals;
-  })
+  const { portals } = storeToRefs(usePortalStore());
 </script>
 
 <style lang="scss">

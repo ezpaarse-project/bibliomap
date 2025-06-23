@@ -18,6 +18,7 @@ export const useCountSectionStore = defineStore('count-section', () => {
   const EVENTS_PER_SECTION = 100;
 
   const { files } = storeToRefs(usePlayerFileStore());
+  const { portals } = storeToRefs(usePortalStore());
   const sections = ref([] as Section[]);
 
   async function createSections (eventsPerSection: number = EVENTS_PER_SECTION) {
@@ -25,8 +26,7 @@ export const useCountSectionStore = defineStore('count-section', () => {
     usePlayStateStore().loading();
     const db = await useIndexedDBStore().getDB();
     if (!db) return;
-    const portals = await usePortalStore().getPortals()
-    const portalNames = (portals).map(portal => portal.name.toUpperCase());
+    const portalNames = (portals.value).map(portal => portal.name.toUpperCase());
     const sections = [] as Section[];
 
     return new Promise(resolve => {
