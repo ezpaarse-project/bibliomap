@@ -8,7 +8,7 @@ export type Portal = {
   color: string;
 };
 
-export const usePortalsStore = defineStore('portals', () => {
+export const usePortalStore = defineStore('portal', () => {
   const { files } = storeToRefs(usePlayerFileStore());
   const portals = ref([] as Portal[]);
 

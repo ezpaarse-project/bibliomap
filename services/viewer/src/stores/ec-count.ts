@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { type Portal, usePortalsStore } from '@/stores/portals.ts';
+import { type Portal, usePortalStore } from '@/stores/portal.ts';
 import { useTimerStore } from './timer.ts';
 import { useIndexedDBStore } from '@/stores/indexed-db.ts';
 import { PlayState, usePlayStateStore } from '@/stores/play-state.ts';
@@ -16,7 +16,7 @@ export type EC = {
 export const useEcCountStore = defineStore('ec-count', () => {
   const count = ref({} as Count);
 
-  const portalsStore = usePortalsStore();
+  const portalsStore = usePortalStore();
 
   const { files } = storeToRefs(usePlayerFileStore());
 
@@ -32,7 +32,7 @@ export const useEcCountStore = defineStore('ec-count', () => {
 
   async function createCountFromEvents (events: Log[]) {
     const countObject = {} as Count;
-    const portalNames = (await usePortalsStore().getPortals()).map(portal => portal.name.toUpperCase());
+    const portalNames = (await usePortalStore().getPortals()).map(portal => portal.name.toUpperCase());
     portalNames.forEach(portal => {
       countObject[portal.toUpperCase()] = {};
     });

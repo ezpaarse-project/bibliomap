@@ -1,5 +1,5 @@
 import { useIndexedDBStore } from './indexed-db';
-import { usePortalsStore } from './portals';
+import { usePortalStore } from './portal';
 import { usePlayStateStore } from './play-state';
 import { usePlayerFileStore } from './player-file';
 
@@ -25,7 +25,7 @@ export const useCountSectionStore = defineStore('count-section', () => {
     usePlayStateStore().loading();
     const db = await useIndexedDBStore().getDB();
     if (!db) return;
-    const portals = await usePortalsStore().getPortals()
+    const portals = await usePortalStore().getPortals()
     const portalNames = (portals).map(portal => portal.name.toUpperCase());
     const sections = [] as Section[];
 

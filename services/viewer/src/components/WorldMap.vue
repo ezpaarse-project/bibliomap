@@ -10,12 +10,12 @@
   import { usePlatformFilterStore } from '@/stores/platform-filter';
   import useMitt from '@/composables/useMitt';
   import { useBubbleStore } from '@/stores/bubble';
-  import { usePortalsStore } from '@/stores/portals.ts';
+  import { usePortalStore } from '@/stores/portal';
 
   const emitter = useMitt();
 
   const config = useViewerConfigStore().config;
-  const portalsStore = usePortalsStore();
+  const portalsStore = usePortalStore();
   const mapParams = config.mapParams;
   const mimes = config.mapParams.attributesColors.mimes as Record<string, { count: boolean, color: string }>;
 
