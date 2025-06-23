@@ -2,6 +2,7 @@ import useMitt from '@/composables/useMitt';
 import Papa from 'papaparse';
 import { useIndexedDBStore } from '@/stores/indexed-db.ts';
 import type { Log } from '@/main';
+import { usePlayStateStore } from './play-state';
 
 export const usePlayerFilesStore = defineStore('player-files', () => {
 
@@ -10,10 +11,10 @@ export const usePlayerFilesStore = defineStore('player-files', () => {
 
   async function setFiles (newFiles: File[]) {
     files.value = newFiles;
-    emitter.emit('loading', null);
+    usePlayStateStore().loading();
     await clearDB();
     await insertFilesIntoDB();
-    emitter.emit('stop', null);
+    usePlayStateStore().stop();
     emitter.emit('files-loaded', null);
   }
 

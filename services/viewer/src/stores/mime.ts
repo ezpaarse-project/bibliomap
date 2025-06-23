@@ -1,6 +1,7 @@
 import useMitt from '@/composables/useMitt';
 import { useIndexedDBStore } from './indexed-db';
 import { useViewerConfigStore } from './viewer-config';
+import { usePlayStateStore } from './play-state';
 import type { EC } from './ec-count';
 
 export type Mime = {
@@ -41,7 +42,7 @@ export const useMimeStore = defineStore('mime', () => {
             ? viewerConfig.value.mapParams.attributesColors.mimes[mime as keyof typeof viewerConfig.value.mapParams.attributesColors.mimes].color
             : '#7F8C8D',
         })).sort((a, b) => a.name.localeCompare(b.name));
-        emitter.emit('stop', false);
+        usePlayStateStore().stop();
 
         resolve();
       }
@@ -51,10 +52,6 @@ export const useMimeStore = defineStore('mime', () => {
   emitter.on('files-loaded', () => {
     setMimes();
   });
-
-  emitter.on('files-loaded', () => {
-    mimes.value = [];
-  })
 
   return { mimes };
 })

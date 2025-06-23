@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import useMitt from '@/composables/useMitt';
 import { useIndexedDBStore } from './indexed-db';
+import { usePlayStateStore } from './play-state';
 
 export const usePlayTimesStore = defineStore('play-times', () => {
   const startDatetime = ref(null);
@@ -9,10 +10,10 @@ export const usePlayTimesStore = defineStore('play-times', () => {
   const emitter = useMitt();
 
   async function setStartEndDatetime () {
-    emitter.emit('loading', null);
+    usePlayStateStore().loading();
     await getStartDatetimeFromDB();
     await getEndDatetimeFromDB();
-    emitter.emit('stop', null);
+    usePlayStateStore().stop();
   }
 
   async function getStartDatetimeFromDB () {

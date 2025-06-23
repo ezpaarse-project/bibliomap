@@ -81,15 +81,15 @@
 
   const handleStart = () => {
     if (!files.value) return
-    emitter.emit('play', null);
+    usePlayStateStore().play();
   };
 
   const handleStop = () => {
-    emitter.emit('stop', null);
+    usePlayStateStore().stop();
   }
 
   const handlePause = () => {
-    emitter.emit('pause', null);
+    usePlayStateStore().pause();
   }
 </script>
 

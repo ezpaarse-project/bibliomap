@@ -8,6 +8,7 @@ export const useTimerStore = defineStore('timer', () => {
   let interval: number | null = null;
 
   const emitter = useMitt();
+  const { state } = storeToRefs(usePlayStateStore());
 
   function createInterval (multiplier: number) {
     return setInterval(async () => {
@@ -16,37 +17,37 @@ export const useTimerStore = defineStore('timer', () => {
       const timeframe = await usePlayTimesStore().getStartEndDatetime()
       if(!timeframe || !timeframe.endDatetime) return;
       if (timer.value >= timeframe.endDatetime) {
-        emitter.emit('stop');
+        usePlayStateStore().stop();
         if (interval) clearInterval(interval);
         const timeframe = await usePlayTimesStore().getStartEndDatetime();
         timer.value = timeframe.startDatetime;
       }
-    }, 1000 / multiplier)
+    }, 1000 / multiplier);
   }
 
-  emitter.on('play', async () => {
-    if (!timer.value) {
-      const times = await usePlayTimesStore().getStartEndDatetime();
-      timer.value = times.startDatetime;
+  watch(state, async () => {
+    switch(state.value) {
+      case (PlayState.PLAYING):
+        if (!timer.value) {
+          const times = await usePlayTimesStore().getStartEndDatetime();
+          timer.value = times.startDatetime;
+        }
+        if (!interval) interval = createInterval(usePlayerMultiplierStore().getMultiplier());
+        break;
+      case (PlayState.STOPPED):
+        if (interval) clearInterval(interval);
+        interval = null;
+        timer.value = null;
+        break;
+      case (PlayState.LOADING):
+        if (interval) clearInterval(interval);
+        interval = null;
+        break;
+      case (PlayState.PAUSED):
+        if (interval) clearInterval(interval);
+        interval = null;
+        break;
     }
-
-    if (!interval) interval = createInterval(usePlayerMultiplierStore().getMultiplier());
-  });
-
-  emitter.on('pause', () => {
-    if (interval) clearInterval(interval);
-    interval = null;
-  });
-
-  emitter.on('loading', () => {
-    if (interval) clearInterval(interval);
-    interval = null;
-  });
-
-  emitter.on('stop', () => {
-    if (interval) clearInterval(interval);
-    timer.value = null;
-    interval = null;
   });
 
   emitter.on('setMultiplier', m => {

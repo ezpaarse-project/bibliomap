@@ -7,6 +7,7 @@ import { type EC } from './ec-count.ts';
 export const useBubblesStore = defineStore('bubbles', () => {
   const emitter = useMitt();
   const { timer } = storeToRefs(useTimerStore());
+  const { state } = storeToRefs(usePlayStateStore());
 
   async function sendBubbles () {
     const db = await useIndexedDBStore().getDB();
@@ -32,7 +33,13 @@ export const useBubblesStore = defineStore('bubbles', () => {
     }
   }
 
-  emitter.on('play', sendBubbles);
+  watch(state, () => {
+    switch(state.value) {
+      case PlayState.PLAYING:
+        sendBubbles();
+        break;
+    }
+  })
 
   watch(timer, () => {
     if (usePlayStateStore().state !== PlayState.PLAYING && usePlayStateStore().state !== PlayState.PAUSED ) return;

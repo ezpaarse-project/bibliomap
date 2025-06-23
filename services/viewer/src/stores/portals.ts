@@ -1,6 +1,7 @@
 import useMitt from '@/composables/useMitt';
 import { useIndexedDBStore } from './indexed-db';
 import type { EC } from './ec-count';
+import { usePlayStateStore } from './play-state';
 
 export type Portal = {
   name: string;
@@ -54,7 +55,7 @@ export const usePortalsStore = defineStore('portals', () => {
     const db = await useIndexedDBStore().getDB();
     if (!db) return ;
     return new Promise<void>(resolve => {
-      emitter.emit('loading', null);
+      usePlayStateStore().loading();
       const tx = db.transaction('events', 'readonly');
       const store = tx.objectStore('events');
       const request = store.getAll();
@@ -78,7 +79,7 @@ export const usePortalsStore = defineStore('portals', () => {
           color: stringToColor(portalName),
         })).sort((a, b) => a.name.localeCompare(b.name));
 
-        emitter.emit('stop', false);
+        usePlayStateStore().stop();
         resolve()
       };
     })
