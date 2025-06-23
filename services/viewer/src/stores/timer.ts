@@ -1,4 +1,4 @@
-import { usePlayTimesStore } from '@/stores/play-times.ts';
+import { usePlayTimeframeStore } from '@/stores/play-timeframe';
 import { usePlayerMultiplierStore } from '@/stores/player-multiplier.ts';
 import { PlayState, usePlayStateStore } from '@/stores/play-state.ts';
 
@@ -13,12 +13,12 @@ export const useTimerStore = defineStore('timer', () => {
     return setInterval(async () => {
       if (!timer.value) return ;
       timer.value = timer.value + 1000;
-      const timeframe = await usePlayTimesStore().getStartEndDatetime()
+      const timeframe = await usePlayTimeframeStore().getTimeframe()
       if(!timeframe || !timeframe.endDatetime) return;
       if (timer.value >= timeframe.endDatetime) {
         usePlayStateStore().stop();
         if (interval) clearInterval(interval);
-        const timeframe = await usePlayTimesStore().getStartEndDatetime();
+        const timeframe = await usePlayTimeframeStore().getTimeframe();
         timer.value = timeframe.startDatetime;
       }
     }, 1000 / multiplier);
@@ -28,7 +28,7 @@ export const useTimerStore = defineStore('timer', () => {
     switch(state.value) {
       case (PlayState.PLAYING):
         if (!timer.value) {
-          const times = await usePlayTimesStore().getStartEndDatetime();
+          const times = await usePlayTimeframeStore().getTimeframe();
           timer.value = times.startDatetime;
         }
         if (!interval) interval = createInterval(multiplier.value);

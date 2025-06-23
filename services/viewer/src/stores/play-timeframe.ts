@@ -3,13 +3,13 @@ import { useIndexedDBStore } from './indexed-db';
 import { usePlayStateStore } from './play-state';
 import { usePlayerFilesStore } from './player-files';
 
-export const usePlayTimesStore = defineStore('play-times', () => {
+export const usePlayTimeframeStore = defineStore('play-timeframe', () => {
   const startDatetime = ref(null);
   const endDatetime = ref(null);
 
   const { files } = storeToRefs(usePlayerFilesStore());
 
-  async function setStartEndDatetime () {
+  async function setTimeframe () {
     usePlayStateStore().loading();
     await getStartDatetimeFromDB();
     await getEndDatetimeFromDB();
@@ -66,22 +66,22 @@ export const usePlayTimesStore = defineStore('play-times', () => {
     });
   }
 
-  async function getStartEndDatetime () {
-    if (!startDatetime.value || !endDatetime.value) await setStartEndDatetime();
+  async function getTimeframe () {
+    if (!startDatetime.value || !endDatetime.value) await setTimeframe();
     return {
       startDatetime: startDatetime.value,
       endDatetime: endDatetime.value,
     };
   }
 
-  function clearTimes () {
+  function clearTimeframe () {
     startDatetime.value = null;
     endDatetime.value = null;
   }
 
   watch(files, () => {
-    clearTimes();
+    clearTimeframe();
   });
 
-  return { getStartEndDatetime };
+  return { getTimeframe };
 });

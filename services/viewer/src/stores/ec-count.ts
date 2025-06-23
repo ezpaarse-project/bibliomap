@@ -4,7 +4,7 @@ import { useTimerStore } from './timer.ts';
 import { useIndexedDBStore } from '@/stores/indexed-db.ts';
 import { PlayState, usePlayStateStore } from '@/stores/play-state.ts';
 import { type Count, useCountSectionStore } from './count-section.ts';
-import { usePlayTimesStore } from '@/stores/play-times.ts';
+import { usePlayTimeframeStore } from '@/stores/play-timeframe.ts';
 import { usePlayerFilesStore } from '@/stores/player-files.ts';
 import type { Log } from '@/main.ts';
 
@@ -113,7 +113,7 @@ export const useEcCountStore = defineStore('ec-count', () => {
     if (!timestamp) return;
     const requestToken = ++currentRequestToken;
 
-    const startEndTimes = await usePlayTimesStore().getStartEndDatetime();
+    const startEndTimes = await usePlayTimeframeStore().getTimeframe();
     if (requestToken !== currentRequestToken) return;
 
     if (Object.values(timestampBorders.value).every(v => v === null)) {

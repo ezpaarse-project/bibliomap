@@ -34,7 +34,7 @@
 
 <script setup lang="ts">
   import { useTimerStore } from '@/stores/timer.ts';
-  import { usePlayTimesStore } from '@/stores/play-times.ts';
+  import { usePlayTimeframeStore } from '@/stores/play-timeframe';
   import { usePlayerFilesStore } from '@/stores/player-files.ts';
   import { PlayState, usePlayStateStore } from '@/stores/play-state.ts';
   import { useI18n } from 'vue-i18n';
@@ -64,7 +64,7 @@
   })
 
   watch (files, async () => {
-    const playTimes = await usePlayTimesStore().getStartEndDatetime();
+    const playTimes = await usePlayTimeframeStore().getTimeframe();
     sliderMin.value = playTimes.startDatetime || 0;
     sliderMax.value = playTimes.endDatetime || Number.POSITIVE_INFINITY;
     timer.value = sliderMin.value;
