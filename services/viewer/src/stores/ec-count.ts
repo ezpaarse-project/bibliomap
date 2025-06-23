@@ -107,7 +107,6 @@ export const useEcCountStore = defineStore('ec-count', () => {
       }
     }
     timestampBorders.value = { start: sections.value[currentSection.value].datetime, end: currentSection.value + 1 < sections.value.length ? sections.value[currentSection.value + 1].datetime : Number.POSITIVE_INFINITY };
-    console.log(currentSection.value, timestampBorders.value);
   }
 
   async function updateCount (timestamp: number) {

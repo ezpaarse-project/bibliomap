@@ -10,7 +10,7 @@ export const useBubblesStore = defineStore('bubbles', () => {
 
   async function sendBubbles () {
     const db = await useIndexedDBStore().getDB();
-    if (!db) return;
+    if (!db || usePlayStateStore().state !== PlayState.PLAYING && usePlayStateStore().state !== PlayState.PAUSED) return;
     const tx = db.transaction('events', 'readonly');
     const store = tx.objectStore('events');
     const index = store.index('by_date');
@@ -23,6 +23,7 @@ export const useBubblesStore = defineStore('bubbles', () => {
       const result = target.result;
       if (!result) return;
       const cursor = result;
+      if (usePlayStateStore().state !== PlayState.PLAYING && usePlayStateStore().state !== PlayState.PAUSED) return;
       if (cursor && cursor.length) {
         cursor.forEach((bubble: EC) => {
           emitter.emit('EC', bubble.log);
@@ -34,7 +35,7 @@ export const useBubblesStore = defineStore('bubbles', () => {
   emitter.on('play', sendBubbles);
 
   watch(timer, () => {
-    if (usePlayStateStore().state !== PlayState.PLAYING) return;
+    if (usePlayStateStore().state !== PlayState.PLAYING && usePlayStateStore().state !== PlayState.PAUSED ) return;
     sendBubbles();
   });
 });

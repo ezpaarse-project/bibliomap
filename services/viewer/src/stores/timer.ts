@@ -17,6 +17,9 @@ export const useTimerStore = defineStore('timer', () => {
       if(!timeframe || !timeframe.endDatetime) return;
       if (timer.value >= timeframe.endDatetime) {
         emitter.emit('stop');
+        if (interval) clearInterval(interval);
+        const timeframe = await usePlayTimesStore().getStartEndDatetime();
+        timer.value = timeframe.startDatetime;
       }
     }, 1000 / multiplier)
   }
