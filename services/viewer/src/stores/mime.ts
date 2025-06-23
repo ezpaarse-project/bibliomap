@@ -1,7 +1,7 @@
 import { useIndexedDBStore } from './indexed-db';
 import { useViewerConfigStore } from './viewer-config';
 import { usePlayStateStore } from './play-state';
-import { usePlayerFilesStore } from './player-files';
+import { usePlayerFileStore } from './player-file';
 import type { EC } from './ec-count';
 
 export type Mime = {
@@ -12,7 +12,7 @@ export type Mime = {
 export const useMimeStore = defineStore('mime', () => {
 
   const mimes = ref([] as Mime[]);
-  const { files } = storeToRefs(usePlayerFilesStore());
+  const { files } = storeToRefs(usePlayerFileStore());
 
   async function setMimes () {
     const { config: viewerConfig } = storeToRefs(useViewerConfigStore());

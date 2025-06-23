@@ -1,7 +1,7 @@
 import { useIndexedDBStore } from './indexed-db';
 import type { EC } from './ec-count';
 import { usePlayStateStore } from './play-state';
-import { usePlayerFilesStore } from './player-files';
+import { usePlayerFileStore } from './player-file';
 
 export type Portal = {
   name: string;
@@ -9,7 +9,7 @@ export type Portal = {
 };
 
 export const usePortalsStore = defineStore('portals', () => {
-  const { files } = storeToRefs(usePlayerFilesStore());
+  const { files } = storeToRefs(usePlayerFileStore());
   const portals = ref([] as Portal[]);
 
   function hslToHex (h: number, s: number, l: number) {

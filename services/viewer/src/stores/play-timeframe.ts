@@ -1,13 +1,13 @@
 import { defineStore } from 'pinia';
 import { useIndexedDBStore } from './indexed-db';
 import { usePlayStateStore } from './play-state';
-import { usePlayerFilesStore } from './player-files';
+import { usePlayerFileStore } from './player-file';
 
 export const usePlayTimeframeStore = defineStore('play-timeframe', () => {
   const startDatetime = ref(null);
   const endDatetime = ref(null);
 
-  const { files } = storeToRefs(usePlayerFilesStore());
+  const { files } = storeToRefs(usePlayerFileStore());
 
   async function setTimeframe () {
     usePlayStateStore().loading();

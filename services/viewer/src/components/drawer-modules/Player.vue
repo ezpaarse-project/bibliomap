@@ -55,11 +55,11 @@
 
 <script setup lang="ts">
   import { useI18n } from 'vue-i18n';
-  import { usePlayerFilesStore } from '@/stores/player-files.ts';
+  import { usePlayerFileStore } from '@/stores/player-file';
   import { PlayState, usePlayStateStore } from '@/stores/play-state.ts';
 
   const { t } = useI18n();
-  const filesStore = usePlayerFilesStore();
+  const filesStore = usePlayerFileStore();
   const files = ref([] as File[]);
   const { state: playState } = storeToRefs(usePlayStateStore());
   const messages = ref([] as string[]);

@@ -1,7 +1,7 @@
 import { useIndexedDBStore } from './indexed-db';
 import { usePortalsStore } from './portals';
 import { usePlayStateStore } from './play-state';
-import { usePlayerFilesStore } from './player-files';
+import { usePlayerFileStore } from './player-file';
 
 export type Count = {
   [portal: string]: {
@@ -17,7 +17,7 @@ export type Section = {
 export const useCountSectionStore = defineStore('count-section', () => {
   const EVENTS_PER_SECTION = 100;
 
-  const { files } = storeToRefs(usePlayerFilesStore());
+  const { files } = storeToRefs(usePlayerFileStore());
   const sections = ref([] as Section[]);
 
   async function createSections (eventsPerSection: number = EVENTS_PER_SECTION) {

@@ -5,7 +5,7 @@ import { useIndexedDBStore } from '@/stores/indexed-db.ts';
 import { PlayState, usePlayStateStore } from '@/stores/play-state.ts';
 import { type Count, useCountSectionStore } from './count-section.ts';
 import { usePlayTimeframeStore } from '@/stores/play-timeframe.ts';
-import { usePlayerFilesStore } from '@/stores/player-files.ts';
+import { usePlayerFileStore } from '@/stores/player-file.ts';
 import type { Log } from '@/main.ts';
 
 export type EC = {
@@ -18,7 +18,7 @@ export const useEcCountStore = defineStore('ec-count', () => {
 
   const portalsStore = usePortalsStore();
 
-  const { files } = storeToRefs(usePlayerFilesStore());
+  const { files } = storeToRefs(usePlayerFileStore());
 
   const { timer } = storeToRefs(useTimerStore());
   const { sections } = storeToRefs(useCountSectionStore());

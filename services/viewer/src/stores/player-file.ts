@@ -3,7 +3,7 @@ import { useIndexedDBStore } from '@/stores/indexed-db.ts';
 import type { Log } from '@/main';
 import { usePlayStateStore } from './play-state';
 
-export const usePlayerFilesStore = defineStore('player-files', () => {
+export const usePlayerFileStore = defineStore('player-file', () => {
 
   const files = ref([] as File[]);
 

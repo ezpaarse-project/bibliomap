@@ -35,14 +35,14 @@
 <script setup lang="ts">
   import { useTimerStore } from '@/stores/timer.ts';
   import { usePlayTimeframeStore } from '@/stores/play-timeframe';
-  import { usePlayerFilesStore } from '@/stores/player-files.ts';
+  import { usePlayerFileStore } from '@/stores/player-file';
   import { PlayState, usePlayStateStore } from '@/stores/play-state.ts';
   import { useI18n } from 'vue-i18n';
   import { usePlayerMultiplierStore } from '@/stores/player-multiplier';
 
   const { t } = useI18n();
 
-  const { files } = storeToRefs(usePlayerFilesStore());
+  const { files } = storeToRefs(usePlayerFileStore());
   const { timer } = storeToRefs(useTimerStore());
   const timerValue = ref(0);
 

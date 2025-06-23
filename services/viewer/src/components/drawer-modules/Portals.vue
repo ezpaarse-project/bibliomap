@@ -43,10 +43,10 @@
 
 <script setup lang="ts">
   import { useEcCountStore } from '@/stores/ec-count';
-  import { usePlayerFilesStore } from '@/stores/player-files';
+  import { usePlayerFileStore } from '@/stores/player-file';
   import { type Portal, usePortalsStore } from '@/stores/portals.ts';
 
-  const { files } = storeToRefs(usePlayerFilesStore());
+  const { files } = storeToRefs(usePlayerFileStore());
 
   const countStore = useEcCountStore();
   const portalStore = usePortalsStore();
