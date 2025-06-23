@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia';
 import { type Portal, usePortalsStore } from '@/stores/portals.ts';
-import useMitt from '@/composables/useMitt';
 import { useTimerStore } from './timer.ts';
 import { useIndexedDBStore } from '@/stores/indexed-db.ts';
 import { PlayState, usePlayStateStore } from '@/stores/play-state.ts';
 import { type Count, useCountSectionsStore } from './count-sections.ts';
 import { usePlayTimesStore } from '@/stores/play-times.ts';
+import { usePlayerFilesStore } from '@/stores/player-files.ts';
 import type { Log } from '@/main.ts';
 
 export type EC = {
@@ -18,14 +18,14 @@ export const useEcCountStore = defineStore('ec-count', () => {
 
   const portalsStore = usePortalsStore();
 
-  const emitter = useMitt();
+  const { files } = storeToRefs(usePlayerFilesStore());
 
   const { timer } = storeToRefs(useTimerStore());
   const { sections } = storeToRefs(useCountSectionsStore());
 
   let currentRequestToken = 0;
 
-  emitter.on('files-loaded', async () => {
+  watch(files, async () => {
     const portals = await portalsStore.getPortals();
     portals.forEach((portal: Portal) => {
       count.value[portal.name.toUpperCase() as string] = {};

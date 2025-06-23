@@ -1,4 +1,3 @@
-import useMitt from '@/composables/useMitt';
 import Papa from 'papaparse';
 import { useIndexedDBStore } from '@/stores/indexed-db.ts';
 import type { Log } from '@/main';
@@ -7,15 +6,13 @@ import { usePlayStateStore } from './play-state';
 export const usePlayerFilesStore = defineStore('player-files', () => {
 
   const files = ref([] as File[]);
-  const emitter = useMitt();
 
   async function setFiles (newFiles: File[]) {
-    files.value = newFiles;
     usePlayStateStore().loading();
     await clearDB();
-    await insertFilesIntoDB();
+    await insertFilesIntoDB(newFiles);
     usePlayStateStore().stop();
-    emitter.emit('files-loaded', null);
+    files.value = newFiles;
   }
 
   async function insertEachLineIntoDB (file: File, db: IDBDatabase) {
@@ -23,7 +20,7 @@ export const usePlayerFilesStore = defineStore('player-files', () => {
       Papa.parse(file, {
         header: true,
         skipEmptyLines: true,
-        async complete (results: Papa.ParseResult) {
+        async complete (results: Papa.ParseResult<Log>) {
           const data = results.data;
           for (const item of data) {
             await insertEventIntoDB(item, db);
@@ -57,10 +54,10 @@ export const usePlayerFilesStore = defineStore('player-files', () => {
     });
   }
 
-  async function insertFilesIntoDB () {
+  async function insertFilesIntoDB (files: File[]) {
     const db = await useIndexedDBStore().getDB();
     if (!db) return;
-    for (const file of files.value) {
+    for (const file of files) {
       await insertEachLineIntoDB(file, db);
     }
   }

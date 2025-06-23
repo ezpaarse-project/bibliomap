@@ -1,13 +1,13 @@
 import { defineStore } from 'pinia';
-import useMitt from '@/composables/useMitt';
 import { useIndexedDBStore } from './indexed-db';
 import { usePlayStateStore } from './play-state';
+import { usePlayerFilesStore } from './player-files';
 
 export const usePlayTimesStore = defineStore('play-times', () => {
   const startDatetime = ref(null);
   const endDatetime = ref(null);
 
-  const emitter = useMitt();
+  const { files } = storeToRefs(usePlayerFilesStore());
 
   async function setStartEndDatetime () {
     usePlayStateStore().loading();
@@ -79,7 +79,7 @@ export const usePlayTimesStore = defineStore('play-times', () => {
     endDatetime.value = null;
   }
 
-  emitter.on('filesChanged', () => {
+  watch(files, () => {
     clearTimes();
   });
 

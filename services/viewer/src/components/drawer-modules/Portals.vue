@@ -43,17 +43,17 @@
 
 <script setup lang="ts">
   import { useEcCountStore } from '@/stores/ec-count';
+  import { usePlayerFilesStore } from '@/stores/player-files';
   import { type Portal, usePortalsStore } from '@/stores/portals.ts';
-  import useMitt from '@/composables/useMitt';
 
-  const emitter = useMitt();
+  const { files } = storeToRefs(usePlayerFilesStore());
 
   const countStore = useEcCountStore();
   const portalStore = usePortalsStore();
 
   const portals = ref([] as Portal[])
 
-  emitter.on('files-loaded', async () => {
+  watch (files, async () => {
     const fetchedPortals = await portalStore.getPortals();
     if (!fetchedPortals) return;
     portals.value = fetchedPortals;

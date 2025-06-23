@@ -35,6 +35,7 @@
 <script setup lang="ts">
   import { useTimerStore } from '@/stores/timer.ts';
   import { usePlayTimesStore } from '@/stores/play-times.ts';
+  import { usePlayerFilesStore } from '@/stores/player-files.ts';
   import { PlayState, usePlayStateStore } from '@/stores/play-state.ts';
   import { useI18n } from 'vue-i18n';
   import useMitt from '@/composables/useMitt';
@@ -42,6 +43,7 @@
   const { t } = useI18n();
   const emitter = useMitt();
 
+  const { files } = storeToRefs(usePlayerFilesStore());
   const { timer } = storeToRefs(useTimerStore());
   const timerValue = ref(0);
 
@@ -66,7 +68,7 @@
     timer.value = timerValue.value;
   })
 
-  emitter.on('files-loaded', async () => {
+  watch (files, async () => {
     const playTimes = await usePlayTimesStore().getStartEndDatetime();
     sliderMin.value = playTimes.startDatetime || 0;
     sliderMax.value = playTimes.endDatetime || Number.POSITIVE_INFINITY;

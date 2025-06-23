@@ -1,7 +1,7 @@
 import { useIndexedDBStore } from './indexed-db';
 import { usePortalsStore } from './portals';
-import useMitt from '@/composables/useMitt';
-import { PlayState, usePlayStateStore } from './play-state';
+import { usePlayStateStore } from './play-state';
+import { usePlayerFilesStore } from './player-files';
 
 export type Count = {
   [portal: string]: {
@@ -17,12 +17,12 @@ export type Section = {
 export const useCountSectionsStore = defineStore('count-sections', () => {
   const EVENTS_PER_SECTION = 100;
 
-  const emitter = useMitt();
+  const { files } = storeToRefs(usePlayerFilesStore());
   const sections = ref([] as Section[]);
 
   async function createSections (eventsPerSection: number = EVENTS_PER_SECTION) {
 
-    if (usePlayStateStore().state !== PlayState.LOADING) emitter.emit('loading', null);
+    usePlayStateStore().loading();
     const db = await useIndexedDBStore().getDB();
     if (!db) return;
     const portals = await usePortalsStore().getPortals()
@@ -74,7 +74,7 @@ export const useCountSectionsStore = defineStore('count-sections', () => {
           cursor.continue();
 
         } else {
-          if (usePlayStateStore().state !== PlayState.STOPPED) emitter.emit('stop', null);
+          usePlayStateStore().stop();
           sections.push(section);
           resolve(sections.length ? sections : null);
         }
@@ -82,7 +82,7 @@ export const useCountSectionsStore = defineStore('count-sections', () => {
     });
   }
 
-  emitter.on('files-loaded', async () => {
+  watch (files, async () => {
     sections.value = await createSections() as Section[];
   });
 

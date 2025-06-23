@@ -5,7 +5,7 @@ import { PlayState, usePlayStateStore } from '@/stores/play-state.ts';
 
 export const useTimerStore = defineStore('timer', () => {
   const timer = ref<number | null>(null);
-  let interval: number | null = null;
+  let interval: ReturnType<typeof setInterval> | null = null;
 
   const emitter = useMitt();
   const { state } = storeToRefs(usePlayStateStore());
