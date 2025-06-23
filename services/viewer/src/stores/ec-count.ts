@@ -3,7 +3,7 @@ import { type Portal, usePortalsStore } from '@/stores/portals.ts';
 import { useTimerStore } from './timer.ts';
 import { useIndexedDBStore } from '@/stores/indexed-db.ts';
 import { PlayState, usePlayStateStore } from '@/stores/play-state.ts';
-import { type Count, useCountSectionsStore } from './count-sections.ts';
+import { type Count, useCountSectionStore } from './count-section.ts';
 import { usePlayTimesStore } from '@/stores/play-times.ts';
 import { usePlayerFilesStore } from '@/stores/player-files.ts';
 import type { Log } from '@/main.ts';
@@ -21,7 +21,7 @@ export const useEcCountStore = defineStore('ec-count', () => {
   const { files } = storeToRefs(usePlayerFilesStore());
 
   const { timer } = storeToRefs(useTimerStore());
-  const { sections } = storeToRefs(useCountSectionsStore());
+  const { sections } = storeToRefs(useCountSectionStore());
 
   let currentRequestToken = 0;
 

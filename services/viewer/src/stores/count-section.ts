@@ -14,7 +14,7 @@ export type Section = {
   count: Count
 }
 
-export const useCountSectionsStore = defineStore('count-sections', () => {
+export const useCountSectionStore = defineStore('count-section', () => {
   const EVENTS_PER_SECTION = 100;
 
   const { files } = storeToRefs(usePlayerFilesStore());
