@@ -47,5 +47,6 @@ drawer:
       invalid-file: 'Fichier invalide : {name}'
   fields:
     title: 'Compter par :'
+    placeholder: 'ex: Nom de la plateforme'
 version-card:
   connection: Connecté à ezPAARSE

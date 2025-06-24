@@ -45,7 +45,8 @@ drawer:
     play: Play simulation
     error:
       invalid-file: 'Invalid file: {name}'
-  portals:
-    title: Count by portal
+  fields:
+    title: 'Count by:'
+    placeholder: 'ex: Publisher name'
 version-card:
   connection: Connected to ezPAARSE
