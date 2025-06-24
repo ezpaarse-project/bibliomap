@@ -12,7 +12,7 @@ export const usePlayerFileStore = defineStore('player-file', () => {
     usePlayStateStore().loading();
     await clearDB();
     await insertFilesIntoDB(newFiles);
-    usePlayStateStore().stop();
+    usePlayStateStore().loaded();
     files.value = newFiles;
   }
 

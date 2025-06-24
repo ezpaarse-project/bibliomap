@@ -13,7 +13,7 @@ export const usePlayTimeframeStore = defineStore('play-timeframe', () => {
     usePlayStateStore().loading();
     await getStartDatetimeFromDB();
     await getEndDatetimeFromDB();
-    usePlayStateStore().stop();
+    usePlayStateStore().loaded();
   }
 
   async function getStartDatetimeFromDB () {

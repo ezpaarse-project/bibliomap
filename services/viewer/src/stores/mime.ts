@@ -46,7 +46,7 @@ export const useMimeStore = defineStore('mime', () => {
             ? viewerConfig.value.mapParams.attributesColors.mimes[mime as keyof typeof viewerConfig.value.mapParams.attributesColors.mimes].color
             : '#7F8C8D',
         })).sort((a, b) => a.name.localeCompare(b.name));
-        usePlayStateStore().stop();
+        usePlayStateStore().loaded();
 
         resolve();
       }

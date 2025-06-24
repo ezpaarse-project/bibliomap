@@ -8,6 +8,8 @@ export enum PlayState {
 export const usePlayStateStore = defineStore('play-state', () => {
 
   const state = ref(PlayState.STOPPED);
+  const previousState = ref(null as PlayState | null);
+  const loadCounter = ref(0);
 
   function play () {
     state.value = PlayState.PLAYING;
@@ -22,8 +24,15 @@ export const usePlayStateStore = defineStore('play-state', () => {
   }
 
   function loading () {
+    if (state.value !== PlayState.LOADING) previousState.value = state.value;
     state.value = PlayState.LOADING;
+    loadCounter.value++;
   }
 
-  return { state, play, pause, stop, loading };
+  function loaded () {
+    loadCounter.value--;
+    if (loadCounter.value === 0) state.value = previousState.value || PlayState.STOPPED;
+  }
+
+  return { state, play, pause, stop, loading, loaded };
 });

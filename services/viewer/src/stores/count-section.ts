@@ -73,7 +73,7 @@ export const useCountSectionStore = defineStore('count-section', () => {
           cursor.continue();
 
         } else {
-          usePlayStateStore().stop();
+          usePlayStateStore().loaded();
           sections.push(section);
           resolve(sections.length ? sections : null);
         }

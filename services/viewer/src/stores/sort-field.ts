@@ -92,7 +92,7 @@ export const useSortFieldStore = defineStore('sort-field', () => {
           color: stringToColor(fieldName),
         })).sort((a, b) => a.name.localeCompare(b.name));
 
-        usePlayStateStore().stop();
+        usePlayStateStore().loaded();
         resolve()
       };
     });
@@ -102,7 +102,7 @@ export const useSortFieldStore = defineStore('sort-field', () => {
     usePlayStateStore().loading();
     const count = await getHeaderCount();
     if (!count) {
-      usePlayStateStore().stop();
+      usePlayStateStore().loaded();
       return ;
     }
     let ii = 0;
@@ -115,7 +115,7 @@ export const useSortFieldStore = defineStore('sort-field', () => {
       }
       ii += 2;
     }
-    usePlayStateStore().stop();
+    usePlayStateStore().loaded();
   }
 
   function getHeaders () {
