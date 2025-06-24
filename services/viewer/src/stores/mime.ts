@@ -13,14 +13,18 @@ export const useMimeStore = defineStore('mime', () => {
 
   const mimes = ref([] as Mime[]);
   const { files } = storeToRefs(usePlayerFileStore());
+  const { db } = storeToRefs(useIndexedDBStore());
 
   async function setMimes () {
     const { config: viewerConfig } = storeToRefs(useViewerConfigStore());
-    const db = await useIndexedDBStore().getDB();
-    if (!db) return;
+    if (!db.value) return;
     return new Promise<void>(resolve => {
+      if (!db.value) {
+        resolve();
+        return;
+      }
       usePlayStateStore().loading();
-      const tx = db.transaction('events', 'readonly');
+      const tx = db.value.transaction('events', 'readonly');
       const store = tx.objectStore('events');
       const request = store.getAll();
       request.onsuccess = event => {

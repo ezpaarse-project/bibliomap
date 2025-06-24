@@ -10,14 +10,15 @@
   import { usePlatformFilterStore } from '@/stores/platform-filter';
   import useMitt from '@/composables/useMitt';
   import { useBubbleStore } from '@/stores/bubble';
-  import { usePortalStore } from '@/stores/portal';
+  import { useSortFieldStore } from '@/stores/sort-field';
 
   const emitter = useMitt();
 
   const config = useViewerConfigStore().config;
-  const portalsStore = usePortalStore();
+  const portalsStore = useSortFieldStore();
   const mapParams = config.mapParams;
   const mimes = config.mapParams.attributesColors.mimes as Record<string, { count: boolean, color: string }>;
+  const { fieldIdentifier } = storeToRefs(useSortFieldStore());
 
   const height = config.appbarParams.include ? 'calc(100vh - 48px)' : '100vh';
   useBubbleStore();
@@ -96,8 +97,20 @@
     });
 
     function getBubbleColor (log: Log) {
-      if (!log.ezproxyName.includes('+')) return portalsStore.getPortalColor(log.ezproxyName) || config.mapParams.attributesColors.defaultColor;
-      return 'linear-gradient(to right, ' + log.ezproxyName.split('+').map((portal: string) => portalsStore.getPortalColor(portal) || config.mapParams.attributesColors.defaultColor).join(', ') + ')';
+      const value = log[fieldIdentifier.value];
+
+      if (typeof value !== 'string') return 'transparent';
+
+      if (!value.includes('+')) {
+        return portalsStore.getFieldColor(value) || config.mapParams.attributesColors.defaultColor;
+      }
+
+      const gradient = value
+        .split('+')
+        .map((field: string) => portalsStore.getFieldColor(field) || config.mapParams.attributesColors.defaultColor)
+        .join(', ');
+
+      return `linear-gradient(to right, ${gradient})`;
     }
 
     emitter.on('EC', (log: Log) => {

@@ -4,7 +4,7 @@
         "defaultX": 0,
         "defaultY": -30,
         "defaultZoom": 3,
-        "minZoom": 3,
+        "minZoom": 2,
         "maxZoom": 9,
         "defaultPhoneZoom": 5,
         "bubbleDuration": 5,

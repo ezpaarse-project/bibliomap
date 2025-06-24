@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { type Portal, usePortalStore } from '@/stores/portal.ts';
+import { type Field, useSortFieldStore } from '@/stores/sort-field.ts';
 import { useTimerStore } from './timer.ts';
 import { useIndexedDBStore } from '@/stores/indexed-db.ts';
 import { PlayState, usePlayStateStore } from '@/stores/play-state.ts';
@@ -16,14 +16,14 @@ export type EC = {
 export const useEcCountStore = defineStore('ec-count', () => {
   const count = ref({} as Count);
 
-  const { portals } = storeToRefs(usePortalStore());
-
+  const { fields } = storeToRefs(useSortFieldStore());
   const { files } = storeToRefs(usePlayerFileStore());
-
   const { timer } = storeToRefs(useTimerStore());
   const { sections } = storeToRefs(useCountSectionStore());
   const { state } = storeToRefs(usePlayStateStore());
   const { timeframe } = storeToRefs(usePlayTimeframeStore());
+  const { db } = storeToRefs(useIndexedDBStore());
+  const { fieldIdentifier } = storeToRefs(useSortFieldStore());
 
   let currentRequestToken = 0;
 
@@ -33,24 +33,34 @@ export const useEcCountStore = defineStore('ec-count', () => {
 
   async function createCountFromEvents (events: Log[]) {
     const countObject = {} as Count;
-    const portalNames = portals.value.map(portal => portal.name.toUpperCase());
-    portalNames.forEach(portal => {
-      countObject[portal.toUpperCase()] = {};
+    const fieldNames = fields.value.map(field => field.name.toUpperCase());
+
+    fieldNames.forEach(f => {
+      const field = f.length ? f.toUpperCase() : 'UNKNOWN';
+      countObject[field] = {};
     });
+
     events.forEach(event => {
-      const portal = event.ezproxyName.toUpperCase();
-      const mime = event.mime ? event.mime.toUpperCase() : 'unknown';
-      portal.split('+').forEach((portal: string) => {
-        if (countObject[portal] === undefined) return;
-        if (!countObject[portal][mime]) countObject[portal][mime] = 0;
-        countObject[portal][mime] += 1;
+      const rawFieldValue = event[fieldIdentifier.value];
+
+      if (typeof rawFieldValue !== 'string') return;
+
+      const mime = event.mime ? event.mime.toUpperCase() : 'UNKNOWN';
+
+      rawFieldValue.toUpperCase().split('+').forEach(f => {
+        const field = f.length ? f.toUpperCase() : 'UNKNOWN';
+        if (!countObject[field]) return;
+        if (!countObject[field][mime]) countObject[field][mime] = 0;
+        countObject[field][mime] += 1;
       });
     });
+
     return countObject;
   }
 
-  function getCountOfPortal (portal: string) {
-    return Object.values(count.value[portal.toUpperCase()]).reduce((a, b) => a + b, 0);
+  function getCountOfField (field: string) {
+    if (!count.value[field.toUpperCase()]) return 0;
+    return Object.values(count.value[field.toUpperCase()]).reduce((a, b) => a + b, 0);
   }
 
   function getCountOfMime (mime: string) {
@@ -63,20 +73,24 @@ export const useEcCountStore = defineStore('ec-count', () => {
       .reduce((sum, val) => sum + val, 0);
   }
 
-  function getCountOfPortalAndMime (portal: string, mime: string) {
-    return count.value[portal.toUpperCase()][mime];
+  function getCountOfFieldAndMime (field: string, mime: string) {
+    return count.value[field.toUpperCase()][mime];
   }
 
-  function getMimeInPortal (portal: string) {
-    return Object.keys(count.value[portal.toUpperCase()]);
+  function getMimeInField (field: string) {
+    if (!count.value[field.toUpperCase()]) return [];
+    return Object.keys(count.value[field.toUpperCase()]);
   }
 
   async function getEventsBetween (start: number, end: number, lowerOpen: boolean = true, upperOpen: boolean = true) {
     if (start > end) return [];
-    const db = await useIndexedDBStore().getDB();
-    if (!db) return [];
+    if (!db.value) return [];
     return new Promise(resolve => {
-      const tx = db.transaction('events', 'readonly');
+      if (!db.value) {
+        resolve([]);
+        return;
+      }
+      const tx = db.value.transaction('events', 'readonly');
       const store = tx.objectStore('events');
       const index = store.index('by_date');
       const range = IDBKeyRange.bound(start, end, start !== end && lowerOpen, end !== start && upperOpen);
@@ -135,19 +149,19 @@ export const useEcCountStore = defineStore('ec-count', () => {
   }
 
   function mergeCounts (previousSectionCount: Count, currentCount: Count) {
-    Object.keys(previousSectionCount).forEach(portal => {
-      Object.keys(previousSectionCount[portal]).forEach(mime => {
-        if (!currentCount[portal]) currentCount[portal] = {};
-        if (!currentCount[portal][mime]) currentCount[portal][mime] = 0;
-        if (previousSectionCount[portal] && previousSectionCount[portal][mime]) currentCount[portal][mime] = previousSectionCount[portal][mime] + currentCount[portal][mime];
+    Object.keys(previousSectionCount).forEach(field => {
+      Object.keys(previousSectionCount[field]).forEach(mime => {
+        if (!currentCount[field]) currentCount[field] = {};
+        if (!currentCount[field][mime]) currentCount[field][mime] = 0;
+        if (previousSectionCount[field] && previousSectionCount[field][mime]) currentCount[field][mime] = previousSectionCount[field][mime] + currentCount[field][mime];
       });
     });
     return currentCount;
   }
 
   async function resetCount () {
-    portals.value.forEach((portal: Portal) => {
-      count.value[portal.name.toUpperCase() as string] = {};
+    fields.value.forEach((field: Field) => {
+      count.value[field.name.toUpperCase() as string] = {};
     })
   }
 
@@ -160,5 +174,5 @@ export const useEcCountStore = defineStore('ec-count', () => {
     updateCount(timer.value)
   });
 
-  return { getCountOfPortal, getCountOfMime, getTotalCount, getCountOfPortalAndMime, getMimeInPortal };
+  return { getCountOfField, getCountOfMime, getTotalCount, getCountOfFieldAndMime, getMimeInField };
 });

@@ -1,5 +1,5 @@
 export const useIndexedDBStore = defineStore('indexed-db', () => {
-  let db: IDBDatabase | null = null;
+  const db = ref<IDBDatabase | null>(null);
 
   function openDB () {
     return new Promise<void>((resolve, rejects) => {
@@ -8,27 +8,22 @@ export const useIndexedDBStore = defineStore('indexed-db', () => {
       openRequest.onupgradeneeded = event => {
         const target = event.target as IDBOpenDBRequest;
         if (!target) rejects();
-        db = target.result;
+        db.value = target.result;
 
-        if (!db.objectStoreNames.contains('events')) {
-          const store = db.createObjectStore('events', { autoIncrement: true });
+        if (!db.value.objectStoreNames.contains('events')) {
+          const store = db.value.createObjectStore('events', { autoIncrement: true });
           store.createIndex('by_date', 'datetime', { unique: false });
         }
       };
 
       openRequest.onsuccess = () => {
-        db = openRequest.result;
+        db.value = openRequest.result;
         resolve();
       }
     });
   }
 
-  async function getDB () {
-    if (!db) {
-      await openDB();
-    }
-    return db;
-  }
+  openDB();
 
-  return { getDB }
+  return { db }
 });

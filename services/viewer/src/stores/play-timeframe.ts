@@ -7,6 +7,7 @@ export const usePlayTimeframeStore = defineStore('play-timeframe', () => {
   const timeframe = ref({ startDatetime: null, endDatetime: null });
 
   const { files } = storeToRefs(usePlayerFileStore());
+  const { db } = storeToRefs(useIndexedDBStore());
 
   async function setTimeframe () {
     usePlayStateStore().loading();
@@ -16,10 +17,13 @@ export const usePlayTimeframeStore = defineStore('play-timeframe', () => {
   }
 
   async function getStartDatetimeFromDB () {
-    const db = await useIndexedDBStore().getDB();
-    if (!db) return;
+    if (!db.value) return;
     return new Promise<void>(resolve => {
-      const tx = db.transaction('events', 'readonly');
+      if (!db.value) {
+        resolve();
+        return;
+      }
+      const tx = db.value.transaction('events', 'readonly');
       const store = tx.objectStore('events');
       const index = store.index('by_date');
 
@@ -41,10 +45,13 @@ export const usePlayTimeframeStore = defineStore('play-timeframe', () => {
   }
 
   async function getEndDatetimeFromDB () {
-    const db = await useIndexedDBStore().getDB();
-    if (!db) return;
+    if (!db.value) return;
     return new Promise<void>(resolve => {
-      const tx = db.transaction('events', 'readonly');
+      if (!db.value) {
+        resolve();
+        return;
+      }
+      const tx = db.value.transaction('events', 'readonly');
       const store = tx.objectStore('events');
       const index = store.index('by_date');
 

@@ -1,7 +1,6 @@
 import { useIndexedDBStore } from './indexed-db';
-import { usePortalStore } from './portal';
 import { usePlayStateStore } from './play-state';
-import { usePlayerFileStore } from './player-file';
+import { useSortFieldStore } from './sort-field';
 
 export type Count = {
   [portal: string]: {
@@ -17,20 +16,22 @@ export type Section = {
 export const useCountSectionStore = defineStore('count-section', () => {
   const EVENTS_PER_SECTION = 100;
 
-  const { files } = storeToRefs(usePlayerFileStore());
-  const { portals } = storeToRefs(usePortalStore());
+  const { db } = storeToRefs(useIndexedDBStore());
+  const { fieldIdentifier, fields } = storeToRefs(useSortFieldStore());
   const sections = ref([] as Section[]);
 
-  async function createSections (eventsPerSection: number = EVENTS_PER_SECTION) {
+  function createSections (eventsPerSection: number = EVENTS_PER_SECTION) {
 
     usePlayStateStore().loading();
-    const db = await useIndexedDBStore().getDB();
-    if (!db) return;
-    const portalNames = (portals.value).map(portal => portal.name.toUpperCase());
+    if (!db.value) return;
     const sections = [] as Section[];
 
     return new Promise(resolve => {
-      const tx = db.transaction('events', 'readwrite');
+      if (!db.value) {
+        resolve(null);
+        return;
+      }
+      const tx = db.value.transaction('events', 'readwrite');
       const store = tx.objectStore('events');
       const index = store.index('by_date');
       let section = { datetime: null, count: ({} as Count) } as Section;
@@ -43,14 +44,12 @@ export const useCountSectionStore = defineStore('count-section', () => {
           const log = cursor.value.log;
           const datetime = cursor.value.datetime;
 
-          if(!log.ezproxyName) {
+          if(!(log['geoip-latitude'] && log['geoip-longitude'])) {
             cursor.continue();
             return;
           }
-          log.ezproxyName.split('+').forEach((portal: string) => {
-            if (!portalNames.includes(portal.toUpperCase())) {
-              return;
-            }
+          if (!log[fieldIdentifier.value]) log[fieldIdentifier.value] = 'UNKNOWN';
+          log[fieldIdentifier.value].split('+').forEach((field: string) => {
 
             if (!section.datetime) {
               section.datetime = datetime;
@@ -58,11 +57,11 @@ export const useCountSectionStore = defineStore('count-section', () => {
 
             const sectionCount: Count = section.count;
 
-            if (!sectionCount[portal.toUpperCase()]) sectionCount[portal.toUpperCase()] = {}
+            if (!sectionCount[field.toUpperCase()]) sectionCount[field.toUpperCase()] = {};
 
-            if (!sectionCount[portal.toUpperCase()][log.mime]) sectionCount[portal.toUpperCase()][log.mime] = 0
+            if (!sectionCount[field.toUpperCase()][log.mime]) sectionCount[field.toUpperCase()][log.mime] = 0;
 
-            sectionCount[portal.toUpperCase()][log.mime] += 1;
+            sectionCount[field.toUpperCase()][log.mime] += 1;
           });
 
           if (Object.values(section.count)
@@ -76,14 +75,16 @@ export const useCountSectionStore = defineStore('count-section', () => {
         } else {
           usePlayStateStore().stop();
           sections.push(section);
+          console.log('sections', sections);
           resolve(sections.length ? sections : null);
         }
       }
     });
   }
 
-  watch (files, async () => {
+  watch (fields, async () => {
     sections.value = await createSections() as Section[];
+    console.log('sections', sections.value);
   });
 
   return { sections };

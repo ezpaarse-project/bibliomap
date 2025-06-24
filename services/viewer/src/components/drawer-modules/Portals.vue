@@ -1,7 +1,17 @@
 <template>
-  <div v-if="portals && portals.length > 0" class="portals-component">
+  <v-card flat>
+    <v-card-title>
+      {{ t('drawer.fields.title') }}
+    </v-card-title>
+    <v-select
+      v-model="fieldIdentifier"
+      :items="headers"
+      :label="t('drawer.fields.placeholder')"
+    />
+  </v-card>
+  <div v-if="fields && fields.length > 0" class="portals-component">
     <a
-      v-for="{name, color} in portals"
+      v-for="{name, color} in fields"
       :key="name"
       class="anchor"
       target="_blank"
@@ -9,30 +19,30 @@
       <v-list-item class="portal-list-element">
 
         <v-tooltip
-          :disabled="!countStore.getCountOfPortal(name)"
+          :disabled="!countStore.getCountOfField(name.length ? name.toUpperCase() : 'UNKNOWN')"
           location="right"
         >
           <template #activator="{ props }">
             <div class="portal-list-item" v-bind="props">
               <div class="portal-container">
                 <div class="portal-title-container">
-                  <h3 class="title-font">{{ name.toUpperCase() }}</h3>
+                  <h3 class="title-font">{{ name.length ? name.toUpperCase() : 'UNKNOWN' }}</h3>
                 </div>
               </div>
               <v-chip
                 :color="color"
                 variant="flat"
               >
-                {{ countStore.getCountOfPortal(name) }}
+                {{ countStore.getCountOfField(name.length ? name.toUpperCase() : 'UNKNOWN') }}
               </v-chip>
             </div>
           </template>
           <div>
             <div
-              v-for="mime in countStore.getMimeInPortal(name)"
+              v-for="mime in countStore.getMimeInField(name.length ? name.toUpperCase() : 'UNKNOWN')"
               :key="mime"
             >
-              {{ mime }}: {{ countStore.getCountOfPortalAndMime(name, mime) }}
+              {{ mime }}: {{ countStore.getCountOfFieldAndMime(name.length ? name.toUpperCase() : 'UNKNOWN', mime) }}
             </div>
           </div>
         </v-tooltip>
@@ -43,11 +53,13 @@
 
 <script setup lang="ts">
   import { useEcCountStore } from '@/stores/ec-count';
-  import { usePortalStore } from '@/stores/portal';
+  import { useSortFieldStore } from '@/stores/sort-field';
+  import { useI18n } from 'vue-i18n';
 
+  const { t } = useI18n();
   const countStore = useEcCountStore();
 
-  const { portals } = storeToRefs(usePortalStore());
+  const { fields, headers, fieldIdentifier } = storeToRefs(useSortFieldStore());
 </script>
 
 <style lang="scss">

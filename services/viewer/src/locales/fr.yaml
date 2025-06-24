@@ -45,7 +45,7 @@ drawer:
     play: Jouer la simulation
     error:
       invalid-file: 'Fichier invalide : {name}'
-  portals:
-    title: Compter par portail
+  fields:
+    title: 'Compter par :'
 version-card:
   connection: Connecté à ezPAARSE

@@ -1,5 +1,5 @@
 <template>
-  <v-card-title class="counter-title">
+  <v-card-title>
     {{ t('drawer.counter.title') }}
   </v-card-title>
   <div v-if="mimes.length" class="counter-container">

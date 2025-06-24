@@ -16,17 +16,14 @@ import { createApp } from 'vue'
 import './assets/styles.scss'
 
 export type Log = {
+  [key: string]: string | number | undefined,
   datetime: string,
-  url?: string,
-  domain?: string,
   publication_title?: string,
-  ezproxyName: string,
   'geoip-latitude': number,
   'geoip-longitude': number,
   mime?: string,
-  platform_name: string | null | undefined,
   rtype?: string,
-  'bib-groups'?: string
+  platform_name?: string
 }
 
 const app = createApp(App)

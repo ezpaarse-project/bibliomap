@@ -6,6 +6,7 @@ import { usePlayStateStore } from './play-state';
 export const usePlayerFileStore = defineStore('player-file', () => {
 
   const files = ref([] as File[]);
+  const { db } = storeToRefs(useIndexedDBStore());
 
   async function setFiles (newFiles: File[]) {
     usePlayStateStore().loading();
@@ -37,13 +38,7 @@ export const usePlayerFileStore = defineStore('player-file', () => {
 
       const toInsert = {
         datetime: new Date(item.datetime).getTime(), log: {
-          datetime: item.datetime,
-          ezproxyName: item.ezproxyName || item['bib-groups'] || null,
-          'geoip-latitude': item['geoip-latitude'] || null,
-          'geoip-longitude': item['geoip-longitude'] || null,
-          platform_name: item.platform_name || null,
-          mime: item.mime || null,
-          rtype: item.rtype || null,
+          ...item,
         },
       };
 
@@ -55,18 +50,20 @@ export const usePlayerFileStore = defineStore('player-file', () => {
   }
 
   async function insertFilesIntoDB (files: File[]) {
-    const db = await useIndexedDBStore().getDB();
-    if (!db) return;
+    if (!db.value) return;
     for (const file of files) {
-      await insertEachLineIntoDB(file, db);
+      await insertEachLineIntoDB(file, db.value);
     }
   }
 
   async function clearDB () {
-    const db = await useIndexedDBStore().getDB();
-    if (!db) return;
+    if (!db.value) return;
     return new Promise<void>(resolve => {
-      const tx = db.transaction('events', 'readwrite');
+      if (!db.value) {
+        resolve();
+        return;
+      }
+      const tx = db.value.transaction('events', 'readwrite');
       const store = tx.objectStore('events');
       const clearRequest = store.clear();
       clearRequest.onsuccess = () => {

@@ -8,11 +8,11 @@ export const useBubbleStore = defineStore('bubble', () => {
   const emitter = useMitt();
   const { timer } = storeToRefs(useTimerStore());
   const { state } = storeToRefs(usePlayStateStore());
+  const { db } = storeToRefs(useIndexedDBStore());
 
-  async function sendBubbles () {
-    const db = await useIndexedDBStore().getDB();
-    if (!db || usePlayStateStore().state !== PlayState.PLAYING && usePlayStateStore().state !== PlayState.PAUSED) return;
-    const tx = db.transaction('events', 'readonly');
+  function sendBubbles () {
+    if (!db.value || state.value !== PlayState.PLAYING && state.value !== PlayState.PAUSED) return;
+    const tx = db.value.transaction('events', 'readonly');
     const store = tx.objectStore('events');
     const index = store.index('by_date');
 
@@ -24,7 +24,7 @@ export const useBubbleStore = defineStore('bubble', () => {
       const result = target.result;
       if (!result) return;
       const cursor = result;
-      if (usePlayStateStore().state !== PlayState.PLAYING && usePlayStateStore().state !== PlayState.PAUSED) return;
+      if (state.value !== PlayState.PLAYING && state.value !== PlayState.PAUSED) return;
       if (cursor && cursor.length) {
         cursor.forEach((bubble: EC) => {
           emitter.emit('EC', bubble.log);
