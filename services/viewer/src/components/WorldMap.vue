@@ -11,6 +11,8 @@
   import useMitt from '@/composables/useMitt';
   import { useBubbleStore } from '@/stores/bubble';
   import { useSortFieldStore } from '@/stores/sort-field';
+  import { useTimerStore } from '@/stores/timer';
+  import { usePlayerMultiplierStore } from '@/stores/player-multiplier';
 
   const emitter = useMitt();
 
@@ -113,6 +115,32 @@
       return `linear-gradient(to right, ${gradient})`;
     }
 
+    const bubblesToRemove: { marker : L.Marker, frame: { start: number, fade: number, end: number } }[] = [];
+
+    function removeExpiredBubbles (timestamp: number) {
+      bubblesToRemove.forEach(bubble => {
+        if (timestamp > bubble.frame.fade) {
+          const elt = bubble.marker.getElement();
+          if (elt) elt.style.opacity = '0';
+        }
+        else {
+          const elt = bubble.marker.getElement();
+          if (elt) elt.style.opacity = '100';
+        }
+        if (timestamp > bubble.frame.end || timestamp < bubble.frame.start) {
+          map.removeLayer(bubble.marker);
+          const index = bubblesToRemove.indexOf(bubble)
+          bubblesToRemove.splice(index, index + 1);
+        }
+      });
+    }
+
+    const { timer } = storeToRefs(useTimerStore());
+
+    watch(timer, () => {
+      if (timer.value) removeExpiredBubbles(timer.value);
+    });
+
     emitter.on('EC', (log: Log) => {
       if (log.platform_name && !usePlatformFilterStore().isNameOkay(log.platform_name)) return;
       if (!log || !log['geoip-latitude'] || !log['geoip-longitude']) return;
@@ -144,19 +172,28 @@
       });
 
       const marker = L.marker([log['geoip-latitude'], log['geoip-longitude']], { icon: bubble }).addTo(map);
+      const timestamp = new Date(log.datetime).getTime();
+      const startTimestamp = timestamp;
+      const fadeTimestamp = timestamp + (mapParams.bubbleDuration || 5) * 1000;
+      const endTimestamp = timestamp + (mapParams.bubbleDuration || 5) * 1000 + 3000;
+      bubblesToRemove.push({ marker, frame: { start: startTimestamp, fade: fadeTimestamp, end: endTimestamp } });
       const elt = marker.getElement();
       if (!elt) return;
-
-      setTimeout(() => {
-        elt.style.opacity = '0';
-        setTimeout(() => {
-          map.removeLayer(marker);
-        }, 2000);
-      }, (mapParams.bubbleDuration || 5) * 1000)
 
       if (!map.getBounds().contains(L.latLng(log['geoip-latitude'], log['geoip-longitude']))) {
         emitter.emit('minimap', { log, bubble });
       }
+
+      const { multiplier } = storeToRefs(usePlayerMultiplierStore());
+
+      function changeAnimationSpeed (multiplier: number) {
+        document.documentElement.style.setProperty('--pulsate-speed', `${1/multiplier}s`);
+        document.documentElement.style.setProperty('--opacity-transition-speed', `${1.5/multiplier}s`);
+      }
+
+      watch(multiplier, () => {
+        changeAnimationSpeed(multiplier.value);
+      });
     });
   });
 
@@ -191,6 +228,11 @@
 
   $box-shadow: 1px 1px 8px 0 rgba(0, 0, 0, 0.75);
 
+  :root {
+    --opacity-transition-speed: 1.5s;
+    --pulsate-speed: 1s;
+  }
+
   #map{
     width: 100%;
     height: 100%;
@@ -206,7 +248,7 @@
   }
 
   .leaflet-marker {
-    transition: opacity 1.5s ease-in;
+    transition: opacity var(--opacity-transition-speed) ease-in;
   }
 
   .bubble {
@@ -224,7 +266,7 @@
   }
 
   .bubble-pulse {
-    animation: pulsate 1s ease-in-out infinite;
+    animation: pulsate var(--pulsate-speed) ease-in-out infinite;
     position: absolute;
     border-radius: 100%;
   }
