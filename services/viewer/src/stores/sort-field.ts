@@ -116,7 +116,6 @@ export const useSortFieldStore = defineStore('sort-field', () => {
       ii += 2;
     }
     usePlayStateStore().stop();
-    console.log(fieldIdentifier.value);
   }
 
   function getHeaders () {

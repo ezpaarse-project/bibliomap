@@ -5,6 +5,7 @@
     </v-card-title>
     <v-select
       v-model="fieldIdentifier"
+      :disabled="!headers || headers.length === 0 || state === PlayState.LOADING"
       :items="headers"
       :label="t('drawer.fields.placeholder')"
     />
@@ -55,9 +56,11 @@
   import { useEcCountStore } from '@/stores/ec-count';
   import { useSortFieldStore } from '@/stores/sort-field';
   import { useI18n } from 'vue-i18n';
+  import { PlayState, usePlayStateStore } from '@/stores/play-state';
 
   const { t } = useI18n();
   const countStore = useEcCountStore();
+  const { state } = storeToRefs(usePlayStateStore());
 
   const { fields, headers, fieldIdentifier } = storeToRefs(useSortFieldStore());
 </script>

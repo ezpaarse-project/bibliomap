@@ -75,7 +75,6 @@ export const useCountSectionStore = defineStore('count-section', () => {
         } else {
           usePlayStateStore().stop();
           sections.push(section);
-          console.log('sections', sections);
           resolve(sections.length ? sections : null);
         }
       }
@@ -84,7 +83,6 @@ export const useCountSectionStore = defineStore('count-section', () => {
 
   watch (fields, async () => {
     sections.value = await createSections() as Section[];
-    console.log('sections', sections.value);
   });
 
   return { sections };
