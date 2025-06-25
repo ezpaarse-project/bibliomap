@@ -20,7 +20,6 @@
           v-model="multiplier"
           class="w-100"
           dense
-          :disabled="playState === PlayState.STOPPED || playState === PlayState.LOADING"
           hide-details="auto"
           :label="t('drawer.timer.multiplier-field')"
           :min="1"

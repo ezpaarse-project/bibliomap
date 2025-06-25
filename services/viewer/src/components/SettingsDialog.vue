@@ -70,6 +70,56 @@
         </div>
       </v-card>
       <v-divider />
+      <v-card class="d-flex flex-row w-full align-center" :flat="true">
+        <div>
+          <v-card-text class="text-h6">
+            {{ t('appbar.settings-dialog.bubble-size') }}
+          </v-card-text>
+          <v-slider
+            v-model="bubbleSize"
+            :max="40"
+            :min="5"
+            thumb-label
+          />
+          <v-card-text class="text-h6">
+            {{ t('appbar.settings-dialog.bubble-duration') }}
+          </v-card-text>
+          <div>
+            <v-slider
+              v-model="bubbleDuration"
+              :max="500"
+              :min="1"
+              :step="1"
+              thumb-label
+            />
+          </div>
+        </div>
+        <div class="visual-container">
+          <div class="container-test" :style="{transform: `scale(${bubbleSize / 30})`, opacity: opacity}">
+            <div class="bubble-popup-test">
+              <p class="title-font popup-title-test"><strong>{{ t('appbar.settings-dialog.bubble-title') }}</strong></p>
+              <p class="body-font">{{ t('appbar.settings-dialog.publication-title') }}</p>
+              <div class="types-container-test">
+                <p class="title-font" :style="{backgroundColor: '#7F8C8D'}">{{ t('appbar.settings-dialog.rtype') }}</p>
+                <p class="title-font" :style="{backgroundColor: '#D35400'}">{{ t('appbar.settings-dialog.mime') }}</p>
+              </div>
+            </div>
+            <div class="bubble">
+              <div
+                class="bubble-circle-test multicolor"
+                :style="{ width: '60px', height: '60px'}"
+              />
+              <div
+                class="bubble-pulse-test"
+                :style="{ width: '120px', height: '120px', boxShadow: '1px 1px 8px 0 black', animation: 'pulsate 1s ease-in-out infinite'}"
+                width:
+              />
+            </div>
+          </div>
+          <v-progress-circular :model-value="counter" size="90" />
+        </div>
+      </v-card>
+      <v-divider />
       <v-card :flat="true">
         <v-card-text class="text-h6">
           {{ t('appbar.settings-dialog.filter-section.title') }}
@@ -93,15 +143,55 @@
   import useMitt from '@/composables/useMitt';
   import { useI18n } from 'vue-i18n';
   import { useSortFieldStore } from '@/stores/sort-field';
+  import { usePlayerMultiplierStore } from '@/stores/player-multiplier';
 
   const { t } = useI18n();
   const { config: currentConfig } = storeToRefs(useViewerConfigStore());
   const { fields: allPortals } = storeToRefs(useSortFieldStore());
+  const bubbleSize = ref(currentConfig.value.mapParams.bubbleSize || 60);
+  const bubbleDuration = ref(currentConfig.value.mapParams.bubbleDuration || 5);
   const emitter = useMitt();
   const active = ref(false);
+  const counter = ref(0);
+  const counterActive = ref(true);
+  const { multiplier } = storeToRefs(usePlayerMultiplierStore());
+  const opacity = ref(1);
+
   emitter.on('showSettings', () => {
     active.value = true;
   });
+
+  function createInterval () {
+    return setInterval(() => {
+      if (!counterActive.value) return;
+      counter.value += 100 / bubbleDuration.value;
+      if (counter.value > bubbleDuration.value * (100 / bubbleDuration.value)) {
+        counter.value = 0;
+        counterActive.value = false;
+        opacity.value = 0;
+        setTimeout(() => {
+          counterActive.value = true;
+          opacity.value = 1;
+        }, 3000);
+      }
+    }, 1000 / multiplier.value)
+  }
+
+  const interval = ref(createInterval());
+
+  watch([multiplier, bubbleDuration], () => {
+    clearInterval(interval.value);
+    counter.value = 0;
+    interval.value = createInterval();
+  })
+
+  watch(bubbleSize, () => {
+    currentConfig.value.mapParams.bubbleSize = bubbleSize.value;
+  });
+
+  watch(bubbleDuration, () => {
+    currentConfig.value.mapParams.bubbleDuration = bubbleDuration.value;
+  })
 
   const showMinimap = ref(currentConfig.value.minimapParams.include as boolean);
 
@@ -155,6 +245,138 @@
 
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+
+  $box-shadow: 1px 1px 8px 0 rgba(0, 0, 0, 0.75);
+
+  .visual-container {
+    margin: 0 auto;
+    display: flex;
+    flex-direction: row;
+    width: 30%;
+    height: 30%;
+    justify-content: space-between;
+  }
+
+  .container-test {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    top: 120px;
+    transition: opacity var(--opacity-transition-speed) ease-in;
+    transform-origin: center center;
+  }
+
+  .bubble-test {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .bubble-circle-test {
+    border-radius: 100%;
+    box-shadow: $box-shadow;
+    position: absolute;
+  }
+
+  .bubble-pulse-test {
+    animation: pulsate var(--pulsate-speed) ease-in-out infinite;
+    position: absolute;
+    border-radius: 100%;
+  }
+
+  .bubble-popup-test {
+    background-color: rgba(255, 255, 255, 0.75);
+    position: absolute;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    z-index: 2;
+    bottom: 100%;
+    padding: .2em 1em;
+    box-shadow: $box-shadow;
+    min-width: 100px;
+    max-width: 300px;
+    white-space: normal;
+    font-size: 14px;
+
+    p {
+      color: black;
+      margin: 0;
+    }
+
+    .types-container-test {
+      display: flex;
+      justify-content: center;
+      gap: .5em;
+      font-size: 10px;
+
+      p{
+        margin: 3px;
+        padding: 5px 8px;
+        font-size: 1.2em;
+        border-radius: 3px;
+        color: #fff;
+        box-sizing: border-box;
+      }
+    }
+  }
+
+  .multicolor {
+    animation: multicolor-animation 7s ease-in-out infinite;
+  }
+
+  .popup-title {
+    font-size: 14px;
+  }
+
+  @keyframes multicolor-animation {
+    0% {
+      background-color: hsl(0, 100%, 50%);
+    }
+    25% {
+      background-color: hsl(90, 100%, 50%);
+    }
+    50% {
+      background-color: hsl(180, 100%, 50%);
+    }
+    75% {
+      background-color: hsl(270, 100%, 50%);
+    }
+    100% {
+      background-color: hsl(360, 100%, 50%);
+    }
+  }
+
+  @keyframes pulsate {
+
+    $ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+
+    0% {
+      transform: scale(0.1, 0.1);
+      -ms-filter: $ms-filter;
+      filter: alpha(opacity=0);
+    }
+    25% {
+      opacity: 1;
+      -ms-filter: none;
+      filter: none;
+    }
+    75% {
+      opacity: 1;
+      -ms-filter: none;
+      filter: none;
+    }
+    100% {
+      transform: scale(1.2, 1.2);
+      -ms-filter: $ms-filter;
+      opacity: 0;
+    }
+  }
 
 </style>

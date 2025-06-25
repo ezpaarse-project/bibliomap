@@ -49,7 +49,7 @@
         return;
       }
       const logTimestamp = new Date(log.datetime).getTime();
-      bubblesToRemove.push({ marker, frame: { start: logTimestamp, fade: logTimestamp + (mapParams.bubbleDuration || 5) * 1000, end: logTimestamp + (mapParams.bubbleDuration || 5) * 1000 + 3000 } })
+      bubblesToRemove.push({ marker, frame: { start: logTimestamp, fade: logTimestamp + (config.value.mapParams.bubbleDuration || 5) * 1000, end: logTimestamp + (config.value.mapParams.bubbleDuration || 5) * 1000 + 3000 } })
     });
 
     function removeExpiredBubbles (timestamp: number) {

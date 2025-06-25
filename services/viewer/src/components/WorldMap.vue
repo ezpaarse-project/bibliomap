@@ -11,7 +11,7 @@
   import useMitt from '@/composables/useMitt';
   import { useBubbleStore } from '@/stores/bubble';
   import { useTimerStore } from '@/stores/timer';
-  import { useSortFieldStore, type Field } from '@/stores/sort-field';
+  import { type Field, useSortFieldStore } from '@/stores/sort-field';
   import { usePlayerMultiplierStore } from '@/stores/player-multiplier';
 
   const emitter = useMitt();
@@ -26,8 +26,6 @@
   useBubbleStore();
 
   let map: L.Map;
-
-  const size = mapParams.bubbleSize || 60;
 
   onMounted(() => {
 
@@ -161,12 +159,14 @@
 
       const bubbleHtml = getBubbleHtml(gradient, color)
 
+      const size = config.value.mapParams.bubbleSize;
+
       const bubble = L.divIcon({
         className: 'leaflet-marker',
         iconSize: [size, size],
         iconAnchor: [size / 2, size / 2],
         html: `
-          <div class='container'>
+          <div class='container' style="transform: scale(${config.value.mapParams.bubbleSize / 30})">
             <div class='bubble-popup' ${mapParams.includePopup ? '' : 'style="display: none;"'}>
               <p ${mapParams.popupText.platform_name ? '' : 'style="display: none;"'} class='title-font popup-title'><strong>${log.platform_name}</strong></p>
               <p ${config.value.mapParams.popupText.publication_title && log.publication_title ? '' : 'style="display: none;"'} class='body-font'>${log.publication_title}</p>
@@ -183,8 +183,8 @@
       const marker = L.marker([log['geoip-latitude'], log['geoip-longitude']], { icon: bubble }).addTo(map);
       const timestamp = new Date(log.datetime).getTime();
       const startTimestamp = timestamp;
-      const fadeTimestamp = timestamp + (mapParams.bubbleDuration || 5) * 1000;
-      const endTimestamp = timestamp + (mapParams.bubbleDuration || 5) * 1000 + 3000;
+      const fadeTimestamp = timestamp + (config.value.mapParams.bubbleDuration || 5) * 1000;
+      const endTimestamp = timestamp + (config.value.mapParams.bubbleDuration || 5) * 1000 + 3000;
       bubblesToRemove.push({ marker, frame: { start: startTimestamp, fade: fadeTimestamp, end: endTimestamp } });
       const elt = marker.getElement();
       if (!elt) return;
@@ -222,8 +222,8 @@
       default: backgroundColor = color;
     }
     return `<div class='bubble'>
-              <div style='background: ${gradient || backgroundColor || 'transparent'}; width: ${size}px; height: ${size}px' class='bubble-circle ${classes}'></div>
-              <div style='box-shadow: 1px 1px 8px 0 ${backgroundColor || 'black'}; width: ${size*2}px; height: ${size*2}px' class='bubble-pulse'></div>
+              <div style='background: ${gradient || backgroundColor || 'transparent'}; width: 60px; height: 60px' class='bubble-circle ${classes}'></div>
+              <div style='box-shadow: 1px 1px 8px 0 ${backgroundColor || 'black'}; width: 120px; height: 120px' class='bubble-pulse'></div>
             </div>`
   }
 
