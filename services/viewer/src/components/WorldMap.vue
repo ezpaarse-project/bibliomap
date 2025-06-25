@@ -118,7 +118,8 @@
     const bubblesToRemove: { marker : L.Marker, frame: { start: number, fade: number, end: number } }[] = [];
 
     function removeExpiredBubbles (timestamp: number) {
-      bubblesToRemove.forEach(bubble => {
+
+      bubblesToRemove.forEach((bubble, index) => {
         if (timestamp > bubble.frame.fade) {
           const elt = bubble.marker.getElement();
           if (elt) elt.style.opacity = '0';
@@ -129,8 +130,8 @@
         }
         if (timestamp > bubble.frame.end || timestamp < bubble.frame.start) {
           map.removeLayer(bubble.marker);
-          const index = bubblesToRemove.indexOf(bubble)
-          bubblesToRemove.splice(index, index + 1);
+          if (map.hasLayer(bubble.marker)) return;
+          bubblesToRemove.splice(index, 1);
         }
       });
     }
