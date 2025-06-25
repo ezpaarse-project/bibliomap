@@ -76,56 +76,7 @@
             "include": true,
             "index": 3,
             "portals": [
-                {
-                    "name": "insb",
-                    "color": "#9C126D",
-                    "url": "https://www.insb.cnrs.fr/fr"
-                },
-                {
-                    "name": "inc",
-                    "color": "#007E94",
-                    "url": "https://www.inc.cnrs.fr/fr"
-                },
-                {
-                    "name": "inee",
-                    "color": "#62AE25",
-                    "url": "https://www.inee.cnrs.fr/fr"
-                },
-                {
-                    "name": "inshs",
-                    "color": "#820E12",
-                    "url": "https://www.inshs.cnrs.fr/fr"
-                },
-                {
-                    "name": "insis",
-                    "color": "#D4002D",
-                    "url": "https://www.insis.cnrs.fr/fr"
-                },
-                {
-                    "name": "insmi",
-                    "color": "#547D3D",
-                    "url": "https://www.insmi.cnrs.fr/fr"
-                },
-                {
-                    "name": "in2p3",
-                    "color": "#E75113",
-                    "url": "https://www.in2p3.cnrs.fr/fr"
-                },
-                {
-                    "name": "inp",
-                    "color": "#004494",
-                    "url": "https://www.inp.cnrs.fr/fr"
-                },
-                {
-                    "name": "ins2i",
-                    "color": "#562A84",
-                    "url": "https://www.ins2i.cnrs.fr/fr"
-                },
-                {
-                    "name": "insu",
-                    "color": "#CC2381",
-                    "url": "https://www.insu.cnrs.fr/fr"
-                }
+
             ]
         },
         "replayDescription": {
