@@ -1,5 +1,5 @@
 <template>
-  <v-card :class="['minimap-container', { 'exit': currentLogs.length === 0 && hasEntered, 'enter': currentLogs.length > 0}]" :elevation="24">
+  <v-card :class="['minimap-container', { 'exit': bubblesToRemove.length === 0 && hasEntered, 'enter': bubblesToRemove.length > 0}]" :elevation="24">
     <div id="minimap" />
   </v-card>
 </template>
@@ -14,13 +14,13 @@
   const config = useViewerConfigStore().config;
   const mapParams = config.mapParams;
   const params = config.minimapParams;
-  const currentLogs = ref(<Log[]>[]);
   const usingPhone = window.innerWidth <= 768;
   const { timer } = storeToRefs(useTimerStore());
 
   let minimap: L.Map;
 
   let hasEntered = false;
+  const bubblesToRemove: { marker : L.Marker, frame: { start: number, fade: number, end: number } }[] = [];
 
   onMounted(() => {
     minimap = L.map('minimap', {
@@ -49,11 +49,8 @@
         return;
       }
       const logTimestamp = new Date(log.datetime).getTime();
-      currentLogs.value.push(log);
       bubblesToRemove.push({ marker, frame: { start: logTimestamp, fade: logTimestamp + (mapParams.bubbleDuration || 5) * 1000, end: logTimestamp + (mapParams.bubbleDuration || 5) * 1000 + 3000 } })
     });
-
-    const bubblesToRemove: { marker : L.Marker, frame: { start: number, fade: number, end: number } }[] = [];
 
     function removeExpiredBubbles (timestamp: number) {
 
