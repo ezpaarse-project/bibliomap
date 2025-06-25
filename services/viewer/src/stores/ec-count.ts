@@ -7,6 +7,7 @@ import { type Count, useCountSectionStore } from './count-section.ts';
 import { usePlayTimeframeStore } from '@/stores/play-timeframe.ts';
 import { usePlayerFileStore } from '@/stores/player-file.ts';
 import type { Log } from '@/main.ts';
+import { useViewerConfigStore } from './viewer-config.ts';
 
 export type EC = {
   datetime: string,
@@ -16,7 +17,7 @@ export type EC = {
 export const useEcCountStore = defineStore('ec-count', () => {
   const count = ref({} as Count);
 
-  const { fields } = storeToRefs(useSortFieldStore());
+  const { config: viewerConfig } = storeToRefs(useViewerConfigStore());
   const { files } = storeToRefs(usePlayerFileStore());
   const { timer } = storeToRefs(useTimerStore());
   const { sections } = storeToRefs(useCountSectionStore());
@@ -25,10 +26,18 @@ export const useEcCountStore = defineStore('ec-count', () => {
   const { db } = storeToRefs(useIndexedDBStore());
   const { fieldIdentifier } = storeToRefs(useSortFieldStore());
 
+  const fields = ref(viewerConfig.value.drawerParams.portalSection.portals as Field[]);
+
+  watch(() => viewerConfig.value.drawerParams.portalSection.portals, () => {
+    fields.value = viewerConfig.value.drawerParams.portalSection.portals;
+  });
+
   let currentRequestToken = 0;
 
   watch(files, async () => {
-    await resetCount()
+    await resetCount();
+    if ((usePlayStateStore().state !== PlayState.PLAYING && usePlayStateStore().state !== PlayState.PAUSED) || !timer.value) return;
+    updateCount(timer.value)
   });
 
   async function createCountFromEvents (events: Log[]) {
@@ -68,7 +77,8 @@ export const useEcCountStore = defineStore('ec-count', () => {
   }
 
   function getTotalCount () {
-    return Object.values(count.value)
+    return Object.entries(count.value)
+      .filter(([key]) => fields.value.map(f => f.name.toUpperCase()).includes(key.toUpperCase())).map(([, value]) => Object.values(value))
       .flatMap(Object.values)
       .reduce((sum, val) => sum + val, 0);
   }

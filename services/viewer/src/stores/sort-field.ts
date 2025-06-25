@@ -2,6 +2,7 @@ import { useIndexedDBStore } from './indexed-db';
 import type { EC } from './ec-count';
 import { usePlayStateStore } from './play-state';
 import { usePlayerFileStore } from './player-file';
+import { useViewerConfigStore } from './viewer-config';
 
 export type Field = {
   name: string;
@@ -93,6 +94,7 @@ export const useSortFieldStore = defineStore('sort-field', () => {
         })).sort((a, b) => a.name.localeCompare(b.name));
 
         usePlayStateStore().loaded();
+        useViewerConfigStore().config.drawerParams.portalSection.portals = fields.value;
         resolve()
       };
     });
@@ -142,7 +144,7 @@ export const useSortFieldStore = defineStore('sort-field', () => {
           resolve();
           return ;
         }
-        headers.value = Object.keys(cursor.value.log) as string[];
+        headers.value = Object.keys(cursor.value.log).sort() as string[];
         resolve();
       };
     });

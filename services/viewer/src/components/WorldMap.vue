@@ -10,19 +10,19 @@
   import { usePlatformFilterStore } from '@/stores/platform-filter';
   import useMitt from '@/composables/useMitt';
   import { useBubbleStore } from '@/stores/bubble';
-  import { useSortFieldStore } from '@/stores/sort-field';
   import { useTimerStore } from '@/stores/timer';
+  import { useSortFieldStore, type Field } from '@/stores/sort-field';
   import { usePlayerMultiplierStore } from '@/stores/player-multiplier';
 
   const emitter = useMitt();
 
-  const config = useViewerConfigStore().config;
-  const portalsStore = useSortFieldStore();
-  const mapParams = config.mapParams;
-  const mimes = config.mapParams.attributesColors.mimes as Record<string, { count: boolean, color: string }>;
+  const { config } = storeToRefs(useViewerConfigStore());
+  const mapParams = config.value.mapParams;
+  const mimes = config.value.mapParams.attributesColors.mimes as Record<string, { count: boolean, color: string }>;
   const { fieldIdentifier } = storeToRefs(useSortFieldStore());
+  const portalsStore = useSortFieldStore();
 
-  const height = config.appbarParams.include ? 'calc(100vh - 48px)' : '100vh';
+  const height = config.value.appbarParams.include ? 'calc(100vh - 48px)' : '100vh';
   useBubbleStore();
 
   let map: L.Map;
@@ -104,12 +104,12 @@
       if (typeof value !== 'string') return 'transparent';
 
       if (!value.includes('+')) {
-        return portalsStore.getFieldColor(value) || config.mapParams.attributesColors.defaultColor;
+        return portalsStore.getFieldColor(value) || config.value.mapParams.attributesColors.defaultColor;
       }
 
       const gradient = value
         .split('+')
-        .map((field: string) => portalsStore.getFieldColor(field) || config.mapParams.attributesColors.defaultColor)
+        .map((field: string) => portalsStore.getFieldColor(field) || config.value.mapParams.attributesColors.defaultColor)
         .join(', ');
 
       return `linear-gradient(to right, ${gradient})`;
@@ -142,9 +142,17 @@
       if (timer.value) removeExpiredBubbles(timer.value);
     });
 
+    function fieldInConfig (field: string) {
+      if (field.includes('+')) {
+        return field.split('+').reduce((a: boolean, b: string) => a || config.value.drawerParams.portalSection.portals.map((p: Field) => p.name.toUpperCase()).includes(b.toUpperCase()), false);
+      }
+      return config.value.drawerParams.portalSection.portals.map((p: Field) => p.name.toUpperCase()).includes(field.toUpperCase());
+    }
+
     emitter.on('EC', (log: Log) => {
       if (log.platform_name && !usePlatformFilterStore().isNameOkay(log.platform_name)) return;
       if (!log || !log['geoip-latitude'] || !log['geoip-longitude']) return;
+      if (!log[fieldIdentifier.value] || !fieldInConfig(log[fieldIdentifier.value] + '')) return;
 
       let color = getBubbleColor(log);
       const gradient = color.includes('linear-gradient') ? color : undefined;
@@ -161,7 +169,7 @@
           <div class='container'>
             <div class='bubble-popup' ${mapParams.includePopup ? '' : 'style="display: none;"'}>
               <p ${mapParams.popupText.platform_name ? '' : 'style="display: none;"'} class='title-font popup-title'><strong>${log.platform_name}</strong></p>
-              <p ${config.mapParams.popupText.publication_title && log.publication_title ? '' : 'style="display: none;"'} class='body-font'>${log.publication_title}</p>
+              <p ${config.value.mapParams.popupText.publication_title && log.publication_title ? '' : 'style="display: none;"'} class='body-font'>${log.publication_title}</p>
               <div class='types-container'>
                 <p style='${mapParams.popupText.rtype && log.rtype ? '' : 'display: none;'} background-color: ${mapParams.attributesColors.rtype || '#7F8C8D'}' class='title-font'>${log.rtype}</p>
                 <p style='${mapParams.popupText.mime && log.mime ? '' : 'display: none;'} background-color: ${log.mime && mimes[log.mime as keyof typeof mimes] && mimes[log.mime as keyof typeof mimes].color || '#D35400'}' class='title-font'>${log.mime}</p>

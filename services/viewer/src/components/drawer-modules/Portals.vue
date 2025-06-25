@@ -54,15 +54,18 @@
 
 <script setup lang="ts">
   import { useEcCountStore } from '@/stores/ec-count';
-  import { useSortFieldStore } from '@/stores/sort-field';
+  import { type Field, useSortFieldStore } from '@/stores/sort-field';
   import { useI18n } from 'vue-i18n';
   import { PlayState, usePlayStateStore } from '@/stores/play-state';
+  import { useViewerConfigStore } from '@/stores/viewer-config';
 
   const { t } = useI18n();
   const countStore = useEcCountStore();
   const { state } = storeToRefs(usePlayStateStore());
+  const { config: viewerConfig } = storeToRefs(useViewerConfigStore());
 
-  const { fields, headers, fieldIdentifier } = storeToRefs(useSortFieldStore());
+  const fields = computed(() => viewerConfig.value.drawerParams.portalSection.portals as Field[]);
+  const { headers, fieldIdentifier } = storeToRefs(useSortFieldStore());
 </script>
 
 <style lang="scss">

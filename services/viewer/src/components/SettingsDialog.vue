@@ -36,11 +36,11 @@
           <v-checkbox
             v-for="(value, index) in allPortals"
             :key="index"
-            v-model="shownPortals[index]"
+            v-model="shownPortals[value.name]"
             class="ma-0"
             :color="value.color || 'primary'"
             :hide-details="true"
-            :label="t(`drawer-custom.portals.${value.name}.title`)"
+            :label="value.name"
           />
         </div>
         <div class="pa-4">
@@ -88,15 +88,15 @@
 </template>
 
 <script setup lang="ts">
-  import initialConfig from '@/assets/config.json';
   import { useViewerConfigStore } from '@/stores/viewer-config';
   import { usePlatformFilterStore } from '@/stores/platform-filter';
   import useMitt from '@/composables/useMitt';
   import { useI18n } from 'vue-i18n';
+  import { useSortFieldStore } from '@/stores/sort-field';
 
   const { t } = useI18n();
   const { config: currentConfig } = storeToRefs(useViewerConfigStore());
-  const allPortals = initialConfig.drawerParams.portalSection.portals;
+  const { fields: allPortals } = storeToRefs(useSortFieldStore());
   const emitter = useMitt();
   const active = ref(false);
   emitter.on('showSettings', () => {
@@ -104,12 +104,22 @@
   });
 
   const showMinimap = ref(currentConfig.value.minimapParams.include as boolean);
-  const shownPortals = reactive<Record<string, boolean>>(
-    Object.keys(initialConfig.drawerParams.portalSection.portals).reduce((acc: Record<string, boolean>, key) => {
+
+  const shownPortals = ref(
+    allPortals.value.map(p => p.name).reduce((acc: Record<string, boolean>, key) => {
+      console.log(key);
       acc[key] = true
       return acc
     }, {})
   );
+
+  function resetShownFields () {
+    shownPortals.value = allPortals.value.map(p => p.name).reduce((acc: Record<string, boolean>, key) => {
+      acc[key] = true
+      return acc
+    }, {})
+  }
+
   const showTitles = ref(currentConfig.value.mapParams.popupText.publication_title as boolean);
   const { filter } = storeToRefs(usePlatformFilterStore());
 
@@ -117,19 +127,21 @@
     currentConfig.value.minimapParams.include = showMinimap.value;
   });
 
+  watch(allPortals, () => {
+    resetShownFields();
+  })
+
   watch(shownPortals, () => {
-    currentConfig.value.drawerParams.portalSection.portals = Object.fromEntries(
-      Object.entries(allPortals).filter(([key]) => shownPortals[key])
-    ) as unknown as typeof currentConfig.value.drawerParams.portalSection.portals;
-  });
+    currentConfig.value.drawerParams.portalSection.portals = allPortals.value.filter(p => shownPortals.value[p.name])
+  }, { deep: true });
 
   watch(showTitles, () => {
     currentConfig.value.mapParams.popupText.publication_title = showTitles.value;
   });
 
   function changeAll (check: boolean) {
-    Object.keys(allPortals).forEach(key => {
-      shownPortals[key] = check;
+    allPortals.value.forEach(key => {
+      shownPortals.value[key.name] = check;
     });
   }
 
