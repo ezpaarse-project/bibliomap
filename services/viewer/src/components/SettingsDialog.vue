@@ -73,16 +73,17 @@
       <v-card class="d-flex flex-row w-full align-center" :flat="true">
         <div>
           <v-card-text class="text-h6">
-            {{ t('appbar.settings-dialog.bubble-size') }}
+            {{ t('appbar.settings-dialog.bubble-section.bubble-size') }}
           </v-card-text>
           <v-slider
             v-model="bubbleSize"
-            :max="40"
+            :max="50"
             :min="5"
             thumb-label
+            width="400"
           />
           <v-card-text class="text-h6">
-            {{ t('appbar.settings-dialog.bubble-duration') }}
+            {{ t('appbar.settings-dialog.bubble-section.bubble-duration') }}
           </v-card-text>
           <div>
             <v-slider
@@ -97,11 +98,11 @@
         <div class="visual-container">
           <div class="container-test" :style="{transform: `scale(${bubbleSize / 30})`, opacity: opacity}">
             <div class="bubble-popup-test">
-              <p class="title-font popup-title-test"><strong>{{ t('appbar.settings-dialog.bubble-title') }}</strong></p>
-              <p class="body-font">{{ t('appbar.settings-dialog.publication-title') }}</p>
+              <p class="title-font popup-title-test"><strong>{{ t('appbar.settings-dialog.bubble-section.bubble-title') }}</strong></p>
+              <p class="body-font">{{ t('appbar.settings-dialog.bubble-section.publication-title') }}</p>
               <div class="types-container-test">
-                <p class="title-font" :style="{backgroundColor: '#7F8C8D'}">{{ t('appbar.settings-dialog.rtype') }}</p>
-                <p class="title-font" :style="{backgroundColor: '#D35400'}">{{ t('appbar.settings-dialog.mime') }}</p>
+                <p class="title-font" :style="{backgroundColor: '#7F8C8D'}">{{ t('appbar.settings-dialog.bubble-section.rtype') }}</p>
+                <p class="title-font" :style="{backgroundColor: '#D35400'}">{{ t('appbar.settings-dialog.bubble-section.mime') }}</p>
               </div>
             </div>
             <div class="bubble">
@@ -250,11 +251,11 @@
   $box-shadow: 1px 1px 8px 0 rgba(0, 0, 0, 0.75);
 
   .visual-container {
-    margin: 0 auto;
+    margin: 0 5% 0 auto;
     display: flex;
     flex-direction: row;
-    width: 30%;
-    height: 30%;
+    width: 40%;
+    height: 60px;
     justify-content: space-between;
   }
 
@@ -262,8 +263,9 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: flex-end;
     position: relative;
-    top: 120px;
+    width: 100%;
     transition: opacity var(--opacity-transition-speed) ease-in;
     transform-origin: center center;
   }
@@ -289,7 +291,6 @@
 
   .bubble-popup-test {
     background-color: rgba(255, 255, 255, 0.75);
-    position: absolute;
     text-align: center;
     display: flex;
     flex-direction: column;

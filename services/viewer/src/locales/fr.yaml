@@ -18,6 +18,13 @@ appbar:
     filter-section:
       title: Filtrer par plateforme éditeur
       placeholder: 'ex: Wiley'
+    bubble-section:
+      bubble-size: Taille des bulles
+      bubble-duration: Durée de la bulle
+      bubble-title: Plateforme
+      publication-title: Titre de la publication
+      rtype: ARTICLE
+      mime: HTML
 drawer:
   timer:
     tooltips:
