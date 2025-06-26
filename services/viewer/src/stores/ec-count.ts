@@ -73,7 +73,13 @@ export const useEcCountStore = defineStore('ec-count', () => {
   }
 
   function getCountOfMime (mime: string) {
-    return Object.values(count.value).reduce((a, b) => a + (b[mime.toUpperCase()] || 0), 0);
+    return Object.values(
+      Object.fromEntries(
+        Object.entries(count.value)
+          .filter(([key]) => fields.value.map(f => f.name.toUpperCase()).includes(key.toUpperCase()))
+      )
+    )
+      .reduce((a, b) => a + (b[mime.toUpperCase()] || 0), 0);
   }
 
   function getTotalCount () {
