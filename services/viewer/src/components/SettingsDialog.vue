@@ -52,7 +52,7 @@
       <v-divider />
       <v-row class="pa-4" :flat="true">
         <div
-          class="d-flex justify-space-between align-center pr-4"
+          class="d-flex justify-space-between align-center pr-4 w-100"
           style="height: 72px;"
         >
           <v-card-title class="text-h6" style="font-weight: 400;">
