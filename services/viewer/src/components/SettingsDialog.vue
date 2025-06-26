@@ -99,7 +99,7 @@
           <div class="container-test" :style="{transform: `scale(${bubbleSize / 30})`, opacity: opacity}">
             <div class="bubble-popup-test">
               <p class="title-font popup-title-test"><strong>{{ t('appbar.settings-dialog.bubble-section.bubble-title') }}</strong></p>
-              <p class="body-font">{{ t('appbar.settings-dialog.bubble-section.publication-title') }}</p>
+              <p v-if="showTitles" class="body-font">{{ t('appbar.settings-dialog.bubble-section.publication-title') }}</p>
               <div class="types-container-test">
                 <p class="title-font" :style="{backgroundColor: '#7F8C8D'}">{{ t('appbar.settings-dialog.bubble-section.rtype') }}</p>
                 <p class="title-font" :style="{backgroundColor: '#D35400'}">{{ t('appbar.settings-dialog.bubble-section.mime') }}</p>
