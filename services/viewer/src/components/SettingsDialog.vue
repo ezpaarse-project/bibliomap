@@ -7,7 +7,7 @@
     <v-card flat>
       <v-card-title class="text-h4">{{ t('appbar.settings-dialog.title') }}</v-card-title>
       <v-divider />
-      <v-row class="d-flex flex-column" flat>
+      <v-row class="d-flex flex-column pa-4" flat>
         <div
           class="d-flex justify-space-between align-center pr-4"
           style="height: 72px;"
