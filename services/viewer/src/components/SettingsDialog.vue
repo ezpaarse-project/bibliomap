@@ -2,11 +2,12 @@
   <v-dialog
     v-model="active"
     max-width="1000"
+    scrollable
   >
-    <v-card :flat="true">
+    <v-card flat>
       <v-card-title class="text-h4">{{ t('appbar.settings-dialog.title') }}</v-card-title>
       <v-divider />
-      <v-card class="d-flex flex-column" flat>
+      <v-row class="d-flex flex-column" flat>
         <div
           class="d-flex justify-space-between align-center pr-4"
           style="height: 72px;"
@@ -25,19 +26,19 @@
             />
           </div>
         </div>
-      </v-card>
+      </v-row>
       <v-divider />
-      <v-card v-if="allPortals.length > 1" :flat="true">
+      <v-row v-if="allPortals.length > 1" class="pa-4" flat>
         <v-card-text class="text-h6">{{ t('appbar.settings-dialog.portals-section.title') }}</v-card-text>
         <div
-          class="d-flex flex-column flex-wrap px-4"
+          class="d-flex flex-column flex-wrap px-4 justify-flex-start"
           style="gap: 4px; max-height: 300px; overflow-y: auto;"
         >
           <v-checkbox
             v-for="(value, index) in allPortals"
             :key="index"
             v-model="shownPortals[value.name]"
-            class="ma-0"
+            class="checkbox"
             :color="value.color || 'primary'"
             :hide-details="true"
             :label="value.name"
@@ -47,9 +48,9 @@
           <v-btn class="mr-4" color="primary" @click="checkAll">{{ t('appbar.settings-dialog.portals-section.select-all') }}</v-btn>
           <v-btn color="primary" @click="uncheckAll">{{ t('appbar.settings-dialog.portals-section.select-none') }}</v-btn>
         </div>
-      </v-card>
+      </v-row>
       <v-divider />
-      <v-card :flat="true">
+      <v-row class="pa-4" :flat="true">
         <div
           class="d-flex justify-space-between align-center pr-4"
           style="height: 72px;"
@@ -68,9 +69,9 @@
             />
           </div>
         </div>
-      </v-card>
+      </v-row>
       <v-divider />
-      <v-card class="d-flex flex-row w-full align-center" :flat="true">
+      <v-row class="d-flex flex-row w-full align-center pa-8" flat>
         <div>
           <v-card-text class="text-h6">
             {{ t('appbar.settings-dialog.bubble-section.bubble-size') }}
@@ -119,9 +120,9 @@
           </div>
           <v-progress-circular :model-value="counter" size="90" />
         </div>
-      </v-card>
+      </v-row>
       <v-divider />
-      <v-card :flat="true">
+      <v-row class="pa-4 d-flex align-center" :flat="true">
         <v-card-text class="text-h6">
           {{ t('appbar.settings-dialog.filter-section.title') }}
         </v-card-text>
@@ -132,7 +133,7 @@
           color="primary"
           :placeholder="t('appbar.settings-dialog.filter-section.placeholder')"
         />
-      </v-card>
+      </v-row>
       <v-divider />
     </v-card>
   </v-dialog>
@@ -334,6 +335,10 @@
 
   .popup-title {
     font-size: 14px;
+  }
+
+  .checkbox {
+    width: 15rem;
   }
 
   @keyframes multicolor-animation {
