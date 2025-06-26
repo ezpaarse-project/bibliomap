@@ -3,7 +3,7 @@ import { usePlayerMultiplierStore } from '@/stores/player-multiplier.ts';
 import { PlayState, usePlayStateStore } from '@/stores/play-state.ts';
 
 export const useTimerStore = defineStore('timer', () => {
-  const timer = ref<number | null>(null);
+  const timer = ref<number>(0);
   let interval: ReturnType<typeof setInterval> | null = null;
 
   const { multiplier } = storeToRefs(usePlayerMultiplierStore());
@@ -18,7 +18,7 @@ export const useTimerStore = defineStore('timer', () => {
       if (timer.value >= timeframe.value.endDatetime) {
         usePlayStateStore().stop();
         if (interval) clearInterval(interval);
-        timer.value = timeframe.value.startDatetime;
+        timer.value = timeframe.value.startDatetime || 0;
       }
     }, 1000 / multiplier);
   }
@@ -27,14 +27,14 @@ export const useTimerStore = defineStore('timer', () => {
     switch(state.value) {
       case (PlayState.PLAYING):
         if (!timer.value) {
-          timer.value = timeframe.value.startDatetime;
+          timer.value = timeframe.value.startDatetime || 0;
         }
         if (!interval) interval = createInterval(multiplier.value);
         break;
       case (PlayState.STOPPED):
         if (interval) clearInterval(interval);
         interval = null;
-        timer.value = null;
+        timer.value = timeframe.value.startDatetime || 0;
         break;
       case (PlayState.LOADING):
         if (interval) clearInterval(interval);
@@ -52,6 +52,10 @@ export const useTimerStore = defineStore('timer', () => {
     if (interval) clearInterval(interval);
     interval = createInterval(m)
   });
+
+  watch (timeframe, () => {
+    timer.value = timeframe.value.startDatetime || 0;
+  })
 
   return { timer };
 });

@@ -7,7 +7,7 @@
         </div>
 
         <v-slider
-          v-model="timerValue"
+          v-model="timer"
           class="w-100"
           :disabled="playState === PlayState.STOPPED || playState === PlayState.LOADING"
           :max="sliderMax"
@@ -42,7 +42,6 @@
 
   const { timer } = storeToRefs(useTimerStore());
   const { timeframe } = storeToRefs(usePlayTimeframeStore());
-  const timerValue = ref(0);
 
   const { state: playState } = storeToRefs(usePlayStateStore());
   const { multiplier } = storeToRefs(usePlayerMultiplierStore());
@@ -50,21 +49,9 @@
   const sliderMin = ref(0);
   const sliderMax = ref(0);
 
-  watch(timer, () => {
-    if (!timer.value) {
-      timerValue.value = 0; return
-    }
-    timerValue.value = timer.value;
-  })
-
-  watch(timerValue , (t: number) => {
-    timer.value = t;
-  })
-
   watch (timeframe.value, () => {
     sliderMin.value = timeframe.value.startDatetime || 0;
     sliderMax.value = timeframe.value.endDatetime || Number.POSITIVE_INFINITY;
-    timer.value = sliderMin.value;
   })
 
 </script>
