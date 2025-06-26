@@ -10,7 +10,7 @@ appbar:
     minimap-section:
       title: Show minimap
     portals-section:
-      title: Disciplines to display
+      title: Fields to display
       select-all: Select all
       select-none: Select none
     journal-titles-section:

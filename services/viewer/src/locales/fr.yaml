@@ -10,7 +10,7 @@ appbar:
     minimap-section:
       title: Afficher la minimap
     portals-section:
-      title: Disciplines à afficher
+      title: Champs à afficher
       select-all: Tout cocher
       select-none: Tout décocher
     review-titles-section:
