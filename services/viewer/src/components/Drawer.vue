@@ -12,17 +12,20 @@
         <Player />
         <v-divider />
       </div>
-      <div>
+      <div v-if="state !== PlayState.LOADING">
         <Timer />
         <v-divider />
       </div>
-      <div v-if="props.counterSection.include">
+      <div v-if="props.counterSection.include && state !== PlayState.LOADING">
         <Counter />
         <v-divider />
       </div>
-      <div v-if="props.portalSection.include">
+      <div v-if="props.portalSection.include && state !== PlayState.LOADING">
         <Portals />
         <v-divider />
+      </div>
+      <div v-if="state === PlayState.LOADING" class="d-flex align-center justify-center mt-8">
+        <v-progress-circular indeterminate size="74" />
       </div>
     </div>
   </v-navigation-drawer>
@@ -32,10 +35,12 @@
 <script setup lang="ts">
   import { useViewerConfigStore } from '@/stores/viewer-config';
   import useMitt from '@/composables/useMitt';
+  import { PlayState, usePlayStateStore } from '@/stores/play-state';
 
   const config = useViewerConfigStore().config;
   const props = config.drawerParams;
   const emitter = useMitt();
+  const { state } = storeToRefs(usePlayStateStore());
 
   const include = !(!props || props.include === false);
 

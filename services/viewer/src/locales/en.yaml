@@ -63,3 +63,6 @@ drawer:
     placeholder: 'ex: Publisher name'
 version-card:
   connection: Connected to ezPAARSE
+progress-bar:
+  clearing-db: Clearing database
+  inserting-file: Inserting file {name}

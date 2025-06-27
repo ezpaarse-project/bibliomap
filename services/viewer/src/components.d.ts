@@ -23,6 +23,7 @@ declare module 'vue' {
     Player: typeof import('./components/drawer-modules/Player.vue')['default']
     PlayingCard: typeof import('./components/state-cards/PlayingCard.vue')['default']
     Portals: typeof import('./components/drawer-modules/Portals.vue')['default']
+    ProgressBar: typeof import('./components/ProgressBar.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SettingsButton: typeof import('./components/appbar-buttons/SettingsButton.vue')['default']

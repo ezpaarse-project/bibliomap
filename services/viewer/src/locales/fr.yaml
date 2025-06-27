@@ -63,3 +63,6 @@ drawer:
     placeholder: 'ex: Nom de la plateforme'
 version-card:
   connection: Connecté à ezPAARSE
+progress-bar:
+  clearing-db: Nettoyage de la base de données
+  inserting-file: Chargement du fichier {name}

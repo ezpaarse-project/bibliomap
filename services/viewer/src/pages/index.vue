@@ -7,6 +7,7 @@
     <VersionCard />
     <InformationDrawer />
     <SettingsDialog />
+    <ProgressBar />
   </main>
 </template>
 
