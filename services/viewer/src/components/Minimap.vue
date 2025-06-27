@@ -11,8 +11,7 @@
   import useMitt from '@/composables/useMitt';
   import { useTimerStore } from '@/stores/timer';
 
-  const config = useViewerConfigStore().config;
-  const mapParams = config.mapParams;
+  const config = (useViewerConfigStore()).config;
   const params = config.minimapParams;
   const usingPhone = window.innerWidth <= 768;
   const { timer } = storeToRefs(useTimerStore());
@@ -49,7 +48,7 @@
         return;
       }
       const logTimestamp = new Date(log.datetime).getTime();
-      bubblesToRemove.push({ marker, frame: { start: logTimestamp, fade: logTimestamp + (config.value.mapParams.bubbleDuration || 5) * 1000, end: logTimestamp + (config.value.mapParams.bubbleDuration || 5) * 1000 + 3000 } })
+      if (config.value) bubblesToRemove.push({ marker, frame: { start: logTimestamp, fade: logTimestamp + (config.value.mapParams.bubbleDuration || 5) * 1000, end: logTimestamp + (config.value.mapParams.bubbleDuration || 5) * 1000 + 3000 } })
     });
 
     function removeExpiredBubbles (timestamp: number) {

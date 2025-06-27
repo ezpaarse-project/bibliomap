@@ -20,7 +20,8 @@
   const mapParams = config.value.mapParams;
   const mimes = config.value.mapParams.attributesColors.mimes as Record<string, { count: boolean, color: string }>;
   const { fieldIdentifier } = storeToRefs(useSortFieldStore());
-  const portalsStore = useSortFieldStore();
+  const fieldStore = useSortFieldStore();
+  const { multiplier } = storeToRefs(usePlayerMultiplierStore());
 
   const height = config.value.appbarParams.include ? 'calc(100vh - 48px)' : '100vh';
   useBubbleStore();
@@ -102,12 +103,12 @@
       if (typeof value !== 'string') return 'transparent';
 
       if (!value.includes('+')) {
-        return portalsStore.getFieldColor(value) || config.value.mapParams.attributesColors.defaultColor;
+        return fieldStore.getFieldColor(value) || config.value.mapParams.attributesColors.defaultColor;
       }
 
       const gradient = value
         .split('+')
-        .map((field: string) => portalsStore.getFieldColor(field) || config.value.mapParams.attributesColors.defaultColor)
+        .map((field: string) => fieldStore.getFieldColor(field) || config.value.mapParams.attributesColors.defaultColor)
         .join(', ');
 
       return `linear-gradient(to right, ${gradient})`;
@@ -183,8 +184,8 @@
       const marker = L.marker([log['geoip-latitude'], log['geoip-longitude']], { icon: bubble }).addTo(map);
       const timestamp = new Date(log.datetime).getTime();
       const startTimestamp = timestamp;
-      const fadeTimestamp = timestamp + (config.value.mapParams.bubbleDuration || 5) * 1000;
-      const endTimestamp = timestamp + (config.value.mapParams.bubbleDuration || 5) * 1000 + 3000;
+      const fadeTimestamp = timestamp + multiplier.value * ((config.value.mapParams.bubbleDuration || 5) * 1000);
+      const endTimestamp = timestamp + multiplier.value * ((config.value.mapParams.bubbleDuration || 5) * 1000) + 3000;
       bubblesToRemove.push({ marker, frame: { start: startTimestamp, fade: fadeTimestamp, end: endTimestamp } });
       const elt = marker.getElement();
       if (!elt) return;
@@ -192,18 +193,15 @@
       if (!map.getBounds().contains(L.latLng(log['geoip-latitude'], log['geoip-longitude']))) {
         emitter.emit('minimap', { log, bubble });
       }
-
-      const { multiplier } = storeToRefs(usePlayerMultiplierStore());
-
-      function changeAnimationSpeed (multiplier: number) {
-        document.documentElement.style.setProperty('--pulsate-speed', `${1/multiplier}s`);
-        document.documentElement.style.setProperty('--opacity-transition-speed', `${1.5/multiplier}s`);
-      }
-
-      watch(multiplier, () => {
-        changeAnimationSpeed(multiplier.value);
-      });
     });
+  });
+
+  function changeAnimationSpeed (multiplier: number) {
+    document.documentElement.style.setProperty('--opacity-transition-speed', `${1.5/multiplier}s`);
+  }
+
+  watch(multiplier, () => {
+    changeAnimationSpeed(multiplier.value);
   });
 
   function getBubbleHtml (gradient: string | undefined, color: string) {

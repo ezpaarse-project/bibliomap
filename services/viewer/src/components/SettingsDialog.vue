@@ -129,7 +129,7 @@
           <div>
             <v-slider
               v-model="bubbleDuration"
-              :max="500"
+              :max="30"
               :min="1"
               :step="1"
               thumb-label
@@ -218,12 +218,12 @@
           opacity.value = 1;
         }, 3000);
       }
-    }, 1000 / multiplier.value)
+    }, 1000)
   }
 
   const interval = ref(createInterval());
 
-  watch([multiplier, bubbleDuration], () => {
+  watch(bubbleDuration, () => {
     clearInterval(interval.value);
     counter.value = 0;
     interval.value = createInterval();
