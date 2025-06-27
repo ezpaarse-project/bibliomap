@@ -12,15 +12,15 @@
         <Player />
         <v-divider />
       </div>
-      <div v-if="state !== PlayState.LOADING">
+      <div v-if="state !== PlayState.LOADING && files.length > 0">
         <Timer />
         <v-divider />
       </div>
-      <div v-if="props.counterSection.include && state !== PlayState.LOADING">
+      <div v-if="props.counterSection.include && state !== PlayState.LOADING && files.length > 0">
         <Counter />
         <v-divider />
       </div>
-      <div v-if="props.portalSection.include && state !== PlayState.LOADING">
+      <div v-if="props.portalSection.include && state !== PlayState.LOADING && files.length > 0">
         <Portals />
         <v-divider />
       </div>
@@ -36,11 +36,13 @@
   import { useViewerConfigStore } from '@/stores/viewer-config';
   import useMitt from '@/composables/useMitt';
   import { PlayState, usePlayStateStore } from '@/stores/play-state';
+  import { usePlayerFileStore } from '@/stores/player-file';
 
   const config = useViewerConfigStore().config;
   const props = config.drawerParams;
   const emitter = useMitt();
   const { state } = storeToRefs(usePlayStateStore());
+  const { files } = storeToRefs(usePlayerFileStore());
 
   const include = !(!props || props.include === false);
 
