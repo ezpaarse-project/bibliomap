@@ -10,8 +10,8 @@
           v-model="timer"
           class="w-100"
           :disabled="playState === PlayState.STOPPED || playState === PlayState.LOADING"
-          :max="sliderMax"
-          :min="sliderMin"
+          :max="timeframe.endDatetime || Number.POSITIVE_INFINITY"
+          :min="timeframe.startDatetime || 0"
           prepend-icon="mdi-play"
           :step="1000"
         />
@@ -45,14 +45,6 @@
 
   const { state: playState } = storeToRefs(usePlayStateStore());
   const { multiplier } = storeToRefs(usePlayerMultiplierStore());
-
-  const sliderMin = ref(0);
-  const sliderMax = ref(0);
-
-  watch (timeframe.value, () => {
-    sliderMin.value = timeframe.value.startDatetime || 0;
-    sliderMax.value = timeframe.value.endDatetime || Number.POSITIVE_INFINITY;
-  })
 
 </script>
 
