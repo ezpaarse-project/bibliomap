@@ -25,6 +25,10 @@ appbar:
       publication-title: Titre de la publication
       rtype: ARTICLE
       mime: HTML
+    mimes-section:
+      title: Champs à afficher
+      select-all: Tout cocher
+      select-none: Tout décocher
 drawer:
   timer:
     tooltips:

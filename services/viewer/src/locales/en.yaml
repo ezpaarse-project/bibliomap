@@ -25,6 +25,10 @@ appbar:
       publication-title: Publication title
       rtype: ARTICLE
       mime: HTML
+    mimes-section:
+      title: Fields to display
+      select-all: Select all
+      select-none: Select none
 drawer:
   timer:
     tooltips:

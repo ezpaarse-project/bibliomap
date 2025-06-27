@@ -12,6 +12,7 @@ export type Mime = {
 export const useMimeStore = defineStore('mime', () => {
 
   const mimes = ref([] as Mime[]);
+  const shownMimes = ref([] as Mime[]);
   const { files } = storeToRefs(usePlayerFileStore());
   const { db } = storeToRefs(useIndexedDBStore());
 
@@ -47,7 +48,7 @@ export const useMimeStore = defineStore('mime', () => {
             : '#7F8C8D',
         })).sort((a, b) => a.name.localeCompare(b.name));
         usePlayStateStore().loaded();
-
+        shownMimes.value = [...mimes.value];
         resolve();
       }
     });
@@ -57,5 +58,5 @@ export const useMimeStore = defineStore('mime', () => {
     setMimes();
   });
 
-  return { mimes };
+  return { mimes, shownMimes };
 })
