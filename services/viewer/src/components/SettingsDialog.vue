@@ -93,6 +93,24 @@
         </div>
       </v-row>
       <v-divider />
+      <v-row class="pa-4" :flat="true">
+        <div
+          class="d-flex justify-space-between align-center pr-4 w-100"
+          style="height: 72px;"
+        >
+          <v-card-title class="text-h6" style="font-weight: 400;">
+            {{ t('appbar.settings-dialog.multiplier-section.title') }}
+          </v-card-title>
+          <div>
+            <v-number-input
+              v-model="multiplier"
+              dense
+              hide-details="auto"
+            />
+          </div>
+        </div>
+      </v-row>
+      <v-divider />
       <v-row class="d-flex flex-row w-full align-center pa-8" flat>
         <div>
           <v-card-text class="text-h6">

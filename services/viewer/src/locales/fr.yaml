@@ -18,6 +18,8 @@ appbar:
     filter-section:
       title: Filtrer par plateforme éditeur
       placeholder: 'ex: Wiley'
+    multiplier-section:
+      title: Multiplicateur de vitesse de la simulation
     bubble-section:
       bubble-size: Taille des bulles
       bubble-duration: Durée de la bulle
@@ -26,7 +28,7 @@ appbar:
       rtype: ARTICLE
       mime: HTML
     mimes-section:
-      title: Champs à afficher
+      title: Types de fichiers à afficher
       select-all: Tout cocher
       select-none: Tout décocher
 drawer:
