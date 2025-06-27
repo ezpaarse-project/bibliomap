@@ -8,6 +8,7 @@
     <InformationDrawer />
     <SettingsDialog />
     <ProgressBar />
+    <FileTooLargeDialog />
   </main>
 </template>
 

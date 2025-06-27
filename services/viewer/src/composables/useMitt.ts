@@ -11,6 +11,7 @@ type Events = {
   toggleDrawer: null;
   log: Log;
   EC: Log;
+  resetFileField: null;
 };
 
 const emitter = mitt<Events>();

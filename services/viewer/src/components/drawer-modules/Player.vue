@@ -57,8 +57,10 @@
   import { useI18n } from 'vue-i18n';
   import { usePlayerFileStore } from '@/stores/player-file';
   import { PlayState, usePlayStateStore } from '@/stores/play-state.ts';
+  import useMitt from '@/composables/useMitt';
 
   const { t } = useI18n();
+  const emitter = useMitt();
   const filesStore = usePlayerFileStore();
   const files = ref([] as File[]);
   const { state: playState } = storeToRefs(usePlayStateStore());
@@ -88,6 +90,10 @@
   const handlePause = () => {
     usePlayStateStore().pause();
   }
+
+  emitter.on('resetFileField', () => {
+    files.value = [];
+  });
 </script>
 
 <style scoped lang="scss">

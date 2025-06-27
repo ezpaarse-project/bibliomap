@@ -66,3 +66,8 @@ version-card:
 progress-bar:
   clearing-db: Clearing database
   inserting-file: Inserting file {name}
+file-too-large-dialog:
+  title: Large files
+  message: These files are large (>50Mo). Those files may take a long time to load and may use a certain number of resources. Do you want to continue ?
+  agree: Load
+  disagree: Cancel

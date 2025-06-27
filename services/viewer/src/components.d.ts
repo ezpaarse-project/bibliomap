@@ -14,6 +14,7 @@ declare module 'vue' {
     Counter: typeof import('./components/drawer-modules/Counter.vue')['default']
     Description: typeof import('./components/drawer-modules/Description.vue')['default']
     Drawer: typeof import('./components/Drawer.vue')['default']
+    FileTooLargeDialog: typeof import('./components/FileTooLargeDialog.vue')['default']
     InfoButton: typeof import('./components/appbar-buttons/InfoButton.vue')['default']
     InformationContent: typeof import('./components/information-components/InformationContent.vue')['default']
     InformationDrawer: typeof import('./components/information-components/InformationDrawer.vue')['default']

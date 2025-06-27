@@ -4,21 +4,38 @@ import type { Log } from '@/main';
 import { usePlayStateStore } from './play-state';
 import { useProgressStore } from './progress';
 import { useI18n } from 'vue-i18n';
+import { useLargeFileStore } from './large-file';
 
 export const usePlayerFileStore = defineStore('player-file', () => {
 
   const files = ref([] as File[]);
   const { db } = storeToRefs(useIndexedDBStore());
-  const { progress, message, active } = storeToRefs(useProgressStore());
+  const { progress, message, active: progressBarActive } = storeToRefs(useProgressStore());
+  const { permission, largeFiles, active: filesTooLargeActive } = storeToRefs(useLargeFileStore());
 
   const { t } = useI18n();
 
   async function setFiles (newFiles: File[]) {
+    if (newFiles.length === 0) return;
+    if (areFilesTooLarge(newFiles) && !permission.value) {
+      largeFiles.value = newFiles;
+      filesTooLargeActive.value = true;
+      return;
+    }
+    permission.value = true;
     usePlayStateStore().loading();
     await clearDB();
     await insertFilesIntoDB(newFiles);
     usePlayStateStore().loaded();
     files.value = newFiles;
+  }
+
+  function areFilesTooLarge (files: File[]) {
+    let totalSize = 0;
+    for (const file of files) {
+      totalSize += file.size;
+    }
+    return totalSize > 50 * 1024 * 1024;
   }
 
   async function insertEachLineIntoDB (file: File, db: IDBDatabase) {
@@ -58,13 +75,13 @@ export const usePlayerFileStore = defineStore('player-file', () => {
 
   async function insertFilesIntoDB (files: File[]) {
     if (!db.value) return;
-    active.value = true;
+    progressBarActive.value = true;
     for (const file of files) {
       progress.value = 0;
       message.value = t('progress-bar.inserting-file', { name: file.name });
       await insertEachLineIntoDB(file, db.value);
     }
-    active.value = false;
+    progressBarActive.value = false;
   }
 
   async function clearDB () {
@@ -72,7 +89,7 @@ export const usePlayerFileStore = defineStore('player-file', () => {
     return new Promise<void>(resolve => {
       message.value = t('progress-bar.clearing-db');
       progress.value = 0;
-      active.value = true;
+      progressBarActive.value = true;
       if (!db.value) {
         resolve();
         return;
@@ -82,11 +99,16 @@ export const usePlayerFileStore = defineStore('player-file', () => {
       const clearRequest = store.clear();
       clearRequest.onsuccess = () => {
         progress.value = 100;
-        active.value = false;
+        progressBarActive.value = false;
         resolve();
       };
     });
   }
+
+  watch(permission, () => {
+    if(permission.value) setFiles(largeFiles.value);
+    else console.log('HERE');
+  });
 
   return { files, setFiles };
 });
