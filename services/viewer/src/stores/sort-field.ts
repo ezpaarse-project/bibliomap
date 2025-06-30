@@ -41,12 +41,16 @@ export const useSortFieldStore = defineStore('sort-field', () => {
     return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
   }
 
-  function stringToColor (str: string) {
-    let hash = 0;
+  function djb2Hash (str: string): number {
+    let hash = 5381;
     for (let i = 0; i < str.length; i++) {
-      hash = str.charCodeAt(i) + ((hash << 5) - hash);
-      hash = hash & hash;
+      hash = (hash * 33) ^ str.charCodeAt(i);
     }
+    return hash >>> 0; // Convert to unsigned 32-bit integer
+  }
+
+  function stringToColor (str: string) {
+    const hash = djb2Hash(str);
 
     const hue = Math.abs(hash) % 360;
     const saturation = 70 + (Math.abs(hash) % 30);
