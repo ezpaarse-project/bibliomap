@@ -1,15 +1,15 @@
 <template>
-  <div class="replay">
-    <div class="replay-circle-container">
-      <span class="replay-circle"><v-icon icon="mdi-autorenew" /></span>
-      <span class="replay-circle-background"><v-icon icon="mdi-autorenew" /></span>
+  <div class="loading">
+    <div class="loading-icon-container">
+      <span class="loading-icon"><v-icon icon="mdi-autorenew" /></span>
+      <span class="loading-icon-background"><v-icon icon="mdi-autorenew" /></span>
     </div>
-    <span class="replay-text">LOADING</span>
+    <span class="loading-text">LOADING</span>
   </div>
 </template>
 
 <style scoped lang='scss'>
-.replay {
+.loading {
   z-index: 1000;
   width: 110px;
   display: flex;
@@ -17,15 +17,7 @@
   align-items: center;
 }
 
-.replayWithLegend {
-  margin: 0 0 20px 330px;
-}
-
-.replayWithoutLegend {
-  margin: 0 0 20px 30px;
-}
-
-.replay .replay-text {
+.loading .loading-text {
   font-size: 20px;
   text-transform: uppercase;
   font-weight: bold;
@@ -36,11 +28,11 @@
   white-space: nowrap;
 }
 
-.replay-circle-container{
+.loading-icon-container{
   display: flex;
 }
 
-.replay .replay-circle{
+.loading .loading-icon{
   height: 18px;
   width: 18px;
   color: darkgreen;
@@ -52,11 +44,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  animation: replay-animation ease-out 4s infinite;
+  animation: loading-animation ease-out 4s infinite;
   z-index: 1002;
 }
 
-.replay .replay-circle-background{
+.loading .loading-icon-background{
   opacity: .5;
   height: 18px;
   width: 18px;
@@ -66,11 +58,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  animation: replay-background-animation ease-out 4s infinite;
+  animation: loading-background-animation ease-out 4s infinite;
   z-index: 1001;
 }
 
-@keyframes replay-animation {
+@keyframes loading-animation {
   0%{
     transform: rotate(0deg) scale(1.8);
   }
@@ -82,7 +74,7 @@
   }
 }
 
-@keyframes replay-background-animation {
+@keyframes loading-background-animation {
   0%{
     transform: rotate(0deg) scale(1.5);
     opacity: .5;

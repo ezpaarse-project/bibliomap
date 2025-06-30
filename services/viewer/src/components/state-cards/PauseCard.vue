@@ -1,16 +1,16 @@
 <template>
-  <div class="replay">
-    <div class="replay-circle-container">
-      <span class="replay-circle"><v-icon icon="mdi-pause-circle" /></span>
-      <span class="replay-circle-background" />
-      <span class="second-replay-circle-background" />
+  <div class="pause">
+    <div class="pause-circle-container">
+      <span class="pause-circle"><v-icon icon="mdi-pause-circle" /></span>
+      <span class="pause-circle-background" />
+      <span class="second-pause-circle-background" />
     </div>
-    <span class="replay-text">PAUSED</span>
+    <span class="pause-text">PAUSED</span>
   </div>
 </template>
 
 <style lang='scss' scoped>
-  .replay {
+  .pause {
     z-index: 1000;
     width: 110px;
     display: flex;
@@ -18,15 +18,15 @@
     align-items: center;
   }
 
-  .replayWithLegend {
+  .pauseWithLegend {
     margin: 0 0 20px 330px;
   }
 
-  .replayWithoutLegend {
+  .pauseWithoutLegend {
     margin: 0 0 20px 30px;
   }
 
-  .replay .replay-text {
+  .pause .pause-text {
     font-size: 20px;
     text-transform: uppercase;
     font-weight: bold;
@@ -37,11 +37,11 @@
     white-space: nowrap;
   }
 
-  .replay-circle-container{
+  .pause-circle-container{
     display: flex;
   }
 
-  .replay .replay-circle{
+  .pause .pause-circle{
     height: 18px;
     width: 18px;
     color: #555557;
@@ -52,11 +52,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    animation: replay-animation ease-out 4s infinite;
+    animation: pause-animation ease-out 4s infinite;
     z-index: 1002;
   }
 
-  .replay .replay-circle-background{
+  .pause .pause-circle-background{
     opacity: .5;
     height: 18px;
     width: 18px;
@@ -67,11 +67,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    animation: replay-background-animation ease-out 4s infinite;
+    animation: pause-background-animation ease-out 4s infinite;
     z-index: 1001;
   }
 
-  .second-replay-circle-background {
+  .second-pause-circle-background {
     opacity: 0;
     height: 18px;
     width: 18px;
@@ -82,12 +82,12 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    animation: replay-background-animation ease-out 4s infinite;
+    animation: pause-background-animation ease-out 4s infinite;
     z-index: 1001;
     animation-delay: 2s;
   }
 
-  @keyframes replay-animation {
+  @keyframes pause-animation {
     0%{
       transform: scale(1.8);
     }
@@ -99,7 +99,7 @@
     }
   }
 
-  @keyframes replay-background-animation {
+  @keyframes pause-background-animation {
     0%{
       transform: scale(1.5);
       opacity: .2;

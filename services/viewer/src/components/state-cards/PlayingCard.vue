@@ -1,16 +1,16 @@
 <template>
-  <div class="replay">
-    <div class="replay-circle-container">
-      <span class="replay-circle"><v-icon icon="mdi-play-circle" /></span>
-      <span class="replay-circle-background" />
-      <span class="second-replay-circle-background" />
+  <div class="playing">
+    <div class="playing-circle-container">
+      <span class="playing-circle"><v-icon icon="mdi-play-circle" /></span>
+      <span class="playing-circle-background" />
+      <span class="second-playing-circle-background" />
     </div>
-    <span class="replay-text">PLAYING</span>
+    <span class="playing-text">PLAYING</span>
   </div>
 </template>
 
 <style lang='scss' scoped>
-  .replay {
+  .playing {
     z-index: 1000;
     width: 110px;
     display: flex;
@@ -18,15 +18,15 @@
     align-items: center;
   }
 
-  .replayWithLegend {
+  .playingWithLegend {
     margin: 0 0 20px 330px;
   }
 
-  .replayWithoutLegend {
+  .playingWithoutLegend {
     margin: 0 0 20px 30px;
   }
 
-  .replay .replay-text {
+  .playing .playing-text {
     font-size: 20px;
     text-transform: uppercase;
     font-weight: bold;
@@ -37,11 +37,11 @@
     white-space: nowrap;
   }
 
-  .replay-circle-container{
+  .playing-circle-container{
     display: flex;
   }
 
-  .replay .replay-circle{
+  .playing .playing-circle{
     height: 18px;
     width: 18px;
     color: darkgreen;
@@ -52,11 +52,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    animation: replay-animation ease-out 4s infinite;
+    animation: playing-animation ease-out 4s infinite;
     z-index: 1002;
   }
 
-  .replay .replay-circle-background{
+  .playing .playing-circle-background{
     opacity: .5;
     height: 18px;
     width: 18px;
@@ -67,11 +67,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    animation: replay-background-animation ease-out 4s infinite;
+    animation: playing-background-animation ease-out 4s infinite;
     z-index: 1001;
   }
 
-  .second-replay-circle-background {
+  .second-playing-circle-background {
     opacity: 0;
     height: 18px;
     width: 18px;
@@ -82,12 +82,12 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    animation: replay-background-animation ease-out 4s infinite;
+    animation: playing-background-animation ease-out 4s infinite;
     z-index: 1001;
     animation-delay: 2s;
   }
 
-  @keyframes replay-animation {
+  @keyframes playing-animation {
     0%{
       transform: scale(1.8);
     }
@@ -99,7 +99,7 @@
     }
   }
 
-  @keyframes replay-background-animation {
+  @keyframes playing-background-animation {
     0%{
       transform: scale(1.5);
       opacity: .2;

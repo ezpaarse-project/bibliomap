@@ -1,16 +1,16 @@
 <template>
-  <div class="replay">
-    <div class="replay-circle-container">
-      <span class="replay-circle"><v-icon icon="mdi-stop-circle" /></span>
-      <span class="replay-circle-background" />
-      <span class="second-replay-circle-background" />
+  <div class="stopped">
+    <div class="stopped-circle-container">
+      <span class="stopped-circle"><v-icon icon="mdi-stop-circle" /></span>
+      <span class="stopped-circle-background" />
+      <span class="second-stopped-circle-background" />
     </div>
-    <span class="replay-text">STOPPED</span>
+    <span class="stopped-text">STOPPED</span>
   </div>
 </template>
 
 <style lang='scss' scoped>
-  .replay {
+  .stopped {
     z-index: 1000;
     width: 110px;
     display: flex;
@@ -18,15 +18,15 @@
     align-items: center;
   }
 
-  .replayWithLegend {
+  .stoppedWithLegend {
     margin: 0 0 20px 330px;
   }
 
-  .replayWithoutLegend {
+  .stoppedWithoutLegend {
     margin: 0 0 20px 30px;
   }
 
-  .replay .replay-text {
+  .stopped .stopped-text {
     font-size: 20px;
     text-transform: uppercase;
     font-weight: bold;
@@ -37,11 +37,11 @@
     white-space: nowrap;
   }
 
-  .replay-circle-container{
+  .stopped-circle-container{
     display: flex;
   }
 
-  .replay .replay-circle{
+  .stopped .stopped-circle{
     height: 18px;
     width: 18px;
     color: #c0392b;
@@ -52,11 +52,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    animation: replay-animation ease-out 4s infinite;
+    animation: stopped-animation ease-out 4s infinite;
     z-index: 1002;
   }
 
-  .replay .replay-circle-background{
+  .stopped .stopped-circle-background{
     opacity: .5;
     height: 18px;
     width: 18px;
@@ -67,11 +67,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    animation: replay-background-animation ease-out 4s infinite;
+    animation: stopped-background-animation ease-out 4s infinite;
     z-index: 1001;
   }
 
-  .second-replay-circle-background {
+  .second-stopped-circle-background {
     opacity: 0;
     height: 18px;
     width: 18px;
@@ -82,12 +82,12 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    animation: replay-background-animation ease-out 4s infinite;
+    animation: stopped-background-animation ease-out 4s infinite;
     z-index: 1001;
     animation-delay: 2s;
   }
 
-  @keyframes replay-animation {
+  @keyframes stopped-animation {
     0%{
       transform: scale(1.8);
     }
@@ -99,7 +99,7 @@
     }
   }
 
-  @keyframes replay-background-animation {
+  @keyframes stopped-background-animation {
     0%{
       transform: scale(1.5);
       opacity: .2;
