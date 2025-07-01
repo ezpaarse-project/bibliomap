@@ -1,0 +1,14 @@
+{
+  "logStreams": {
+    "IN2P3": [ "./demo-logs/tmp/in2p3.log" ],
+    "INC":   [ "./demo-logs/tmp/inc.log" ],
+    "INEE":  [ "./demo-logs/tmp/inee.log" ],
+    "INP":   [ "./demo-logs/tmp/inp.log" ],
+    "INS2I": [ "./demo-logs/tmp/ins2i.log" ],
+    "INSB":  [ "./demo-logs/tmp/insb.log" ],
+    "INSHS": [ "./demo-logs/tmp/inshs.log" ],
+    "INSIS": [ "./demo-logs/tmp/insis.log" ],
+    "INSMI": [ "./demo-logs/tmp/insmi.log" ],
+    "INSU":  [ "./demo-logs/tmp/insu.log" ]
+  }
+}

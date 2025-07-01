@@ -1,0 +1,16 @@
+{
+  "exported_fields": [
+    "geoip-latitude",
+    "geoip-longitude",
+    "ezproxyName",
+    "platform_name",
+    "publication_title",
+    "online_identifier",
+    "print_identifier",
+    "rtype",
+    "mime"
+  ],
+  "header": {},
+  "multiple_portals": false,
+  "portal_fields": null
+}

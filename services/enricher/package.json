@@ -1,0 +1,32 @@
+{
+  "name": "bibliomap-enricher",
+  "version": "4.1.1",
+  "description": "Listen for bibliomap-harvester data, send it to ezpaarse for enrichments and send the result to bibliomap-viewer",
+  "author": "ezTEAM <ezteam@couperin.org>",
+  "license": "CeCILL",
+  "type": "module",
+  "scripts": {
+    "start": "node ./src/app.js",
+    "dev": "nodemon --inspect=0.0.0.0 -L -e .js ./src/app.js",
+    "lint": "eslint --ext .js ."
+  },
+  "dependencies": {
+    "@date-fns/tz": "^1.2.0",
+    "config": "^1.25.1",
+    "csv-parse": "^5.6.0",
+    "date-fns": "^4.1.0",
+    "debug": "^2.6.1",
+    "js-sdsl": "^4.4.2",
+    "JSONStream": "^1.3.5",
+    "log.io-server-parser": "^0.1.2",
+    "ofetch": "^1.4.1",
+    "pino": "^9.6.0",
+    "socket.io": "^4.8.1",
+    "undici": "^7.8.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.27.1",
+    "@babel/eslint-parser": "^7.27.1",
+    "nodemon": "^3.1.9"
+  }
+}

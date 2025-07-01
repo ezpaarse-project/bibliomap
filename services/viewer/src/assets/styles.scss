@@ -1,0 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap');
+@import url('https://api.fontshare.com/v2/css?f[]=satoshi@400,500&display=swap');
+
+:root {
+  --title-font: 'IBM Plex Sans', sans-serif;
+  --body-font: 'Satoshi', sans-serif;
+}
+
+body {
+  font-family: var(--body-font);
+}
+
+.title-font {
+  font-family: var(--title-font);
+  font-weight: 600;
+}
+
+.body-font {
+  font-family: var(--body-font);
+  font-weight: 400;
+}

@@ -1,0 +1,62 @@
+#!/usr/bin/env node
+
+const winston = require('winston');
+const LogHarvester = require('../lib/harvester.js');
+
+const enricherHost = process.env.ENRICHER_URL.split(':')[0];
+const enricherPort = process.env.ENRICHER_URL.split(':')[1];
+
+process.title = 'harvester';
+
+const logger = winston.createLogger({
+  level: 'error',
+  format: winston.format.simple(),
+  transports: [
+    new winston.transports.Console({ format: winston.format.simple() }),
+  ],
+});
+
+let config = { logging: logger, ...require('../config.json') };
+
+try {
+  config = Object.assign(config, require('../config.local.json'));
+} catch (err) {
+  if (err.code !== 'MODULE_NOT_FOUND') {
+	  logger.error(err.message);
+  }
+}
+
+const appInstance = process.env.HARVESTER_DEMO_DIR;
+
+if (appInstance) {
+  try {
+    config = Object.assign(config, require(`../config-${appInstance}.json`));
+  } catch (err) {
+    if (err.code === 'MODULE_NOT_FOUND') {
+      logger.warn(`No config file found for app '${appInstance}'`);
+    } else {
+      logger.error(err.message);
+    }
+  }
+}
+
+if (enricherHost) {
+  config.server.host = enricherHost;
+}
+if (enricherPort) {
+  config.server.port = enricherPort;
+}
+
+if (process.env.HARVESTER_STREAMNAMES && process.env.HARVESTER_STREAMPATHS) {
+  const streamNames = process.env.HARVESTER_STREAMNAMES.split(' ');
+  const streamPaths = process.env.HARVESTER_STREAMPATHS.split(' ');
+
+  config.logStreams = {};
+
+  streamNames.forEach((streamName, i) => {
+    config.logStreams[streamName] = [streamPaths[i]];
+  });
+}
+
+const harvester = new LogHarvester(config);
+harvester.run();
