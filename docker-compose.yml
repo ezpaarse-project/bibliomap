@@ -1,8 +1,0 @@
-services:
-  viewer:
-    build:
-      context: ./services/viewer
-    container_name: bibliomap-viewer
-    ports:
-      - 80:80
-    restart: unless-stopped

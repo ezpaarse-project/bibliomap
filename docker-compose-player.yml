@@ -1,12 +1,12 @@
 services:
 
-  viewer:
+  player:
     image: node:22.14.0
-    container_name: bibliomap-viewer-dev
+    container_name: bibliomap-player-dev
     command: "npm run dev"
     working_dir: /usr/src/app
     volumes:
-      - ./services/viewer:/usr/src/app
+      - ./services/player:/usr/src/app
     ports:
       - "3000:3000"
     restart: unless-stopped
