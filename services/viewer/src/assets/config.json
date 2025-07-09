@@ -9,6 +9,7 @@
         "defaultPhoneZoom": 5,
         "bubbleDuration": 5,
         "bubbleSize": 60,
+        "colorBy": "portal",
         "popupText": {
             "datetime": false,
             "ezproxyName": false,
@@ -34,7 +35,8 @@
                     "count": true,
                     "color": "#C0392B"
                 }
-            }
+            },
+            "defaultMimeColor": "#7F8C8D"
         }
     },
     "drawerParams": {
@@ -42,7 +44,7 @@
         "position": "left",
         "width": 350,
         "descriptionSection": {
-            "include": true,
+            "include": false,
             "index": 0,
             "icon": "logo.svg"
         },
@@ -70,64 +72,55 @@
                 {
                     "name": "insb",
                     "color": "#9C126D",
-                    "icon": "portal_logos/bibcnrs-logo-biologie.png",
-                    "url": "https://bib.cnrs.fr/category/biologie/"
+                    "url": "https://www.insb.cnrs.fr/fr"
                 },
                 {
                     "name": "inc",
                     "color": "#007E94",
-                    "icon": "portal_logos/bibcnrs-logo-chimie.png",
-                    "url": "https://bib.cnrs.fr/category/chimie/"
+                    "url": "https://www.inc.cnrs.fr/fr"
                 },
                 {
                     "name": "inee",
                     "color": "#62AE25",
-                    "icon": "portal_logos/bibcnrs-logo-ecologie.png",
-                    "url": "https://bib.cnrs.fr/category/ecologie/"
+                    "url": "https://www.inee.cnrs.fr/fr"
                 },
                 {
                     "name": "inshs",
                     "color": "#820E12",
-                    "icon": "portal_logos/bibcnrs-logo-homme.png",
-                    "url": "https://bib.cnrs.fr/category/homme/"
+                    "url": "https://www.inshs.cnrs.fr/fr"
                 },
                 {
                     "name": "insis",
                     "color": "#D4002D",
-                    "icon": "portal_logos/bibcnrs-logo-ingenierie.png",
-                    "url": "https://bib.cnrs.fr/category/ingenierie/"
+                    "url": "https://www.insis.cnrs.fr/fr"
                 },
                 {
                     "name": "insmi",
                     "color": "#547D3D",
-                    "icon": "portal_logos/bibcnrs-logo-mathematiques.png",
-                    "url": "https://bib.cnrs.fr/category/mathematiques/"
+                    "url": "https://www.insmi.cnrs.fr/fr"
                 },
                 {
                     "name": "in2p3",
                     "color": "#E75113",
-                    "icon": "portal_logos/bibcnrs-logo-nucleaire.png",
-                    "url": "https://bib.cnrs.fr/category/nucleaire/"
+                    "url": "https://www.in2p3.cnrs.fr/fr"
                 },
                 {
                     "name": "inp",
                     "color": "#004494",
-                    "icon": "portal_logos/bibcnrs-logo-physique.png",
-                    "url": "https://bib.cnrs.fr/category/physique/"
+                    "url": "https://www.inp.cnrs.fr/fr"
                 },
                 {
                     "name": "ins2i",
                     "color": "#562A84",
-                    "icon": "portal_logos/bibcnrs-logo-information.png",
-                    "url": "https://bib.cnrs.fr/category/information/"
+                    "url": "https://www.ins2i.cnrs.fr/fr"
                 },
                 {
                     "name": "insu",
                     "color": "#CC2381",
-                    "icon": "portal_logos/bibcnrs-logo-terre.png",
-                    "url": "https://bib.cnrs.fr/category/terre/"
+                    "url": "https://www.insu.cnrs.fr/fr"
                 }
-            ]
+            ],
+            "defaultPortalColor": "random"
         },
         "replayDescription": {
             "include": true,
