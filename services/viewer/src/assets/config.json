@@ -63,7 +63,8 @@
         "counterSection": {
             "include": true,
             "index": 2,
-            "showTotal": true
+            "showTotal": true,
+            "countAllMimes": false
         },
         "portalSection": {
             "include": true,
