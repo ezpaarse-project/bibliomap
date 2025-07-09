@@ -5,15 +5,15 @@ const LogGenerator = require('../lib/generator.js');
 
 process.title = 'harvester-generator';
 
-if (!process.env.HARVESTER_DEMO_DIR) {
-  console.error('HARVESTER_DEMO_DIR not set');
+if (!process.env.DEMO_DIR) {
+  console.error('DEMO_DIR not set');
   process.exit(1);
 }
 
 const generator = new LogGenerator({
-  source: path.resolve(__dirname, '..', 'demo-logs', process.env.HARVESTER_DEMO_DIR),
+  source: path.resolve(__dirname, '..', 'demo-logs', process.env.DEMO_DIR),
   destination: path.resolve(__dirname, '..', 'demo-logs', 'tmp'),
-  speed: process.env.HARVESTER_LOGS_PER_SECOND,
+  speed: process.env.LOGS_PER_SECOND,
 });
 
 generator.run();
