@@ -20,10 +20,9 @@ As a standalone script, bibliomap-harvester is not very usefull. Please have a l
 
 Env variable can be used to customize it:
 
-  * BBH_ENRICHER_HOST
-  * BBH_ENRICHER_PORT
-  * BBH_STREAMNAMES
-  * BBH_STREAMPATHS
+  * ENRICHER_URL
+  * STREAMNAMES
+  * STREAMPATHS
 
 Look at [config.json](https://github.com/ezpaarse-project/bibliomap-harvester/blob/master/config.json) to see the default values.
 
@@ -35,8 +34,8 @@ To connect external log files, you have to mount docker volumes this way.
     * ``-v  /bibcnrs/inp/ezproxy/ezproxy.log:/app/tmp/inc.log``
     * ``-v  /bibcnrs/insb/ezproxy/ezproxy.log:/app/tmp/insb.log``
   * Then when running bibliomap-harvester container, you have to setup theses variables:
-    * BBH_STREAMNAMES="INC INSB"
-    * BBH_STREAMPATHS="/app/tmp/inc.log /app/tmp/insb.log"
+    * STREAMNAMES="INC INSB"
+    * STREAMPATHS="/app/tmp/inc.log /app/tmp/insb.log"
 
 ## Developement
 

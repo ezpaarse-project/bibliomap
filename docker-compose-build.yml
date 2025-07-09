@@ -1,0 +1,23 @@
+version: "3.3"
+
+services:
+  enricher:
+    build:
+      context: ./services/enricher
+    container_name: bibliomap-enricher
+
+  harvester:
+    build:
+      context: ./services/harvester
+    container_name: bibliomap-harvester
+
+  player:
+    build:
+      context: ./services/player
+    container_name: bibliomap-player
+
+  viewer:
+    build:
+      context: ./services/viewer
+    container_name: bibliomap-viewer
+
