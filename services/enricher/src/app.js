@@ -4,7 +4,6 @@ import pino from 'pino';
 import http from 'http';
 import { Server } from 'socket.io';
 import PaarseQueue from './paarse-queue.js';
-import config from '../config/config.json' with { type: 'json' };
 import ReplayManager from './replay-manager.js';
 
 const logger = pino();
@@ -35,7 +34,6 @@ const viewers = new Set();
  * Listen events coming from harvester
  * then forward it to ezpaarse jobs
  */
-logger.debug('config:', config);
 
 const harvesterConfig = {
   host: process.env.HARVESTER_URL.split(':')[0],
