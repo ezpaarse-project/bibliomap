@@ -73,52 +73,62 @@
                 {
                     "name": "insb",
                     "color": "#9C126D",
-                    "url": "https://www.insb.cnrs.fr/fr"
+                    "url": "https://www.insb.cnrs.fr/fr",
+                    "icon": ""
                 },
                 {
                     "name": "inc",
                     "color": "#007E94",
-                    "url": "https://www.inc.cnrs.fr/fr"
+                    "url": "https://www.inc.cnrs.fr/fr",
+                    "icon": ""
                 },
                 {
                     "name": "inee",
                     "color": "#62AE25",
-                    "url": "https://www.inee.cnrs.fr/fr"
+                    "url": "https://www.inee.cnrs.fr/fr",
+                    "icon": ""
                 },
                 {
                     "name": "inshs",
                     "color": "#820E12",
-                    "url": "https://www.inshs.cnrs.fr/fr"
+                    "url": "https://www.inshs.cnrs.fr/fr",
+                    "icon": ""
                 },
                 {
                     "name": "insis",
                     "color": "#D4002D",
-                    "url": "https://www.insis.cnrs.fr/fr"
+                    "url": "https://www.insis.cnrs.fr/fr",
+                    "icon": ""
                 },
                 {
                     "name": "insmi",
                     "color": "#547D3D",
-                    "url": "https://www.insmi.cnrs.fr/fr"
+                    "url": "https://www.insmi.cnrs.fr/fr",
+                    "icon": ""
                 },
                 {
                     "name": "in2p3",
                     "color": "#E75113",
-                    "url": "https://www.in2p3.cnrs.fr/fr"
+                    "url": "https://www.in2p3.cnrs.fr/fr",
+                    "icon": ""
                 },
                 {
                     "name": "inp",
                     "color": "#004494",
-                    "url": "https://www.inp.cnrs.fr/fr"
+                    "url": "https://www.inp.cnrs.fr/fr",
+                    "icon": ""
                 },
                 {
                     "name": "ins2i",
                     "color": "#562A84",
-                    "url": "https://www.ins2i.cnrs.fr/fr"
+                    "url": "https://www.ins2i.cnrs.fr/fr",
+                    "icon": ""
                 },
                 {
                     "name": "insu",
                     "color": "#CC2381",
-                    "url": "https://www.insu.cnrs.fr/fr"
+                    "url": "https://www.insu.cnrs.fr/fr",
+                    "icon": ""
                 }
             ],
             "defaultPortalColor": "random"
