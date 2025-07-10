@@ -3,44 +3,44 @@
     "description": "Consultations en direct des articles de plusieurs milliers de revues scientifiques électroniques disponibles en texte intégral ainsi que des bases de données.",
     "portals": {
       "insb": {
-        "title": "INSB",
-        "subtitle": "Biologie"
+        "title": "CNRS Biologie",
+        "subtitle": ""
       },
       "inc": {
-        "title": "INC",
-        "subtitle": "Chimie"
+        "title": "CNRS Chimie",
+        "subtitle": ""
       },
       "inee": {
-        "title": "INEE",
-        "subtitle": "Ecologie & Environnement"
+        "title": "CNRS Ecologie & Environnement",
+        "subtitle": ""
       },
       "inshs": {
-        "title": "INSHS",
-        "subtitle": "Homme & Société"
+        "title": "CNRS Sciences humaines et sociales",
+        "subtitle": ""
       },
       "insis": {
-        "title": "INSIS",
-        "subtitle": "Ingénierie & systèmes"
+        "title": "CNRS Ingénierie",
+        "subtitle": ""
       },
       "insmi": {
-        "title": "INSMI",
-        "subtitle": "Mathématiques"
+        "title": "CNRS Mathématiques",
+        "subtitle": ""
       },
       "in2p3": {
-        "title": "IN2P3",
-        "subtitle": "Nucléaire & Particules"
+        "title": "CNRS Nucléaire & Particules",
+        "subtitle": ""
       },
       "inp": {
-        "title": "INP",
-        "subtitle": "Physique"
+        "title": "CNRS Physique",
+        "subtitle": ""
       },
       "ins2i": {
-        "title": "INS2I",
-        "subtitle": "Sciences de l'information"
+        "title": "CNRS Sciences informatiques",
+        "subtitle": ""
       },
       "insu": {
-        "title": "INSU",
-        "subtitle": "Terre & Univers"
+        "title": "CNRS Terre & Univers",
+        "subtitle": ""
       }
     }
   },

@@ -3,44 +3,44 @@
     "description": "Online consultation of articles from several thousand electronic scientific journals available in full text as well as databases.",
     "portals": {
       "insb": {
-        "title": "INSB",
-        "subtitle": "Biology"
+        "title": "CNRS Biology",
+        "subtitle": ""
       },
       "inc": {
-        "title": "INC",
-        "subtitle": "Chemestry"
+        "title": "CNRS Chemestry",
+        "subtitle": ""
       },
       "inee": {
-        "title": "INEE",
-        "subtitle": "Ecology & Environment"
+        "title": "CNRS Ecology & Environment",
+        "subtitle": ""
       },
       "inshs": {
-        "title": "INSHS",
-        "subtitle": "People & Society"
+        "title": "CNRS People & Society",
+        "subtitle": ""
       },
       "insis": {
-        "title": "INSIS",
-        "subtitle": "Engineering & systems"
+        "title": "CNRS Engineering & systems",
+        "subtitle": ""
       },
       "insmi": {
-        "title": "INSMI",
-        "subtitle": "Mathematics"
+        "title": "CNRS Mathematics",
+        "subtitle": ""
       },
       "in2p3": {
-        "title": "IN2P3",
-        "subtitle": "Nuclear and Particles"
+        "title": "CNRS Nuclear and Particles",
+        "subtitle": ""
       },
       "inp": {
-        "title": "INP",
-        "subtitle": "Physics"
+        "title": "CNRS Physics",
+        "subtitle": ""
       },
       "ins2i": {
-        "title": "INS2I",
-        "subtitle": "Information Science"
+        "title": "CNRS Information Science",
+        "subtitle": ""
       },
       "insu": {
-        "title": "INSU",
-        "subtitle": "The Earth & the Universe"
+        "title": "CNRS Earth & Space",
+        "subtitle": ""
       }
     }
   },

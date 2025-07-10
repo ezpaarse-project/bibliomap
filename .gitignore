@@ -9,3 +9,4 @@ setup*
 .idea
 /.idea/
 /services/player/.editorconfig
+*.Identifier
