@@ -24,8 +24,8 @@ const io = new Server(server, {
   },
 });
 
-server.listen(process.env.WEBSOCKET_PORT, () => {
-  logger.info(`Websocket server is running on port ${process.env.WEBSOCKET_PORT}`);
+server.listen(27780, () => {
+  logger.info('Websocket server is running on port 27780');
 });
 
 const viewers = new Set();
