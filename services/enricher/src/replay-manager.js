@@ -100,19 +100,19 @@ export default class ReplayManager extends EventEmitter {
   getReplayObjectsFromDirs() {
     const replays = [];
     this.replayDirs
-      .filter(r => loadConfigJson(r) != null && loadConfigJson(r).disable !== false)
-      .sort((a, b) => loadConfigJson(a).replayStartDatetime - loadConfigJson(b).replayStartDatetime)
-      .forEach(dir => {
-        const config = loadConfigJson(dir);
-        if (!config) return;
+      .map(dir => ({dir: dir, config: loadConfigJson(dir)}))
+      .filter(sim => sim.config != null && sim.config.disable !== false)
+      .sort((simA, simB) => simA.config.replayStartDatetime - simB.config.replayStartDatetime)
+      .forEach(sim => {
+        if (!sim.config) return;
         replays.push(
           new Replay(
-            config.replayStartDatetime,
-            config.replayEndDatetime,
-            config.replayMultiplier,
+            sim.config.replayStartDatetime,
+            sim.config.replayEndDatetime,
+            sim.config.replayMultiplier,
             getLogFiles(dir),
-            config.replayDuration,
-            config.description
+            sim.config.replayDuration,
+            sim.config.description
           )
         );
       });
