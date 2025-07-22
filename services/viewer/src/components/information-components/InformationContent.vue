@@ -28,9 +28,9 @@
       <v-list-item>
         <v-card :flat="true">
           <div class="org-logos">
-            <a href="https://www.couperin.org/" target="_blank"><img alt="Couperin" src="@/assets/logo-couperin.jpg"></a>
-            <a href="https://www.cnrs.fr/fr" target="_blank"><img id="cnrs-logo" alt="CNRS" src="@/assets/logo.svg"></a>
-            <a href="https://www.inist.fr/" target="_blank"><img id="inist-logo" alt="CNRS" src="@/assets/inist.png"></a>
+            <a href="https://www.couperin.org/" target="_blank"><img alt="Couperin" src="@/assets/logo-couperin.png"></a>
+            <a href="https://www.cnrs.fr/fr" target="_blank"><img id="cnrs-logo" alt="CNRS" src="@/assets/logo-cnrs.svg"></a>
+            <a href="https://www.inist.fr/" target="_blank"><img id="inist-logo" alt="CNRS" src="@/assets/logo-inist.png"></a>
           </div>
         </v-card>
       </v-list-item>
