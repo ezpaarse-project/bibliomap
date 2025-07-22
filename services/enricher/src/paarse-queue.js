@@ -42,7 +42,7 @@ class PaarseQueue {
           this.onData(output);
         })
         .on('end', () => {
-          logger.info('[ezPAARSE] connection closed');
+          logger.info('[ezPAARSE] connection ended');
           this.writeStream.end();
           this.cb();
         })
