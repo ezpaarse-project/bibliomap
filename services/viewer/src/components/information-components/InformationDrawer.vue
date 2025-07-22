@@ -36,7 +36,7 @@
   const usingPhone = window.innerWidth <= 768;
   const drawer = ref(!usingPhone);
   const drawerLocation = (props.position ?? 'left') as 'left' | 'top' | 'bottom' | 'start' | 'end' | 'right' | undefined;
-  const width = Math.min(600, window.innerWidth);
+  const width = Math.min(400, window.innerWidth);
 
   onMounted(() => {
     const expoParam = route.query.expo as string || route.query.e as string;
