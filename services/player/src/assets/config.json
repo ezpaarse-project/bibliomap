@@ -49,7 +49,7 @@
     "drawerParams": {
         "include": true,
         "position": "left",
-        "width": 350,
+        "width": 400,
         "descriptionSection": {
             "include": true,
             "index": 0,
