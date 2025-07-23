@@ -30,12 +30,10 @@
   import Drawer from '@/components/CounterDrawer.vue';
   import WorldMap from '@/components/WorldMap.vue';
   import { useSocketStore } from '@/stores/socket';
-  import { useViewerConfigStore } from '@/stores/viewer-config';
   import { type ReplayConfig, useReplayConfigStore } from '@/stores/replay-config';
 
   const socket = useSocketStore().socket;
   const replayConfigStore = useReplayConfigStore();
-  const config = useViewerConfigStore().config;
 
   onMounted(() => {
     socket.on('connect', async () => {
