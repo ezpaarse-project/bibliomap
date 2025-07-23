@@ -4,7 +4,7 @@
     max-width="1000"
   >
     <v-card :flat="true">
-      <v-card-title class="text-h4">{{ t('appbar.settings-dialog.title') }}</v-card-title>
+      <v-card-title class="text-h4">{{ t('fabButton.settings-dialog.title') }}</v-card-title>
       <v-divider />
       <v-card class="d-flex flex-column" flat>
         <div
@@ -12,7 +12,7 @@
           style="height: 72px;"
         >
           <v-card-title class="text-h6" style="font-weight: 400;">
-            {{ t('appbar.settings-dialog.minimap-section.title') }}
+            {{ t('fabButton.settings-dialog.minimap-section.title') }}
           </v-card-title>
           <div>
             <v-switch
@@ -28,7 +28,7 @@
       </v-card>
       <v-divider />
       <v-card v-if="allPortals.length > 1" :flat="true">
-        <v-card-text class="text-h6">{{ t('appbar.settings-dialog.portals-section.title') }}</v-card-text>
+        <v-card-text class="text-h6">{{ t('fabButton.settings-dialog.portals-section.title') }}</v-card-text>
         <div
           class="d-flex flex-column flex-wrap px-4"
           style="gap: 4px; max-height: 300px; overflow-y: auto;"
@@ -44,8 +44,8 @@
           />
         </div>
         <div class="pa-4">
-          <v-btn class="mr-4" color="primary" @click="checkAll">{{ t('appbar.settings-dialog.portals-section.select-all') }}</v-btn>
-          <v-btn color="primary" @click="uncheckAll">{{ t('appbar.settings-dialog.portals-section.select-none') }}</v-btn>
+          <v-btn class="mr-4" color="primary" @click="checkAll">{{ t('fabButton.settings-dialog.portals-section.select-all') }}</v-btn>
+          <v-btn color="primary" @click="uncheckAll">{{ t('fabButton.settings-dialog.portals-section.select-none') }}</v-btn>
         </div>
       </v-card>
       <v-divider />
@@ -55,7 +55,7 @@
           style="height: 72px;"
         >
           <v-card-title class="text-h6" style="font-weight: 400;">
-            {{ t('appbar.settings-dialog.review-titles-section.title') }}
+            {{ t('fabButton.settings-dialog.review-titles-section.title') }}
           </v-card-title>
           <div>
             <v-switch
@@ -72,14 +72,14 @@
       <v-divider />
       <v-card :flat="true">
         <v-card-text class="text-h6">
-          {{ t('appbar.settings-dialog.filter-section.title') }}
+          {{ t('fabButton.settings-dialog.filter-section.title') }}
         </v-card-text>
         <v-text-field
           v-model="filter"
           class="mx-4"
           :clearable="true"
           color="primary"
-          :placeholder="t('appbar.settings-dialog.filter-section.placeholder')"
+          :placeholder="t('fabButton.settings-dialog.filter-section.placeholder')"
         />
       </v-card>
       <v-divider />

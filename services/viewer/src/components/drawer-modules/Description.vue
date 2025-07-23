@@ -2,7 +2,7 @@
   <v-list-item>
     <div class="description-section-item">
       <img v-if="props.icon" alt="icon" :src="getIconUrl(props.icon)">
-      <span>{{ t('drawer-custom.description') }}</span>
+      <span class="text-center mx-2 mb-2">{{ t('drawer-custom.description') }}</span>
     </div>
   </v-list-item>
 </template>
@@ -25,16 +25,13 @@
     align-items: center;
 
     img{
-      height: 20%;
-      width: 20%;
-      margin: .5rem;
+      height: 60px;
+      width: 60px;
       max-height: 128px;
     }
 
     span{
-      text-align: center;
       font-size: 14px;
-      margin: .5rem;
     }
   }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <v-tooltip location="bottom" :text="t('appbar.tooltips.change-map')">
+  <v-tooltip location="left" :text="t('fabButton.tooltips.change-map')">
     <template #activator="{ props: tooltipProps }">
       <v-menu
         v-model="mapMenu"
@@ -10,6 +10,7 @@
           <v-btn
             v-bind="{ ...mapMenuProps, ...tooltipProps }"
             icon="mdi-map"
+            color="green"
           />
         </template>
 

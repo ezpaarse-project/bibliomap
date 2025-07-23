@@ -1,5 +1,5 @@
 <template>
-  <div id="map" :style="{height: height}" />
+  <div id="map" :style="{height: '100vh'}" />
 </template>
 
 <script lang="ts" setup>
@@ -17,8 +17,6 @@
   const config = useViewerConfigStore().config;
   const mapParams = config.mapParams;
   const mimes = config.mapParams.attributesColors.mimes as Record<string, { count: boolean, color: string }>;
-
-  const height = config.appbarParams.include ? 'calc(100vh - 48px)' : '100vh';
 
   const onlyPortal = Object.keys(config.drawerParams.portalSection.portals).length === 1 ? Object.keys(config.drawerParams.portalSection.portals)[0] : null;
 
@@ -190,6 +188,11 @@
 
   $box-shadow: 1px 1px 8px 0 rgba(0, 0, 0, 0.75);
 
+  :root {
+    --opacity-transition-speed: 1.5s;
+    --pulsate-speed: 1s;
+  }
+
   #map{
     width: 100%;
     height: 100%;
@@ -205,11 +208,11 @@
   }
 
   .leaflet-marker {
-    transition: opacity 1.5s ease-in;
+    transition: opacity var(--opacity-transition-speed) ease-in;
   }
 
   .bubble {
-    position: absoute;
+    position: absolute;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -223,7 +226,7 @@
   }
 
   .bubble-pulse {
-    animation: pulsate 1s ease-in-out infinite;
+    animation: pulsate var(--pulsate-speed) ease-in-out infinite;
     position: absolute;
     border-radius: 100%;
   }
@@ -236,10 +239,10 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    border-radius: 8px;
+    border-radius: 4px;
     z-index: 2;
     bottom: 100%;
-    padding: .5em 2.5em;
+    padding: .2em 1em;
     box-shadow: $box-shadow;
     min-width: 100px;
     max-width: 300px;
