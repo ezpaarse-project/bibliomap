@@ -1,0 +1,89 @@
+version: "3.3"
+
+services:
+
+  viewer:
+    build:
+      context: ./services/viewer
+    container_name: bibliomap-viewer-prod
+    environment:
+      NODE_ENV: "development"
+      BBV_INDEX: cnrs
+      BBV_JSFILE: bibliomap-cnrs.js
+      BBV_LISTEN_ENRICHER_HOST: "0.0.0.0"
+      BBV_LISTEN_ENRICHER_PORT: 27779
+      BBV_LISTEN_HOST: "0.0.0.0"
+      BBV_LISTEN_PORT: 50197 # web server
+    command: "npm start"
+    ports:
+      - 50197:50197
+      - 27779:27779
+    restart: unless-stopped
+
+  enricher:
+    build:
+      context: ./services/enricher
+    container_name: bibliomap-enricher-prod
+    environment:
+      NODE_APP_INSTANCE: ${NODE_APP_INSTANCE}
+      BBE_EZPAARSE_URL: "http://ezpaarse:59599"
+      BBE_LISTEN_HARVESTER_HOST: "0.0.0.0"
+      BBE_LISTEN_HARVESTER_PORT: 27777
+      BBE_BROADCAST_VIEWER_HOST: "viewer"
+      BBE_BROADCAST_VIEWER_PORT: 27779
+      BBE_EZPAARSE_PREDEF: bibliomap
+      REPLAY_FILE_PATHS: ${REPLAY_FILE_PATHS}
+      REPLAY_START_TIME: ${REPLAY_START_TIME}
+      REPLAY_MULTIPLIER: ${REPLAY_MULTIPLIER}
+      REPLAY_MODE: ""
+    command: "npm start"
+    restart: unless-stopped
+    depends_on:
+      ezpaarse:
+        condition: service_healthy
+
+  harvester:
+    build: 
+      context: ./services/harvester
+    container_name: bibliomap-harvester-prod
+    environment:
+      BBH_ENRICHER_HOST: "enricher"
+      BBH_ENRICHER_PORT: 27777
+      BBH_NO_DEMO:     "" # demo is activated
+      BBH_STREAMNAMES: "" # default streams are for the demo
+      BBH_STREAMPATHS: ""
+      BBH_LOG_FOLDER: demo-logs/cnrs
+      NODE_APP_INSTANCE: cnrs
+      BBH_LOGS_PER_SECOND: 10
+    command: "npm run dev"
+    restart: unless-stopped
+  
+  ezpaarse:
+    container_name: bibliomap-ezpaarse-dev
+    image: ezpaarseproject/ezpaarse:3.4.3
+    environment:
+      http_proxy:  ${http_proxy}
+      https_proxy: ${https_proxy}
+      no_proxy: ${no_proxy}
+      NODE_ENV: "production"
+      EZPAARSE_MONGO_URL: "mongodb://ezpaarse_db:27017/ezpaarse"
+    ports:
+      - 59599:59599
+    depends_on:
+      - ezpaarse_db
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -Y off --no-verbose --tries=1 --spider http://localhost:59599 || exit 1"
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    #restart: unless-stopped
+
+  ezpaarse_db:
+    container_name: bibliomap-ezpaarse-db-dev
+    image: mongo:3.4.1
+    command: --smallfiles
+    #restart: unless-stopped

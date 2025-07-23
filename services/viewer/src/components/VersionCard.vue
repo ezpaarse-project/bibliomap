@@ -5,6 +5,7 @@
       {{ t('version-card.connection') }}
     </v-card-text>
   </v-card>
+
 </template>
 <script setup lang="ts">
   import { useI18n } from 'vue-i18n';

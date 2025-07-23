@@ -129,7 +129,6 @@ class LogHarvester {
     this.socket.on('error', () => {
       this._connected = false;
       console.error('Unable to connect server, trying again...');
-      console.log(this.server);
       setTimeout(() => this._connect(), 2000);
     });
 

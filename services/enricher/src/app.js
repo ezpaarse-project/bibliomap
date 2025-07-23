@@ -1,12 +1,10 @@
 /* eslint-disable import/extensions */
 import LogIoListener from 'log.io-server-parser';
-import pino from 'pino';
+import logger from './lib/logger.js';
 import http from 'http';
 import { Server } from 'socket.io';
 import PaarseQueue from './paarse-queue.js';
 import ReplayManager from './replay-manager.js';
-
-const logger = pino();
 
 /**
  * Connect to bibliomap-viewer
@@ -34,6 +32,7 @@ const viewers = new Set();
  * Listen events coming from harvester
  * then forward it to ezpaarse jobs
  */
+logger.debug('config:', config);
 
 const harvesterConfig = {
   host: process.env.HARVESTER_URL.split(':')[0],

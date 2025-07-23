@@ -11,7 +11,7 @@ if (!process.env.DEMO_DIR) {
 }
 
 const generator = new LogGenerator({
-  source: path.resolve(__dirname, '..', 'demo-logs', process.env.DEMO_DIR),
+source: path.resolve(__dirname, '..', 'demo-logs', process.env.DEMO_DIR),
   destination: path.resolve(__dirname, '..', 'demo-logs', 'tmp'),
   speed: process.env.LOGS_PER_SECOND,
 });

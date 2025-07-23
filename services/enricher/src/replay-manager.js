@@ -32,6 +32,7 @@ function loadConfigJson(dirPath) {
     logger.info(`There was an issue parsing the config file: ${e.message}`);
     return {};
   }
+
   if (json.disable) return null;
   return json;
 }
@@ -107,7 +108,6 @@ export default class ReplayManager extends EventEmitter {
       return cb();
     }
   }
-
 
   /**
    * Retrieves and generates replay objects from directories.

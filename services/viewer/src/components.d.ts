@@ -17,7 +17,7 @@ declare module 'vue' {
     CounterDrawer: typeof import('./components/CounterDrawer.vue')['default']
     Description: typeof import('./components/drawer-modules/Description.vue')['default']
     DialogContent: typeof import('./components/DialogContent.vue')['default']
-    DialogDrawer: typeof im./components/CounterDrawer.vueogDrawer.vue')['default']
+    DialogDrawer: typeof import('./components/CounterDrawer.vueogDrawer.vue')['default']
     Drawer: typeof import('./components/Drawer.vue')['default']
     FabButton: typeof import('./components/FabButton.vue')['default']
     InfoButton: typeof import('./components/fab-menu/InfoButton.vue')['default']

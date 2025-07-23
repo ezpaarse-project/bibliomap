@@ -7,7 +7,6 @@ import { TZDate } from '@date-fns/tz';
 import zlib from 'zlib';
 import logger from './lib/logger.js';
 import EventFileReader from './event_file_reader.js';
-
 class Replay extends EventEmitter {
   constructor(replayStartTime, replayEndTime, replayMultiplier, replayFiles, replayDuration, description) {
     super();
@@ -26,7 +25,6 @@ class Replay extends EventEmitter {
 
   async listen(cb) {
     this.server = net.createServer();
-
     for (const filename of this.replayFiles) {
       const ext = path.extname(file);
       if (ext === 'gz') {
@@ -42,7 +40,6 @@ class Replay extends EventEmitter {
 
     return cb();
   }
-
   setReplayConfig(timerStartTime, timerEndTime) {
     this.timerStartTime = new Date(timerStartTime).getTime();
     this.timerEndTime = new Date(timerEndTime).getTime();
@@ -62,7 +59,6 @@ class Replay extends EventEmitter {
 
     const firstLogDate = this.logReaders
       .reduce((acc, reader) => Math.min(acc, reader.firstLog.date.getTime()), Infinity);
-
     const endOfDay = DateFns.endOfDay(DateFns.addDays(TZDate.tz('Europe/Paris', firstLogDate), this.replayDuration - 1)).getTime();
     const timerStartTime = this.dayStart + (this.replayStartDatetime ? new Date(`1970-01-01T${this.replayStartDatetime}`).getTime() : 0);
 

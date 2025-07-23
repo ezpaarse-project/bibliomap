@@ -25,6 +25,7 @@ services:
     environment:
       EZPAARSE_URL: "ezpaarse:59599"
       HARVESTER_URL: "localhost:27777"
+      WEBSOCKET_PORT: 27780
       REPLAY_MODE: true
     command: "npm run dev"
     working_dir: /usr/src/app
@@ -36,6 +37,7 @@ services:
         condition: service_healthy
     ports:
       - 27780:27780
+      - 9229:9229
     healthcheck:
       test:
         [
