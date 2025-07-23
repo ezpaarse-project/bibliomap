@@ -7,7 +7,7 @@ class EventFileReader {
   constructor(file, stream) {
     this.file = file;
     this.stream = stream;
-    this.type = file.split('.').pop();
+    this.type = path.extname(file);
 
     this.lineQueue = [];
 
@@ -31,8 +31,7 @@ class EventFileReader {
       input: this.stream,
     });
 
-    rl
-      .on('line', (line) => {
+    rl.on('line', (line) => {
         this.pushToQueue(line);
       })
       .on('end', () => {
