@@ -1,7 +1,7 @@
 <template>
-  <v-tooltip location="bottom" :text="t('appbar.tooltips.center-map')">
+  <v-tooltip location="left" :text="t('fabButton.tooltips.counter')">
     <template #activator="{ props: centerMapProps }">
-      <v-btn icon="mdi-target" v-bind="centerMapProps" @click="centerMap" />
+      <v-btn color="indigo" icon="mdi-counter" v-bind="centerMapProps" @click="showCounterDrawer" />
     </template>
   </v-tooltip>
 </template>
@@ -12,8 +12,8 @@
   const { t } = useI18n();
 
   const emitter = useMitt();
-  function centerMap () {
-    emitter.emit('centerMap', null);
+  function showCounterDrawer () {
+    emitter.emit('showCounterDrawer', null);
   }
 
 </script>

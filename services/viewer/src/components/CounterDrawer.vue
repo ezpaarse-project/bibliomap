@@ -1,20 +1,21 @@
 <template>
   <v-navigation-drawer
-    v-if="include"
     v-model="drawer"
     elevation="5"
     :location="drawerLocation"
     :permanent="true"
     :width="props.width"
   >
-    <div class="drawer-elements-container">
+    <div>
+      <div class="d-flex justify-end">
+        <v-btn :flat="true" icon="mdi-close" @click.stop="drawer = false" />
+      </div>
       <div v-if="props.descriptionSection.include" :style="{ order: props.descriptionSection.index }">
         <Description />
         <v-divider />
       </div>
       <div v-if="props.timerSection.include" :style="{ order: props.timerSection.index }">
         <Timer />
-        <v-divider />
       </div>
       <div v-if="props.counterSection.include" :style="{ order: props.counterSection.index }">
         <Counter />
@@ -22,7 +23,6 @@
       </div>
       <div v-if="props.portalSection.include" :style="{ order: props.portalSection.index }">
         <Portals />
-        <v-divider />
       </div>
       <div v-if="replayMode && props.replayDescription.include" :style="{ order: props.replayDescription.index }">
         <ReplayDescription />
@@ -30,7 +30,6 @@
       </div>
     </div>
   </v-navigation-drawer>
-  <ModeCard v-if="!usingPhone || (usingPhone && !drawer)" />
 </template>
 
 <script setup lang="ts">
@@ -41,6 +40,9 @@
   const config = useViewerConfigStore().config;
   const props = config.drawerParams;
   const emitter = useMitt();
+  emitter.on('showCounterDrawer', () => {
+    drawer.value = true;
+  });
 
   const include = !(!props || props.include === false);
 
@@ -59,25 +61,3 @@
     drawer.value = !drawer.value;
   });
 </script>
-<style lang="scss">
-  .drawer-elements-container{
-    display: flex;
-    flex-direction: column;
-  }
-  .app-bar-content{
-    width: 100%;
-    padding: 0 1em;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-
-    div{
-      width: 100%;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: flex-end;
-    }
-  }
-</style>

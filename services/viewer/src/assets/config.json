@@ -44,9 +44,9 @@
         "position": "left",
         "width": 350,
         "descriptionSection": {
-            "include": false,
+            "include": true,
             "index": 0,
-            "icon": "logo.svg"
+            "icon": "logo-cnrs.svg"
         },
         "timerSection": {
             "include": true,
@@ -137,9 +137,6 @@
             "include": true,
             "index": 0.5
         }
-    },
-    "appbarParams": {
-        "include": true
     },
     "minimapParams": {
         "include": true,

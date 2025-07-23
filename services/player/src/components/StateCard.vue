@@ -14,14 +14,3 @@
 
   const { state } = storeToRefs(usePlayStateStore());
 </script>
-
-<style scoped lang="scss">
-  .card-container {
-    z-index: 1000;
-    position: relative;
-    top: calc(100dvh - 90px);
-    left: 20px;
-    opacity: 1;
-    max-width: 110px;
-  }
-</style>

@@ -1,5 +1,5 @@
 <template>
-  <v-tooltip location="bottom" :text="t('appbar.tooltips.translation')">
+  <v-tooltip location="left" :text="t('fabButton.tooltips.translation')">
     <template #activator="{ props: tooltipProps }">
       <v-menu
         v-model="translationMenu"
@@ -9,6 +9,7 @@
         <template #activator="{ props: translationMenuProps }">
           <v-btn
             v-bind="{ ...translationMenuProps, ...tooltipProps }"
+            color="purple"
             icon="mdi-translate"
           />
         </template>

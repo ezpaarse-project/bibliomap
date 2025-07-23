@@ -1,6 +1,7 @@
 {
-  "appbar": {
+  "fabButton": {
     "tooltips": {
+      "counter": "Afficher les compteurs",
       "center-map": "Recentrer la carte",
       "translation": "Traduction",
       "change-map": "Changer de fond de carte",

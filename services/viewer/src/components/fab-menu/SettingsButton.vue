@@ -1,7 +1,7 @@
 <template>
-  <v-tooltip location="bottom" :text="t('appbar.tooltips.settings')">
+  <v-tooltip location="left" :text="t('fabButton.tooltips.settings')">
     <template #activator="{ props: settingsProps }">
-      <v-btn icon="mdi-cog" v-bind="settingsProps" @click="emitter.emit('showSettings', null)" />
+      <v-btn color="black" icon="mdi-cog" v-bind="settingsProps" @click="emitter.emit('showSettings', null)" />
     </template>
   </v-tooltip>
 </template>
