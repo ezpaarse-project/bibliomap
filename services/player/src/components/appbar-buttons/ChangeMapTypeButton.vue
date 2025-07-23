@@ -1,30 +1,27 @@
 <template>
-  <v-tooltip location="bottom" :text="t('appbar.tooltips.change-map')">
-    <template #activator="{ props: tooltipProps }">
-      <v-menu
-        v-model="mapMenu"
-        :close-on-content-click="false"
-        offset-y
-      >
-        <template #activator="{ props: mapMenuProps }">
-          <v-btn
-            v-bind="{ ...mapMenuProps, ...tooltipProps }"
-            icon="mdi-map"
-          />
-        </template>
-
-        <v-list>
-          <v-list-item
-            v-for="(map, index) in ['Default', 'Humanitarian OSM', 'OpenTopoMap', 'CyclOSM']"
-            :key="index"
-            @click="changeMapType(map)"
-          >
-            <v-list-item-title>{{ map }}</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>
+  <v-menu
+    v-model="mapMenu"
+    :close-on-content-click="false"
+    offset-y
+  >
+    <template #activator="{ props: mapMenuProps }">
+      <v-btn
+        v-tooltip="{text: t('appbar.tooltips.change-map'), location: 'bottom'}"
+        v-bind="{ ...mapMenuProps }"
+        icon="mdi-map"
+      />
     </template>
-  </v-tooltip>
+
+    <v-list>
+      <v-list-item
+        v-for="(map, index) in ['Default', 'Humanitarian OSM', 'OpenTopoMap', 'CyclOSM']"
+        :key="index"
+        @click="changeMapType(map)"
+      >
+        <v-list-item-title>{{ map }}</v-list-item-title>
+      </v-list-item>
+    </v-list>
+  </v-menu>
 </template>
 <script setup lang="ts">
   import useMitt from '@/composables/useMitt';
