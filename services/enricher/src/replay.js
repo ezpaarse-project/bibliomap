@@ -2,7 +2,7 @@
 import { EventEmitter } from 'events';
 import fs from 'fs';
 import net from 'net';
-import { endOfDay, addDays } from 'date-fns';
+import DateFns from 'date-fns';
 import { TZDate } from '@date-fns/tz';
 import zlib from 'zlib';
 import logger from './lib/logger.js';
@@ -43,10 +43,10 @@ class Replay extends EventEmitter {
     return cb();
   }
 
-  setReplayConfig(startTimerAt, endTimerAt) {
-    this.startTimerAt = new Date(startTimerAt).getTime();
-    this.endTimerAt = new Date(endTimerAt).getTime();
-    this.timer = this.startTimerAt;
+  setReplayConfig(timerStartTime, timerEndTime) {
+    this.timerStartTime = new Date(timerStartTime).getTime();
+    this.timerEndTime = new Date(timerEndTime).getTime();
+    this.timer = this.timerStartTime;
     this.loading = false;
     this.initSendTimerInterval();
     this.emit('ready', null);
@@ -55,18 +55,18 @@ class Replay extends EventEmitter {
   initTimer() {
     if (this.replayStartDatetime) {
       if (this.replayEndTime && this.replayStartDatetime < this.replayEndTime) return this.setReplayConfig(this.replayStartDatetime, this.replayEndTime);
-      const dayEnd = endOfDay(addDays(TZDate.tz('Europe/Paris', new Date(this.replayStartDatetime)), this.replayDuration - 1)).getTime();
-      this.setReplayConfig(this.replayStartDatetime, dayEnd);
+      const endOfDay = DateFns.endOfDay(DateFns.addDays(TZDate.tz('Europe/Paris', new Date(this.replayStartDatetime)), this.replayDuration - 1)).getTime();
+      this.setReplayConfig(this.replayStartDatetime, endOfDay);
       return;
     }
 
     const firstLogDate = this.logReaders
       .reduce((acc, reader) => Math.min(acc, reader.firstLog.date.getTime()), Infinity);
 
-    const dayEnd = endOfDay(addDays(TZDate.tz('Europe/Paris', firstLogDate), this.replayDuration - 1)).getTime();
-    const startTimerAt = this.dayStart + (this.replayStartDatetime ? new Date(`1970-01-01T${this.replayStartDatetime}`).getTime() : 0);
+    const endOfDay = DateFns.endOfDay(DateFns.addDays(TZDate.tz('Europe/Paris', firstLogDate), this.replayDuration - 1)).getTime();
+    const timerStartTime = this.dayStart + (this.replayStartDatetime ? new Date(`1970-01-01T${this.replayStartDatetime}`).getTime() : 0);
 
-    this.setReplayConfig(startTimerAt, dayEnd);
+    this.setReplayConfig(timerStartTime, endOfDay);
   }
 
   updateTimer() {
@@ -80,7 +80,7 @@ class Replay extends EventEmitter {
 
   initInterval(timeout) {
     return setInterval(() => {
-      if (this.timer >= this.endTimerAt) {
+      if (this.timer >= this.timerEndTime) {
         this.emit('timerEnd');
         return;
       };
@@ -90,15 +90,14 @@ class Replay extends EventEmitter {
       this.logReaders = this.logReaders.filter((reader) => !reader.eof);
 
       if (this.loading) {
-        if ((this.replayStartDatetime)
-        || this.logReaders.every((reader) => reader.firstLog)) {
+        if ((this.replayStartDatetime) || this.logReaders.every((reader) => reader.firstLog)) {
           this.initTimer();
-        } else return;
+        } else { return; }
       }
 
       this.logReaders
         .flatMap((reader) => reader.returnAllPassedLogs(this.timer))
-        .filter((log) => log.date.getTime() >= this.startTimerAt)
+        .filter((log) => log.date.getTime() >= this.timerStartTime)
         .map((log) => this.parseLine(log.log));
     }, timeout);
   }
@@ -110,7 +109,7 @@ class Replay extends EventEmitter {
 
   initSendTimerInterval() {
   const intervalId = setInterval(() => {
-    if (this.timer > this.endTimerAt) {
+    if (this.timer > this.timerEndTime) {
       this.emit('timeUpdate', this.timer);
     } else {
       clearInterval(intervalId);
