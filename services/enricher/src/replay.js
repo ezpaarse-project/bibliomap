@@ -2,17 +2,11 @@
 import { EventEmitter } from 'events';
 import fs from 'fs';
 import net from 'net';
-import { startOfDay, endOfDay, addDays } from 'date-fns';
+import { endOfDay, addDays } from 'date-fns';
 import { TZDate } from '@date-fns/tz';
 import zlib from 'zlib';
-import pino from 'pino';
+import logger from './lib/logger.js';
 import EventFileReader from './event_file_reader.js';
-
-const logger = pino();
-
-async function handleGzFile(stream) {
-  return stream.pipe(zlib.createGunzip());
-}
 
 class Replay extends EventEmitter {
   constructor(replayStartTime, replayEndTime, replayMultiplier, replayFiles, replayDuration, description) {
@@ -33,14 +27,14 @@ class Replay extends EventEmitter {
   async listen(cb) {
     this.server = net.createServer();
 
-    for (const file of this.replayFiles) {
-      const ext = file.split('.').pop();
+    for (const filename of this.replayFiles) {
+      const ext = path.extname(file);
       if (ext === 'gz') {
-        const baseFileName = file.split('.').slice(0, -1).join('.');
-        const stream = await handleGzFile(fs.createReadStream(file));
+        const baseFileName = filename.slice(0, -3);
+        const stream = await stream.pipe(zlib.createGunzip());
         this.logReaders.push(new EventFileReader(baseFileName, stream));
       } else {
-        this.logReaders.push(new EventFileReader(file, fs.createReadStream(file)));
+        this.logReaders.push(new EventFileReader(filename, fs.createReadStream(filename)));
       }
     }
 
@@ -77,11 +71,11 @@ class Replay extends EventEmitter {
 
   updateTimer() {
     if (this.loading) {
-      logger.debug('[debug] loading');
+      logger.debug('loading');
       return;
     }
     this.timer += 1000;
-    logger.debug('[debug] timer:', new Date(this.timer));
+    logger.debug('timer:', new Date(this.timer));
   }
 
   initInterval(timeout) {
