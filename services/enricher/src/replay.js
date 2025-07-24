@@ -2,7 +2,7 @@
 import { EventEmitter } from 'events';
 import fs from 'fs';
 import net from 'net';
-import DateFns from 'date-fns';
+import { endOfDay, addDays } from 'date-fns';
 import { TZDate } from '@date-fns/tz';
 import zlib from 'zlib';
 import logger from './lib/logger.js';
@@ -52,14 +52,14 @@ class Replay extends EventEmitter {
   initTimer() {
     if (this.replayStartDatetime) {
       if (this.replayEndTime && this.replayStartDatetime < this.replayEndTime) return this.setReplayConfig(this.replayStartDatetime, this.replayEndTime);
-      const endOfDay = DateFns.endOfDay(DateFns.addDays(TZDate.tz('Europe/Paris', new Date(this.replayStartDatetime)), this.replayDuration - 1)).getTime();
+      const endOfDayOfFile = endOfDay(addDays(TZDate.tz('Europe/Paris', new Date(this.replayStartDatetime)), this.replayDuration - 1)).getTime();
       this.setReplayConfig(this.replayStartDatetime, endOfDay);
       return;
     }
 
     const firstLogDate = this.logReaders
       .reduce((acc, reader) => Math.min(acc, reader.firstLog.date.getTime()), Infinity);
-    const endOfDay = DateFns.endOfDay(DateFns.addDays(TZDate.tz('Europe/Paris', firstLogDate), this.replayDuration - 1)).getTime();
+    const endOfDayOfFile = endOfDay(addDays(TZDate.tz('Europe/Paris', firstLogDate), this.replayDuration - 1)).getTime();
     const timerStartTime = this.dayStart + (this.replayStartDatetime ? new Date(`1970-01-01T${this.replayStartDatetime}`).getTime() : 0);
 
     this.setReplayConfig(timerStartTime, endOfDay);

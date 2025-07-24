@@ -32,7 +32,6 @@ const viewers = new Set();
  * Listen events coming from harvester
  * then forward it to ezpaarse jobs
  */
-logger.debug('config:', config);
 
 const harvesterConfig = {
   host: process.env.HARVESTER_URL.split(':')[0],
