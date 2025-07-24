@@ -5,7 +5,7 @@
       <span class="pause-circle-background" />
       <span class="second-pause-circle-background" />
     </div>
-    <span class="pause-text">{{ t('state-card.pause') }}</span>
+    <span class="pause-text">{{ t('state-card.paused') }}</span>
   </div>
 </template>
 <script setup lang="ts">
