@@ -1,31 +1,27 @@
 <template>
-  <v-tooltip location="left" :text="t('fabButton.tooltips.translation')">
-    <template #activator="{ props: tooltipProps }">
-      <v-menu
-        v-model="translationMenu"
-        :close-on-content-click="false"
-        offset-y
-      >
-        <template #activator="{ props: translationMenuProps }">
-          <v-btn
-            v-bind="{ ...translationMenuProps, ...tooltipProps }"
-            color="purple"
-            icon="mdi-translate"
-          />
-        </template>
-
-        <v-list>
-          <v-list-item
-            v-for="(lang, index) in ['FR', 'EN']"
-            :key="index"
-            @click="selectLanguage(lang)"
-          >
-            <v-list-item-title>{{ lang }}</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>
+  <v-menu
+    v-model="translationMenu"
+    :close-on-content-click="false"
+    offset-y
+  >
+    <template #activator="{ props: translationMenuProps }">
+      <v-btn
+        v-tooltip="{text: t('appbar.tooltips.translation'), location: 'bottom'}"
+        v-bind="{ ...translationMenuProps }"
+        icon="mdi-translate"
+      />
     </template>
-  </v-tooltip>
+
+    <v-list>
+      <v-list-item
+        v-for="(lang, index) in ['FR', 'EN']"
+        :key="index"
+        @click="selectLanguage(lang)"
+      >
+        <v-list-item-title>{{ lang }}</v-list-item-title>
+      </v-list-item>
+    </v-list>
+  </v-menu>
 </template>
 <script setup lang="ts">
   import { useI18n } from 'vue-i18n';

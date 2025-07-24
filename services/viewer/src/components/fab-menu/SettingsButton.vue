@@ -1,9 +1,5 @@
 <template>
-  <v-tooltip location="left" :text="t('fabButton.tooltips.settings')">
-    <template #activator="{ props: settingsProps }">
-      <v-btn color="black" icon="mdi-cog" v-bind="settingsProps" @click="emitter.emit('showSettings', null)" />
-    </template>
-  </v-tooltip>
+  <v-btn v-tooltip="{text: t('appbar.tooltips.settings'), location: 'bottom'}" :disabled="state === PlayState.LOADING" icon="mdi-cog" @click="emitter.emit('showSettings', null)" />
 </template>
 <script setup lang="ts">
   import useMitt from '@/composables/useMitt';

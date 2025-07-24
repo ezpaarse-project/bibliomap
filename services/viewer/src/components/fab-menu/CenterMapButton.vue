@@ -1,9 +1,5 @@
 <template>
-  <v-tooltip location="left" :text="t('fabButton.tooltips.center-map')">
-    <template #activator="{ props: centerMapProps }">
-      <v-btn color="red" icon="mdi-target" v-bind="centerMapProps" @click="centerMap" />
-    </template>
-  </v-tooltip>
+  <v-btn v-tooltip="{text: t('appbar.tooltips.center-map'), location: 'bottom'}" icon="mdi-target" @click="centerMap" />
 </template>
 <script setup lang="ts">
   import useMitt from '@/composables/useMitt';
