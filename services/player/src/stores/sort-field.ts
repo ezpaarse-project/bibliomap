@@ -60,7 +60,6 @@ export const useSortFieldStore = defineStore('sort-field', () => {
   }
 
   function setFields () {
-    if (!db.value) return ;
     return new Promise<void>(resolve => {
       if (!db.value) {
         resolve();
@@ -87,9 +86,7 @@ export const useSortFieldStore = defineStore('sort-field', () => {
               }
               return [];
             })
-            .flat()
-            .map(name => typeof name === 'string' ? name.toUpperCase() : name)
-            .filter(name => typeof name === 'string')
+            .flatMap(name => typeof name === 'string' ? [(name as string).toUpperCase()] : [] )
         );
 
         fields.value = Array.from(fieldNames).map(fieldName => ({
@@ -114,7 +111,8 @@ export const useSortFieldStore = defineStore('sort-field', () => {
     let ii = 0;
     while (fieldIdentifier.value === ''){
       for(let i = 0; i < Object.keys(count).length; i++) {
-        if (count[Object.keys(count)[i]] > 1 && count[Object.keys(count)[i]] < 50 + ii) {
+        const countOfMimeInPortal = count[Object.keys(count)[i]];
+        if (countOfMimeInPortal > 1 && countOfMimeInPortal < 50 + ii) {
           fieldIdentifier.value = Object.keys(count)[i];
           break;
         }

@@ -17,7 +17,6 @@ export const usePlayTimeframeStore = defineStore('play-timeframe', () => {
   }
 
   async function getStartDatetimeFromDB () {
-    if (!db.value) return;
     return new Promise<void>(resolve => {
       if (!db.value) {
         resolve();
@@ -45,7 +44,6 @@ export const usePlayTimeframeStore = defineStore('play-timeframe', () => {
   }
 
   async function getEndDatetimeFromDB () {
-    if (!db.value) return;
     return new Promise<void>(resolve => {
       if (!db.value) {
         resolve();
