@@ -47,16 +47,6 @@ if (enricherPort) {
   config.server.port = enricherPort;
 }
 
-if (process.env.STREAMNAMES && process.env.STREAMPATHS) {
-  const streamNames = process.env.STREAMNAMES.split(' ');
-  const streamPaths = process.env.STREAMPATHS.split(' ');
-
-  config.logStreams = {};
-
-  streamNames.forEach((streamName, i) => {
-    config.logStreams[streamName] = [streamPaths[i]];
-  });
-}
 
 const harvester = new LogHarvester(config);
 harvester.run();

@@ -19,10 +19,9 @@ source: path.resolve(__dirname, '..', 'demo-logs', process.env.DEMO_DIR),
 generator.run();
 console.log('Log generator is running');
 
-if (process.env.DEBUG) {
-  (function checkMemory() {
-    const memoryUsage = Math.round(process.memoryUsage().rss / 1024 / 1024 * 100) / 100;
-    console.log(`Memory usage: ${memoryUsage} MiB`);
-    setTimeout(checkMemory, 5000);
-  }());
-}
+(function checkMemory() {
+  const memoryUsage = Math.round(process.memoryUsage().rss / 1024 / 1024 * 100) / 100;
+  console.log(`Memory usage: ${memoryUsage} MiB`);
+  setTimeout(checkMemory, 5000);
+}());
+
