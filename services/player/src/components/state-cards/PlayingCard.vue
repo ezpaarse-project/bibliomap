@@ -5,10 +5,14 @@
       <span class="playing-circle-background" />
       <span class="second-playing-circle-background" />
     </div>
-    <span class="playing-text">PLAYING</span>
+    <span class="playing-text">{{ t('player.playing') }}</span>
   </div>
 </template>
+<script setup lang="ts">
+  import { useI18n } from 'vue-i18n';
 
+  const { t } = useI18n();
+</script>
 <style lang='scss' scoped>
   .playing {
     z-index: 1000;

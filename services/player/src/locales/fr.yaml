@@ -71,3 +71,8 @@ file-too-large-dialog:
   message: Ces fichiers sont lourds (>50Mo). Ceux-ci peuvent mettre du temps à charger et peuvent utiliser un certain nombre de ressources. Voulez-vous continuer ?
   agree: Charger
   disagree: Annuler
+state-card:
+  playing: Lecture
+  stopped: Arret
+  paused: Pause
+  loading: Chargement

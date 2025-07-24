@@ -5,10 +5,14 @@
       <span class="stopped-circle-background" />
       <span class="second-stopped-circle-background" />
     </div>
-    <span class="stopped-text">STOPPED</span>
+    <span class="stopped-text">{{ t('player.stopped') }}</span>
   </div>
 </template>
+<script setup lang="ts">
+  import { useI18n } from 'vue-i18n';
 
+  const { t } = useI18n();
+</script>
 <style lang='scss' scoped>
   .stopped {
     z-index: 1000;

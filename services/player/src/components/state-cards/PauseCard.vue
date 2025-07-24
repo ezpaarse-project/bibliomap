@@ -5,10 +5,14 @@
       <span class="pause-circle-background" />
       <span class="second-pause-circle-background" />
     </div>
-    <span class="pause-text">PAUSED</span>
+    <span class="pause-text">{{ t('player.pause') }}</span>
   </div>
 </template>
+<script setup lang="ts">
+  import { useI18n } from 'vue-i18n';
 
+  const { t } = useI18n();
+</script>
 <style lang='scss' scoped>
   .pause {
     z-index: 1000;

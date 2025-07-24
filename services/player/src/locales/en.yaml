@@ -71,3 +71,8 @@ file-too-large-dialog:
   message: These files are large (>50Mo). Those files may take a long time to load and may use a certain number of resources. Do you want to continue ?
   agree: Load
   disagree: Cancel
+state-card:
+  playing: Playing
+  stopped: Stopped
+  paused: Paused
+  loading: Loading

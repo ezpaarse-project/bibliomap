@@ -4,10 +4,14 @@
       <span class="loading-icon"><v-icon icon="mdi-autorenew" /></span>
       <span class="loading-icon-background"><v-icon icon="mdi-autorenew" /></span>
     </div>
-    <span class="loading-text">LOADING</span>
+    <span class="loading-text">{{ t('player.loading') }}</span>
   </div>
 </template>
+<script setup lang="ts">
+  import { useI18n } from 'vue-i18n';
 
+  const { t } = useI18n();
+</script>
 <style scoped lang='scss'>
 .loading {
   z-index: 1000;
