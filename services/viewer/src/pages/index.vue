@@ -4,13 +4,16 @@
       <Drawer />
       <InformationDrawer />
       <SettingsDialog />
-      <v-row align="start" class="pa-0" justify="start">
+      <v-row align="start" class="pa-0" justify="space-between">
         <v-col class="ma-4" cols="auto" style="z-index: 1000;">
           <ModeCard />
         </v-col>
+        <v-col cols="auto">
+          <Minimap style="z-index: 1000;" class="ma-6" />
+        </v-col>
       </v-row>
 
-      <v-row align="end" class="pa-0" justify="end" style="height: 89vh;">
+      <v-row align="end" class="pa-0" justify="end" style="height: 64vh;">
         <v-col class="mr-4 pa-0" cols="auto" style="z-index: 1000;">
           <VersionCard />
         </v-col>
@@ -21,7 +24,6 @@
     </v-main>
     <v-container />
     <WorldMap style="z-index: 0;" />
-    <Minimap style="z-index: 1000;" />
   </v-app>
 </template>
 

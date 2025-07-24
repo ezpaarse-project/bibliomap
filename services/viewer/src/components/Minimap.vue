@@ -97,9 +97,6 @@
 <style lang="scss" scoped>
     .minimap-container{
       display: block;
-      position: fixed;
-      top: 20px + 48px;
-      right: 45px;
       width: 250px;
       height: 250px;
       z-index: 4;
