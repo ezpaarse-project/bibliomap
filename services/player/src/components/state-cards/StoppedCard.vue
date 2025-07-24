@@ -5,7 +5,7 @@
       <span class="stopped-circle-background" />
       <span class="second-stopped-circle-background" />
     </div>
-    <span class="stopped-text">{{ t('player.stopped') }}</span>
+    <span class="stopped-text">{{ t('state-card.stopped') }}</span>
   </div>
 </template>
 <script setup lang="ts">

@@ -4,7 +4,7 @@
       <span class="loading-icon"><v-icon icon="mdi-autorenew" /></span>
       <span class="loading-icon-background"><v-icon icon="mdi-autorenew" /></span>
     </div>
-    <span class="loading-text">{{ t('player.loading') }}</span>
+    <span class="loading-text">{{ t('state-card.loading') }}</span>
   </div>
 </template>
 <script setup lang="ts">
