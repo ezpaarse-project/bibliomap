@@ -95,7 +95,3 @@
     files.value = [];
   });
 </script>
-
-<style scoped lang="scss">
-
-</style>
