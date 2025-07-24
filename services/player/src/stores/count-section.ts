@@ -64,9 +64,11 @@ export const useCountSectionStore = defineStore('count-section', () => {
             sectionCount[field.toUpperCase()][log.mime] += 1;
           });
 
-          if (Object.values(section.count)
+          const isSectionFull = Object.values(section.count)
             .flatMap(Object.values)
-            .reduce((sum, val) => sum + val, 0) > eventsPerSection * (sections.length + 1) - 1) {
+            .reduce((sum, val) => sum + val, 0) > eventsPerSection * (sections.length + 1) - 1;
+
+          if (isSectionFull) {
             sections.push({ ...section });
             section = { datetime: null, count: JSON.parse(JSON.stringify(section.count)) }
           }
