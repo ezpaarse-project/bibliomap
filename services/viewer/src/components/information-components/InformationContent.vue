@@ -1,3 +1,6 @@
+<!-- This component is the content of the information drawer -->
+<!-- You need to change it in order to display your customized information -->
+
 <template>
   <div class="drawer-elements-container">
     <div>

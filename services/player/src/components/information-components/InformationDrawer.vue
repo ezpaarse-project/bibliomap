@@ -31,13 +31,19 @@
 
   const route = useRoute();
 
-  const props = config.dialogDrawerParams;
-  const include = !(!props || props.include === false);
+  const dialogDrawerParams = config.dialogDrawerParams;
+  const include = !(!dialogDrawerParams || dialogDrawerParams.include === false);
   const drawer = ref(false);
-  const drawerLocation = (props.position ?? 'left') as 'left' | 'top' | 'bottom' | 'start' | 'end' | 'right' | undefined;
+  const drawerLocation = (dialogDrawerParams.position ?? 'left') as 'left' | 'top' | 'bottom' | 'start' | 'end' | 'right' | undefined;
   const width = Math.min(600, window.innerWidth);
 
   onMounted(() => {
+    /*
+      This code is used for Expo mode.
+      Expo mode is a way to display the information drawer for a certain amount of time.
+      To activate expo mode, you need to pass a query parameter to the URL.
+      Mode information in viewer README file.
+    */
     const expoParam = route.query.expo as string || route.query.e as string;
     const eParamRaw = route.fullPath.includes('?e') || route.fullPath.includes('&e');
     const intervals = expoParam ? expoParam.split(',').map(s => parseInt(s, 10)) : eParamRaw ? [1 * 60, 10 * 60] : null;

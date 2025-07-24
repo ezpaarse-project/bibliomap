@@ -39,6 +39,12 @@
   const width = Math.min(400, window.innerWidth);
 
   onMounted(() => {
+    /*
+      This code is used for Expo mode.
+      Expo mode is a way to display the information drawer for a certain amount of time.
+      To activate expo mode, you need to pass a query parameter to the URL.
+      Mode information in viewer README file.
+    */
     const expoParam = route.query.expo as string || route.query.e as string;
     const eParamRaw = route.fullPath.includes('?e') || route.fullPath.includes('&e');
     const intervals = expoParam ? expoParam.split(',').map(s => parseInt(s, 10)) : eParamRaw ? [1 * 60, 10 * 60] : null;
