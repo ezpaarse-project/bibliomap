@@ -1,7 +1,7 @@
 <template>
   <div class="portals-component">
     <a
-      v-for="(value) in config.drawerParams.portalSection.portals"
+      v-for="(value) in portals"
       :key="value.name"
       class="anchor"
       :href="value.url"
@@ -49,9 +49,17 @@
   import { useEcCountStore } from '@/stores/ec-count';
   import { useI18n } from 'vue-i18n';
 
+  type Portal = {
+    name: string,
+    url: string,
+    icon?: string,
+    color: string
+  }
+
   const config = useViewerConfigStore().config;
   const { t } = useI18n();
 
+  const portals = config.drawerParams.portalSection.portals as Portal[];
   const countStore = useEcCountStore();
 
   const getIconUrl = (iconName: string): string => {
