@@ -41,12 +41,17 @@ export const useMimeStore = defineStore('mime', () => {
             .sort()
         );
 
-        mimes.value = Array.from(mimeNames).map(mime => ( {
-          name: mime,
-          color: viewerConfig.value?.mapParams?.attributesColors?.mimes[mime as keyof typeof viewerConfig.value.mapParams.attributesColors.mimes]
-            ? viewerConfig.value.mapParams.attributesColors.mimes[mime as keyof typeof viewerConfig.value.mapParams.attributesColors.mimes].color
-            : '#7F8C8D',
-        })).sort((a, b) => a.name.localeCompare(b.name));
+        const defaultColor = '#7F8C8D';
+        Array.from(mimeNames).forEach(mimeName => {
+          const color = viewerConfig.value?.mapParams?.attributesColors?.mimes[mimeName as keyof typeof viewerConfig.value.mapParams.attributesColors.mimes]
+            ? viewerConfig.value.mapParams.attributesColors.mimes[mimeName as keyof typeof viewerConfig.value.mapParams.attributesColors.mimes].color
+            : defaultColor
+          mimes.value.push({
+            name: mimeName,
+            color,
+          });
+        })
+        mimes.value.sort((a, b) => a.name.localeCompare(b.name));
         usePlayStateStore().loaded();
         shownMimes.value = [...mimes.value];
         resolve();
