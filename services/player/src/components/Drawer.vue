@@ -66,20 +66,4 @@
     display: flex;
     flex-direction: column;
   }
-  .app-bar-content{
-    width: 100%;
-    padding: 0 1em;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-
-    div{
-      width: 100%;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: flex-end;
-    }
-  }
 </style>
