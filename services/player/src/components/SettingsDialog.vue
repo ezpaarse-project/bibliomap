@@ -189,6 +189,7 @@
   import { type Mime, useMimeStore } from '@/stores/mime';
 
   const { t } = useI18n();
+
   const { config: currentConfig } = storeToRefs(useViewerConfigStore());
   const { fields: allFields } = storeToRefs(useSortFieldStore());
   const { mimes: allMimes } = storeToRefs(useMimeStore());
