@@ -1,6 +1,5 @@
 <template>
   <main>
-    <Appbar />
     <Drawer />
     <WorldMap />
     <Minimap v-if="config.minimapParams.include" />
@@ -18,7 +17,6 @@
   import { useViewerConfigStore } from '@/stores/viewer-config';
 
   const config = useViewerConfigStore().config;
-
 </script>
 
 <style>
