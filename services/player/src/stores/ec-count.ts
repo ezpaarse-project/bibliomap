@@ -72,6 +72,11 @@ export const useEcCountStore = defineStore('ec-count', () => {
     return Object.values(count.value[field.toUpperCase()]).reduce((a, b) => a + b, 0);
   }
 
+  /**
+   * Returns the total number of events for a given mime type. If the mime type is not present in any field, returns 0.
+   * @param {string} mime - The mime type to count.
+   * @return {number} - The total number of events for the given mime type.
+   */
   function getCountOfMime (mime: string) {
     return Object.values(
       Object.fromEntries(
@@ -83,6 +88,7 @@ export const useEcCountStore = defineStore('ec-count', () => {
   }
 
   function getTotalCount () {
+    // Gives the total count by summing each mime of each field.
     return Object.entries(count.value)
       .filter(([key]) => fields.value.map(f => f.name.toUpperCase()).includes(key.toUpperCase())).map(([, value]) => Object.values(value))
       .flatMap(Object.values)
