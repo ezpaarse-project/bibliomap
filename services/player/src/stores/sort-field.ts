@@ -78,15 +78,17 @@ export const useSortFieldStore = defineStore('sort-field', () => {
         const fieldNames = new Set(
           allEvents
             .filter(event => event?.log?.['geoip-latitude'] && event?.log?.['geoip-longitude'])
-            .map(event => {
+            .flatMap(event => {
               const log = event?.log;
               const value = fieldIdentifier.value;
               if (log && value && typeof log[value] === 'string') {
-                return log[value].split('+');
+                return log[value]
+                  .split('+')
+                  .map(name => name.toUpperCase());
               }
               return [];
             })
-            .flatMap(name => typeof name === 'string' ? [(name as string).toUpperCase()] : [] )
+            .filter(name => typeof name === 'string')
         );
 
         fields.value = Array.from(fieldNames).map(fieldName => ({
