@@ -10,16 +10,17 @@
   import type { Log } from '@/main';
   import useMitt from '@/composables/useMitt';
   import { useTimerStore } from '@/stores/timer';
+  import { usePlayerMultiplierStore } from '@/stores/player-multiplier';
 
-  const config = (useViewerConfigStore()).config;
-  const params = config.minimapParams;
+  const { config } = storeToRefs(useViewerConfigStore());
+  const params = config.value.minimapParams;
   const usingPhone = window.innerWidth <= 768;
   const { timer } = storeToRefs(useTimerStore());
 
   let minimap: L.Map;
 
   let hasEntered = false;
-  const bubblesToRemove: { marker : L.Marker, frame: { start: number, fade: number, end: number } }[] = [];
+  const bubblesToRemove: Ref<{ marker : L.Marker, frame: { start: number, fade: number, end: number } }[]> = ref([]);
 
   onMounted(() => {
     minimap = L.map('minimap', {
@@ -48,12 +49,17 @@
         return;
       }
       const logTimestamp = new Date(log.datetime).getTime();
-      if (config.value) bubblesToRemove.push({ marker, frame: { start: logTimestamp, fade: logTimestamp + (config.value.mapParams.bubbleDuration || 5) * 1000, end: logTimestamp + (config.value.mapParams.bubbleDuration || 5) * 1000 + 3000 } })
+      if (config.value) {
+        const startTimeStamp = logTimestamp;
+        const fadeTimeStamp = logTimestamp + usePlayerMultiplierStore().multiplier * ((config.value.mapParams.bubbleDuration || 5) * 1000);
+        const endTimeStamp = logTimestamp + usePlayerMultiplierStore().multiplier * ((config.value.mapParams.bubbleDuration || 5) * 1000) + 3000;
+        bubblesToRemove.value.push({ marker, frame: { start: startTimeStamp, fade: fadeTimeStamp, end: endTimeStamp } })
+      }
     });
 
     function removeExpiredBubbles (timestamp: number) {
 
-      bubblesToRemove.forEach((bubble, index) => {
+      bubblesToRemove.value.forEach((bubble, index) => {
         if (timestamp > bubble.frame.fade) {
           const elt = bubble.marker.getElement();
           if (elt) elt.style.opacity = '0';
@@ -65,13 +71,13 @@
         if (timestamp > bubble.frame.end || timestamp < bubble.frame.start) {
           minimap.removeLayer(bubble.marker);
           if (minimap.hasLayer(bubble.marker)) return;
-          bubblesToRemove.splice(index, 1);
+          bubblesToRemove.value.splice(index, 1);
         }
       });
     }
 
     watch(timer, () => {
-      if (timer.value && bubblesToRemove.length) removeExpiredBubbles(timer.value);
+      if (timer.value && bubblesToRemove.value.length) removeExpiredBubbles(timer.value);
     })
 
     const defaultLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
