@@ -6,7 +6,7 @@
   >
     <template #activator="{ props: translationMenuProps }">
       <v-btn
-        v-tooltip="{text: t('appbar.tooltips.translation'), location: 'bottom'}"
+        v-tooltip="{text: t('fabButton.tooltips.translation'), location: 'bottom'}"
         v-bind="{ ...translationMenuProps }"
         icon="mdi-translate"
       />
