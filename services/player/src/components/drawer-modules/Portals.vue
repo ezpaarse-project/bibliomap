@@ -11,32 +11,33 @@
     />
   </v-card>
   <div v-if="fields && fields.length > 0" class="portals-component">
+
     <a
       v-for="{name, color} in fields"
       :key="name"
       class="anchor"
       target="_blank"
     >
-      <v-list-item class="portal-list-element">
 
+      <v-list-item class="row">
         <v-tooltip
           :disabled="!countStore.getCountOfField(name.length ? name.toUpperCase() : 'UNKNOWN')"
           location="right"
         >
           <template #activator="{ props }">
-            <div class="portal-list-item" v-bind="props">
-              <div class="portal-container">
-                <div class="portal-title-container">
-                  <h3 class="title-font">{{ name.length ? name.toUpperCase() : 'UNKNOWN' }}</h3>
-                </div>
-              </div>
-              <v-chip
-                :color="color"
-                variant="flat"
-              >
-                {{ countStore.getCountOfField(name.length ? name.toUpperCase() : 'UNKNOWN') }}
-              </v-chip>
-            </div>
+            <v-row class="mx-2 my-1" v-bind="props" justify="space-between">
+              <v-col cols="auto">
+                <h3 style="font-size: 16px">{{ name.length ? name.toUpperCase() : 'UNKNOWN' }}</h3>
+              </v-col>
+              <v-col cols="auto">
+                <v-chip
+                  :color="color"
+                  variant="flat"
+                >
+                  {{ countStore.getCountOfField(name.length ? name.toUpperCase() : 'UNKNOWN') }}
+                </v-chip>
+              </v-col>
+            </v-row>
           </template>
           <div>
             <div
@@ -47,6 +48,7 @@
             </div>
           </div>
         </v-tooltip>
+
       </v-list-item>
     </a>
   </div>
@@ -74,39 +76,11 @@
     color: inherit;
     z-index: 100;
   }
-  .portals-component{
-    margin: .5rem 0;
+  .row{
+    transition: background-color 0.2s ease;
   }
-  .portal-list-element{
-    background-color: white;
-    transition: filter 0.2s ease-in-out;
-  }
-  .portal-list-element:hover{
-      filter: brightness(0.8);
-  }
-  .portal-list-item{
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .portal-container{
-    display: flex;
-    height: 3rem;
-    margin: .1rem 0;
-    gap: 1rem;
-  }
-  .portal-title-container{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    h3{
-      font-size: 16px;
-      font-weight: bold;
-    }
-    p{
-      font-size: 12px;
-    }
+  .row:hover{
+    background-color: rgba(0, 0, 0, 0.08);
+    cursor: pointer;
   }
 </style>
