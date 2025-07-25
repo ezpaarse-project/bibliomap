@@ -53,24 +53,26 @@
 
   function showDrawerInterval (t: (number)[]){
     drawer.value = true;
+    const shownTime = t[0]
 
     setTimeout(() => {
       if(infoDrawer.value === null) return;
       scrollToBottom();
-    }, (t[0]/2)*1000);
+    }, (shownTime/2)*1000);
 
     setTimeout(() => {
       hideDrawerInterval(t);
-    }, t[0]*1000);
+    }, shownTime*1000);
   }
 
   function hideDrawerInterval (t: (number)[]){
     if(infoDrawer.value === null) return;
+    const hiddenTime = t[1];
     drawer.value = false;
     scrollToTop();
     setTimeout(() => {
       showDrawerInterval(t);
-    }, t[1]*1000);
+    }, hiddenTime*1000);
   }
 
   function scrollToBottom () {
