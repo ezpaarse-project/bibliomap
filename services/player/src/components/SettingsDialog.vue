@@ -136,30 +136,35 @@
             />
           </div>
         </div>
-        <div class="visual-container">
-          <div class="container-test" :style="{transform: `scale(${bubbleSize / 30})`, opacity: opacity}">
-            <div class="bubble-popup-test">
-              <p class="title-font popup-title-test"><strong>{{ t('appbar.settings-dialog.bubble-section.bubble-title') }}</strong></p>
-              <p v-if="showTitles" class="body-font">{{ t('appbar.settings-dialog.bubble-section.publication-title') }}</p>
-              <div class="types-container-test">
-                <p class="title-font" :style="{backgroundColor: '#7F8C8D'}">{{ t('appbar.settings-dialog.bubble-section.rtype') }}</p>
-                <p class="title-font" :style="{backgroundColor: '#D35400'}">{{ t('appbar.settings-dialog.bubble-section.mime') }}</p>
+        <v-row>
+          <!-- DEMO BUBBLE-->
+          <v-col>
+            <div class="container-demo" :style="{transform: `scale(${bubbleSize / 30})`, opacity: opacity}">
+              <div class="bubble-popup-test">
+                <p class="title-font popup-title-test"><strong>{{ t('appbar.settings-dialog.bubble-section.bubble-title') }}</strong></p>
+                <p v-if="showTitles" class="body-font">{{ t('appbar.settings-dialog.bubble-section.publication-title') }}</p>
+                <div class="types-container-test">
+                  <p class="title-font" :style="{backgroundColor: '#7F8C8D'}">{{ t('appbar.settings-dialog.bubble-section.rtype') }}</p>
+                  <p class="title-font" :style="{backgroundColor: '#D35400'}">{{ t('appbar.settings-dialog.bubble-section.mime') }}</p>
+                </div>
+              </div>
+              <div class="bubble">
+                <div
+                  class="bubble-circle-test multicolor"
+                  :style="{ width: '60px', height: '60px'}"
+                />
+                <div
+                  class="bubble-pulse-test"
+                  :style="{ width: '120px', height: '120px', boxShadow: '1px 1px 8px 0 black', animation: 'pulsate 1s ease-in-out infinite'}"
+                  width:
+                />
               </div>
             </div>
-            <div class="bubble">
-              <div
-                class="bubble-circle-test multicolor"
-                :style="{ width: '60px', height: '60px'}"
-              />
-              <div
-                class="bubble-pulse-test"
-                :style="{ width: '120px', height: '120px', boxShadow: '1px 1px 8px 0 black', animation: 'pulsate 1s ease-in-out infinite'}"
-                width:
-              />
-            </div>
-          </div>
-          <v-progress-circular :model-value="counter" size="90" />
-        </div>
+          </v-col>
+          <v-col>
+            <v-progress-circular :model-value="counter" size="90" />
+          </v-col>
+        </v-row>
       </v-row>
       <v-divider />
       <v-row class="pa-4 d-flex align-center" :flat="true">
@@ -323,16 +328,7 @@
 
   $box-shadow: 1px 1px 8px 0 rgba(0, 0, 0, 0.75);
 
-  .visual-container {
-    margin: 0 5% 0 auto;
-    display: flex;
-    flex-direction: row;
-    width: 40%;
-    height: 60px;
-    justify-content: space-between;
-  }
-
-  .container-test {
+  .container-demo {
     display: flex;
     flex-direction: column;
     align-items: center;
