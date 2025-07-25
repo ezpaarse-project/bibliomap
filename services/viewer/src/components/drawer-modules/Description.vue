@@ -1,9 +1,19 @@
 <template>
   <v-list-item>
-    <div class="description-section-item">
-      <img v-if="props.icon" alt="icon" :src="getIconUrl(props.icon)">
-      <span class="text-center mx-2 mb-2">{{ t('drawer-custom.description') }}</span>
-    </div>
+    <v-row class="d-flex align-center justify-space-around" no-gutters>
+      <v-col class="pa-0 ma-0 d-flex justify-center" cols="1">
+        <img
+          v-if="props.icon"
+          alt="icon"
+          height="60"
+          :src="getIconUrl(props.icon)"
+          width="60"
+        >
+      </v-col>
+      <v-col class="pa-0 ma-0" cols="8">
+        <p class="text-center mx-2 mb-2" style="font-size: 14px">{{ t('drawer-custom.description') }}</p>
+      </v-col>
+    </v-row>
   </v-list-item>
 </template>
 <script setup lang="ts">
@@ -18,20 +28,3 @@
     return new URL(`../../assets/${iconName}`, import.meta.url).href;
   };
 </script>
-<style lang="scss">
-    .description-section-item{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-
-    img{
-      height: 60px;
-      width: 60px;
-      max-height: 128px;
-    }
-
-    span{
-      font-size: 14px;
-    }
-  }
-</style>
