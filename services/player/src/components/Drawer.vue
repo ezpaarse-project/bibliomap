@@ -29,7 +29,6 @@
       </div>
     </div>
   </v-navigation-drawer>
-  <StateCard v-if="!usingPhone || (usingPhone && !drawer)" />
 </template>
 
 <script setup lang="ts">

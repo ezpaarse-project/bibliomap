@@ -5,6 +5,7 @@ appbar:
     change-map: Change map background
     settings: Settings
     info: About BiblioMap
+    counter: Show counters
   settings-dialog:
     title: Settings
     minimap-section:

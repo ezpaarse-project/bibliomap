@@ -3,8 +3,8 @@
 </template>
 <script setup lang="ts">
   import useMitt from '@/composables/useMitt';
-  import { useI18n } from 'vue-i18n';
   import { PlayState, usePlayStateStore } from '@/stores/play-state';
+  import { useI18n } from 'vue-i18n';
 
   const { t } = useI18n();
   const emitter = useMitt();

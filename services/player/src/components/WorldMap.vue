@@ -1,5 +1,5 @@
 <template>
-  <div id="map" :style="{height: height}" />
+  <div id="map" />
 </template>
 
 <script lang="ts" setup>
@@ -23,7 +23,6 @@
   const fieldStore = useSortFieldStore();
   const { multiplier } = storeToRefs(usePlayerMultiplierStore());
 
-  const height = config.value.appbarParams.include ? 'calc(100vh - 48px)' : '100vh';
   useBubbleStore();
 
   let map: L.Map;
