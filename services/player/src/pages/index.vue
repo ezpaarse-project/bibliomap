@@ -24,6 +24,8 @@
     </v-main>
     <v-container />
     <WorldMap style="z-index: 0;" />
+    <ProgressBar />
+    <FileTooLargeDialog />
   </v-app>
 </template>
 
