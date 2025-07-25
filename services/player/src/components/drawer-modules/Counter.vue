@@ -4,7 +4,7 @@
   </v-card-title>
 
   <v-container fluid>
-    <v-row align="center" dense justify="space-evenly">
+    <v-row dense justify="center">
       <v-col
         v-for="mime in mimes"
         :key="mime.name"
@@ -18,7 +18,7 @@
           })"
         >
           <template #activator="{ props }">
-            <v-badge :content="countStore.getCountOfMime(mime.name) as number || 0">
+            <v-badge class="mx-3" :content="countStore.getCountOfMime(mime.name) as number || 0">
               <v-chip v-bind="props" :color="mime.color" variant="flat">
                 {{ mime.name }}
               </v-chip>
