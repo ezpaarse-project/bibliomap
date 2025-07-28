@@ -10,7 +10,7 @@
       {{ title }}
     </v-card-title>
 
-    <p v-for="elt in other" :key="elt" class="pa-0 mb-2 w-100 justify-center align-center" style="text-align: center;">{{ elt }}</p>
+    <v-row v-for="elt in other" :key="elt" class="pa-0 mb-2 px-4" style="text-align: center;">{{ elt }}</v-row>
 
     <div class="chip-container">
       <v-chip
