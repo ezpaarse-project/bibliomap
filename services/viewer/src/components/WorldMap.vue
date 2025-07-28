@@ -14,39 +14,46 @@
   const emitter = useMitt();
   const io = useSocketStore().socket;
 
-  const config = useViewerConfigStore().config;
-  const mapParams = config.mapParams;
-  const mimes = config.mapParams.attributesColors.mimes as Record<string, { count: boolean, color: string }>;
+  const { config } = storeToRefs(useViewerConfigStore());
+  const mapParams = ref(config.value.mapParams);
+  const mimes = ref(config.value.mapParams.attributesColors.mimes as Record<string, { count: boolean, color: string }>);
+  const portals = ref(config.value.drawerParams.portalSection.portals);
+  const size = ref(config.value.mapParams.bubbleSize) || 60;
 
-  const onlyPortal = Object.keys(config.drawerParams.portalSection.portals).length === 1 ? Object.keys(config.drawerParams.portalSection.portals)[0] : null;
+  watch(config, () => {
+    mapParams.value = config.value.mapParams;
+    mimes.value = config.value.mapParams.attributesColors.mimes as Record<string, { count: boolean, color: string }>;
+    size.value = config.value.mapParams.bubbleSize || 60;
+    portals.value = config.value.drawerParams.portalSection.portals;
+  })
+
+  const onlyPortal = Object.keys(portals.value).length === 1 ? Object.keys(portals.value)[0] : null;
 
   let map: L.Map;
 
-  const size = mapParams.bubbleSize || 60;
-
   onMounted(() => {
 
-    if (!mapParams || mapParams.include === false) return;
+    if (!mapParams.value || mapParams.value.include === false) return;
 
-    let defaultZoom = window.innerWidth <= 768 ? mapParams.defaultPhoneZoom : mapParams.defaultZoom;
+    let defaultZoom = window.innerWidth <= 768 ? mapParams.value.defaultPhoneZoom : mapParams.value.defaultZoom;
 
-    if((defaultZoom || 6) > (mapParams.maxZoom || 9)){
+    if((defaultZoom || 6) > (mapParams.value.maxZoom || 9)){
       console.error('Default zoom cannot be higher than max zoom')
       defaultZoom = 6;
-      mapParams.maxZoom = 9;
+      mapParams.value.maxZoom = 9;
     }
 
-    if((defaultZoom || 6) < (mapParams.minZoom || 3)){
+    if((defaultZoom || 6) < (mapParams.value.minZoom || 3)){
       console.error('Default zoom cannot be lower than max zoom')
       defaultZoom = 6;
-      mapParams.minZoom = 3;
+      mapParams.value.minZoom = 3;
     }
 
     map = L.map('map', {
-      minZoom: mapParams.minZoom || 3,
-      maxZoom: mapParams.maxZoom || 9,
+      minZoom: mapParams.value.minZoom || 3,
+      maxZoom: mapParams.value.maxZoom || 9,
       zoomControl: false,
-    }).setView([mapParams.defaultX || 46.603354, mapParams.defaultY || 1.888334], defaultZoom || 6);
+    }).setView([mapParams.value.defaultX || 46.603354, mapParams.value.defaultY || 1.888334], defaultZoom || 6);
 
     L.control.zoom({
       position: 'topright',
@@ -86,7 +93,7 @@
     }
 
     emitter.on('centerMap', () => {
-      map.setView([mapParams.defaultX || 46.603354, mapParams.defaultY || 1.888334], defaultZoom || 6);
+      map.setView([mapParams.value.defaultX || 46.603354, mapParams.value.defaultY || 1.888334], defaultZoom || 6);
     });
 
     emitter.on('changeMapType', (layerName: string) => {
@@ -94,19 +101,20 @@
     });
 
     function getBubbleColor (log: Log) {
-      const colorBy = config.mapParams.colorBy;
+      const colorBy = mapParams.value.colorBy;
+      const defaultDefaultMimeColor = '#7F8C8D'
       switch(colorBy) {
         case 'mime':
-          if (!log.mime || !Object.keys(mimes).includes(log.mime.toUpperCase())) return config.mapParams.attributesColors.defaultMimeColor || '#7F8C8D';
-          return (mimes[log.mime.toUpperCase()] as { color: string }).color;
+          if (!log.mime || !Object.keys(mimes.value).includes(log.mime.toUpperCase())) return mapParams.value.attributesColors.defaultMimeColor || defaultDefaultMimeColor;
+          return (mimes.value[log.mime.toUpperCase()] as { color: string }).color;
         case 'portal':
         default:
-          if (onlyPortal) return config.drawerParams.portalSection.portals[0].color;
+          if (onlyPortal) return portals.value[0].color;
           const colors: string[] = [];
           log.ezproxyName.split('+').forEach((portal: string) => {
-            if (config.drawerParams.portalSection.portals.filter(p => p.name.toUpperCase() === portal.toUpperCase()).length > 0) colors.push(config.drawerParams.portalSection.portals.filter(p => p.name.toUpperCase() === portal.toUpperCase())[0].color);
+            if (portals.value.filter(p => p.name.toUpperCase() === portal.toUpperCase()).length > 0) colors.push(portals.value.filter(p => p.name.toUpperCase() === portal.toUpperCase())[0].color);
           })
-          if (!colors || colors.length === 0) return config.drawerParams.portalSection.defaultPortalColor || 'random';
+          if (!colors || colors.length === 0) return config.value.drawerParams.portalSection.defaultPortalColor || 'random';
           if (colors.length === 1) return colors[0];
           return 'linear-gradient(to right, ' + colors.join(', ') + ')';
       }
@@ -123,16 +131,16 @@
 
       const bubble = L.divIcon({
         className: 'leaflet-marker',
-        iconSize: [size, size],
-        iconAnchor: [size / 2, size / 2],
+        iconSize: [size.value, size.value],
+        iconAnchor: [size.value / 2, size.value / 2],
         html: `
-          <div class='container'>
-            <div class='bubble-popup' ${mapParams.includePopup ? '' : 'style="display: none;"'}>
-              <p ${mapParams.popupText.platform_name ? '' : 'style="display: none;"'} class='title-font popup-title'><strong>${log.platform_name}</strong></p>
-              <p ${config.mapParams.popupText.publication_title && log.publication_title ? '' : 'style="display: none;"'} class='body-font'>${log.publication_title}</p>
+          <div class='container' style="transform: scale(${config.value.mapParams.bubbleSize / 60})">
+            <div class='bubble-popup' ${mapParams.value.includePopup ? '' : 'style="display: none;"'}>
+              <p ${mapParams.value.popupText.platform_name ? '' : 'style="display: none;"'} class='title-font popup-title'><strong>${log.platform_name}</strong></p>
+              <p ${config.value.mapParams.popupText.publication_title && log.publication_title ? '' : 'style="display: none;"'} class='body-font'>${log.publication_title}</p>
               <div class='types-container'>
-                <p style='${mapParams.popupText.rtype && log.rtype ? '' : 'display: none;'} background-color: ${mapParams.attributesColors.rtype || '#7F8C8D'}' class='title-font'>${log.rtype}</p>
-                <p style='${mapParams.popupText.mime && log.mime ? '' : 'display: none;'} background-color: ${log.mime && mimes[log.mime as keyof typeof mimes].color || '#D35400'}' class='title-font'>${log.mime}</p>
+                <p style='${mapParams.value.popupText.rtype && log.rtype ? '' : 'display: none;'} background-color: ${mapParams.value.attributesColors.rtype || '#7F8C8D'}' class='title-font'>${log.rtype}</p>
+                <p style='${mapParams.value.popupText.mime && log.mime ? '' : 'display: none;'} background-color: ${log.mime && mimes[log.mime as keyof typeof mimes] && (mimes.value[log.mime as keyof typeof mimes.value]).color || '#D35400'}' class='title-font'>${log.mime}</p>
               </div>
             </div>
             ${bubbleHtml}
@@ -149,7 +157,7 @@
         setTimeout(() => {
           map.removeLayer(marker);
         }, 2000);
-      }, (mapParams.bubbleDuration || 5) * 1000)
+      }, (mapParams.value.bubbleDuration || 5) * 1000)
 
       if (!map.getBounds().contains(L.latLng(log['geoip-latitude'], log['geoip-longitude']))) {
         emitter.emit('minimap', { log, bubble });
@@ -173,8 +181,8 @@
       default: backgroundColor = color;
     }
     return `<div class='bubble'>
-              <div style='background: ${gradient || backgroundColor || 'transparent'}; width: ${size}px; height: ${size}px' class='bubble-circle ${classes}'></div>
-              <div style='box-shadow: 1px 1px 8px 0 ${backgroundColor || 'gray'}; width: ${size*2}px; height: ${size*2}px' class='bubble-pulse'></div>
+              <div style='background: ${gradient || backgroundColor || 'transparent'}; width: ${size.value}px; height: ${size.value}px' class='bubble-circle ${classes}'></div>
+              <div style='box-shadow: 1px 1px 8px 0 ${backgroundColor || 'gray'}; width: ${size.value*2}px; height: ${size.value*2}px' class='bubble-pulse'></div>
             </div>`
   }
 
