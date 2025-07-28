@@ -147,7 +147,7 @@
       return config.value.drawerParams.portalSection.portals.map((p: Field) => p.name.toUpperCase()).includes(field.toUpperCase());
     }
 
-    emitter.on('EC', (log: Log) => {
+    function showBubble (log: Log) {
       if (log.platform_name && !usePlatformFilterStore().isNameOkay(log.platform_name)) return;
       if (!log || !log['geoip-latitude'] || !log['geoip-longitude']) return;
       if (!log[fieldIdentifier.value] || !fieldInConfig(log[fieldIdentifier.value] + '')) return;
@@ -192,7 +192,9 @@
       if (!map.getBounds().contains(L.latLng(log['geoip-latitude'], log['geoip-longitude']))) {
         emitter.emit('minimap', { log, bubble });
       }
-    });
+    }
+
+    emitter.on('EC', showBubble);
   });
 
   function changeAnimationSpeed (multiplier: number) {
