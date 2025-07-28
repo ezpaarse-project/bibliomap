@@ -6,7 +6,7 @@ type Events = {
   centerMap: null;
   changeMapType: string;
   showCounterDrawer: null;
-  minimap: { log: Log; bubble: L.DivIcon };
+  minimap: { log: Log; showEvent: (log: Log, map: L.Map) => void };
   showInfoDialog: null;
   showSettings: null;
   toggleDrawer: null;

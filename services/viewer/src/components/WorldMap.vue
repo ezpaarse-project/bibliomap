@@ -1,5 +1,5 @@
 <template>
-  <div id="map" :style="{height: '100vh'}" />
+  <div id="map" />
 </template>
 
 <script lang="ts" setup>
@@ -10,6 +10,8 @@
   import { usePlatformFilterStore } from '@/stores/platform-filter';
   import useMitt from '@/composables/useMitt';
   import { useSocketStore } from '@/stores/socket';
+  import vuetify from '@/plugins/vuetify';
+  import EventBubble from './event-bubble-components/EventBubble.vue';
 
   const emitter = useMitt();
   const io = useSocketStore().socket;
@@ -25,9 +27,7 @@
     mimes.value = config.value.mapParams.attributesColors.mimes as Record<string, { count: boolean, color: string }>;
     size.value = config.value.mapParams.bubbleSize || 60;
     portals.value = config.value.drawerParams.portalSection.portals;
-  })
-
-  const onlyPortal = Object.keys(portals.value).length === 1 ? Object.keys(portals.value)[0] : null;
+  });
 
   let map: L.Map;
 
@@ -100,95 +100,45 @@
       changeMapLayer(layers[layerName] as TileLayer);
     });
 
-    function getBubbleColor (log: Log) {
-      const colorBy = mapParams.value.colorBy;
-      const defaultDefaultMimeColor = '#7F8C8D'
-      switch(colorBy) {
-        case 'mime':
-          if (!log.mime || !Object.keys(mimes.value).includes(log.mime.toUpperCase())) return mapParams.value.attributesColors.defaultMimeColor || defaultDefaultMimeColor;
-          return (mimes.value[log.mime.toUpperCase()] as { color: string }).color;
-        case 'portal':
-        default:
-          if (onlyPortal) return portals.value[0].color;
-          const colors: string[] = [];
-          log.ezproxyName.split('+').forEach((portal: string) => {
-            if (portals.value.filter(p => p.name.toUpperCase() === portal.toUpperCase()).length > 0) colors.push(portals.value.filter(p => p.name.toUpperCase() === portal.toUpperCase())[0].color);
-          })
-          if (!colors || colors.length === 0) return config.value.drawerParams.portalSection.defaultPortalColor || 'random';
-          if (colors.length === 1) return colors[0];
-          return 'linear-gradient(to right, ' + colors.join(', ') + ')';
-      }
-    }
-
     io.on('log', (log: Log) => {
-      if (usePlatformFilterStore().getFilter() && log.platform_name && !((usePlatformFilterStore().getFilter().toUpperCase().includes(log.platform_name.toUpperCase()) || log.platform_name.toUpperCase().includes(usePlatformFilterStore().getFilter().toUpperCase())))) return;
-      if (!log || !log['geoip-latitude'] || !log['geoip-longitude']) return;
-
-      const color = getBubbleColor(log);
-      const gradient = color.includes('linear-gradient') ? color : undefined;
-
-      const bubbleHtml = getBubbleHtml(gradient, color)
-
-      const bubble = L.divIcon({
-        className: 'leaflet-marker',
-        iconSize: [size.value, size.value],
-        iconAnchor: [size.value / 2, size.value / 2],
-        html: `
-          <div class='container' style="transform: scale(${config.value.mapParams.bubbleSize / 60})">
-            <div class='bubble-popup' ${mapParams.value.includePopup ? '' : 'style="display: none;"'}>
-              <p ${mapParams.value.popupText.platform_name ? '' : 'style="display: none;"'} class='title-font popup-title'><strong>${log.platform_name}</strong></p>
-              <p ${config.value.mapParams.popupText.publication_title && log.publication_title ? '' : 'style="display: none;"'} class='body-font'>${log.publication_title}</p>
-              <div class='types-container'>
-                <p style='${mapParams.value.popupText.rtype && log.rtype ? '' : 'display: none;'} background-color: ${mapParams.value.attributesColors.rtype || '#7F8C8D'}' class='title-font'>${log.rtype}</p>
-                <p style='${mapParams.value.popupText.mime && log.mime ? '' : 'display: none;'} background-color: ${log.mime && mimes[log.mime as keyof typeof mimes] && (mimes.value[log.mime as keyof typeof mimes.value]).color || '#D35400'}' class='title-font'>${log.mime}</p>
-              </div>
-            </div>
-            ${bubbleHtml}
-          </div>
-        `,
-      });
-
-      const marker = L.marker([log['geoip-latitude'], log['geoip-longitude']], { icon: bubble }).addTo(map);
-      const elt = marker.getElement();
-      if (!elt) return;
-
-      setTimeout(() => {
-        elt.style.opacity = '0';
-        setTimeout(() => {
-          map.removeLayer(marker);
-        }, 2000);
-      }, (mapParams.value.bubbleDuration || 5) * 1000)
+      showEvent(log, map);
 
       if (!map.getBounds().contains(L.latLng(log['geoip-latitude'], log['geoip-longitude']))) {
-        emitter.emit('minimap', { log, bubble });
+        emitter.emit('minimap', { log, showEvent });
       }
     });
   });
 
-  function getBubbleHtml (gradient: string | undefined, color: string) {
-    let classes = '';
-    let backgroundColor = '';
-    switch (color) {
-      case 'random': {
-        backgroundColor = getRandomHexColor();
-        break;
-      }
-      case 'rgb':
-      case'multicolor': {
-        classes += 'multicolor';
-        break;
-      }
-      default: backgroundColor = color;
-    }
-    return `<div class='bubble'>
-              <div style='background: ${gradient || backgroundColor || 'transparent'}; width: ${size.value}px; height: ${size.value}px' class='bubble-circle ${classes}'></div>
-              <div style='box-shadow: 1px 1px 8px 0 ${backgroundColor || 'gray'}; width: ${size.value*2}px; height: ${size.value*2}px' class='bubble-pulse'></div>
-            </div>`
-  }
+  function showEvent (log: Log, map: L.Map) {
+    if (usePlatformFilterStore().getFilter() && log.platform_name && !((usePlatformFilterStore().getFilter().toUpperCase().includes(log.platform_name.toUpperCase()) || log.platform_name.toUpperCase().includes(usePlatformFilterStore().getFilter().toUpperCase())))) return;
+    if (!log || !log['geoip-latitude'] || !log['geoip-longitude']) return;
 
-  function getRandomHexColor () {
-    const hex = Math.floor(Math.random() * 0xFFFFFF).toString(16);
-    return `#${hex.padStart(6, '0')}`;
+    const container = document.createElement('div');
+
+    const app = createApp(EventBubble, {
+      log,
+    });
+    app.use(vuetify);
+    app.mount(container);
+
+    const icon = L.divIcon({
+      html: container,
+      className: '',
+      iconSize: [40, 40],
+    })
+
+    const marker = L.marker(new L.LatLng(log['geoip-latitude'], log['geoip-longitude']), { icon }).addTo(map);
+
+    const elt = marker.getElement();
+    if (!elt) return;
+    elt.classList.add('opacity-transition');
+
+    setTimeout(() => {
+      elt.style.opacity = '0';
+      setTimeout(() => {
+        map.removeLayer(marker);
+      }, 2000);
+    }, (mapParams.value.bubbleDuration || 5) * 1000)
   }
 </script>
 
@@ -213,6 +163,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+  }
+
+  .opacity-transition{
+    transition: opacity var(--opacity-transition-speed) ease-in;
   }
 
   .leaflet-marker {
