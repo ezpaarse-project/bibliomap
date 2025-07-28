@@ -10,6 +10,8 @@
       {{ title }}
     </v-card-title>
 
+    <v-row v-for="elt in other" :key="elt" class="pa-0 mb-2 px-4" style="text-align: center;">{{ elt }}</v-row>
+
     <div class="chip-container">
       <v-chip
         v-if="rType"

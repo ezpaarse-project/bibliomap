@@ -4,7 +4,7 @@
       <div class="bubble-info">
         <BubbleInfo
           :mime="props.log.mime"
-          :other="null"
+          :other="other"
           :r-type="props.log.rtype"
           :title="props.log.platform_name"
         />
@@ -43,6 +43,7 @@
   const portals = computed(() => config.value.drawerParams.portalSection.portals);
   const log = props.log
   const bubble = computed(() => getBubblePropsFromLog(log));
+  const other = config.value.mapParams.popupText.publication_title && log.publication_title ? [log.publication_title] : [];
 
   function getBubblePropsFromLog (log: Log) {
     const colorBy = mapParams.value.colorBy;
