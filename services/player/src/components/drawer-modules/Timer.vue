@@ -5,17 +5,21 @@
         <div class="timer-multiplier-container">
           <v-chip :disabled="playState === PlayState.STOPPED || playState === PlayState.LOADING">{{ timer ? new Date(timer).toLocaleString() : "" }}</v-chip>
         </div>
-
-        <v-slider
-          v-model="timer"
-          class="w-100"
-          :disabled="playState === PlayState.STOPPED || playState === PlayState.LOADING"
-          :max="timeframe.endDatetime || Number.POSITIVE_INFINITY"
-          :min="timeframe.startDatetime || 0"
-          prepend-icon="mdi-play"
-          :step="1000"
-        />
-
+        <div class="w-100 d-flex ga-2 justify-start">
+          <v-btn
+            :disabled="playState === PlayState.LOADING"
+            flat
+            :icon="playState === PlayState.PLAYING ? 'mdi-pause' : 'mdi-play'"
+            @click="playState === PlayState.PLAYING ? pause() : play()"
+          />
+          <v-slider
+            v-model="timer"
+            :disabled="playState === PlayState.STOPPED || playState === PlayState.LOADING"
+            hide-details
+            :max="timeframe.endDatetime || Number.POSITIVE_INFINITY"
+            :min="timeframe.startDatetime || 0"
+          />
+        </div>
         <v-number-input
           v-model="multiplier"
           class="w-100"
@@ -46,6 +50,14 @@
 
   const { state: playState } = storeToRefs(usePlayStateStore());
   const { multiplier } = storeToRefs(usePlayerMultiplierStore());
+
+  const play = () => {
+    usePlayStateStore().play();
+  };
+
+  const pause = () => {
+    usePlayStateStore().pause();
+  }
 
 </script>
 

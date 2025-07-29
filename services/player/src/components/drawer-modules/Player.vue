@@ -18,43 +18,6 @@
       :truncate-length="20"
       variant="underlined"
     />
-    <v-row class="d-flex flex-row my-2">
-      <v-col>
-        <v-btn
-          v-if="playState !== PlayState.PLAYING"
-          class="mx-auto d-block mb-2"
-          color="green"
-          :disabled="!files.length || playState === PlayState.LOADING"
-          flat
-          @click="handleStart"
-        ><v-icon>mdi-play-circle</v-icon></v-btn>
-
-        <v-btn
-          v-else
-          class="mx-auto d-block mb-2"
-          color="grey"
-          flat
-          @click="handlePause"
-        ><v-icon>mdi-pause-circle</v-icon></v-btn>
-      </v-col>
-
-      <v-col>
-        <v-btn
-          class="mx-auto d-block mb-2"
-          color="red"
-          :disabled="playState === PlayState.STOPPED || playState === PlayState.LOADING"
-          flat
-          @click="handleStop"
-        ><v-icon>mdi-stop-circle</v-icon></v-btn>
-      </v-col>
-
-    </v-row>
-    <v-snackbar-queue
-      v-model="messages"
-      color="red"
-      :timeout="3000"
-      width="500"
-    />
   </v-card>
 </template>
 
@@ -82,19 +45,6 @@
     });
     filesStore.setFiles(files.value);
   });
-
-  const handleStart = () => {
-    if (!files.value) return
-    usePlayStateStore().play();
-  };
-
-  const handleStop = () => {
-    usePlayStateStore().stop();
-  }
-
-  const handlePause = () => {
-    usePlayStateStore().pause();
-  }
 
   emitter.on('resetFileField', () => {
     files.value = [];
