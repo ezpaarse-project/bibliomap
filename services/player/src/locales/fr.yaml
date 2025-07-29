@@ -64,8 +64,9 @@ drawer:
 version-card:
   connection: Connecté à ezPAARSE
 progress-bar:
-  clearing-db: Nettoyage de la base de données
-  inserting-file: Chargement du fichier {name}
+  clearing-db: Nettoyage de la base de données...
+  inserting-file: Chargement du fichier {name}...
+  sim-loading: Génération de la simulation...
 file-too-large-dialog:
   title: Fichiers lourds
   message: Ces fichiers sont lourds (>50Mo). Ceux-ci peuvent mettre du temps à charger et peuvent utiliser un certain nombre de ressources. Voulez-vous continuer ?

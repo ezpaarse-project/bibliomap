@@ -11,6 +11,7 @@
         v-model="progress"
         color="black"
         height="10"
+        :indeterminate="progress < 0"
         :style="'transition: none'"
       />
       <v-card-text>{{ message }}</v-card-text>
