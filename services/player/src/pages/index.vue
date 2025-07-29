@@ -16,7 +16,6 @@
 
         <v-row align="end" class="pa-0" justify="end">
           <v-col class="mr-6 pa-0 d-flex align-center justify-space-around" cols="auto" style="z-index: 1000;">
-            <VersionCard class="mr-6" />
             <FabButton />
           </v-col>
         </v-row>

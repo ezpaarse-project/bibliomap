@@ -40,7 +40,7 @@ declare module 'vue' {
     StoppedCard: typeof import('./components/state-cards/StoppedCard.vue')['default']
     Timer: typeof import('./components/drawer-modules/Timer.vue')['default']
     TranslationButton: typeof import('./components/fab-menu/TranslationButton.vue')['default']
-    VersionCard: typeof import('./components/VersionCard.vue')['default']
+    VersionCard: typeof import('./components/drawer-modules/VersionCard.vue')['default']
     WorldMap: typeof import('./components/WorldMap.vue')['default']
   }
 }

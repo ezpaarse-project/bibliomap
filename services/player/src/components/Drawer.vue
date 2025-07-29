@@ -7,29 +7,39 @@
     :permanent="true"
     :width="props.width"
   >
-    <div class="drawer-elements-container">
+    <div class="drawer-elements-container d-flex flex-column fill-height">
+
       <div>
         <Player />
         <v-divider />
       </div>
+
       <div v-if="state !== PlayState.LOADING && files.length > 0">
         <Timer />
         <v-divider />
       </div>
+
       <div v-if="props.counterSection.include && state !== PlayState.LOADING && files.length > 0">
         <Counter />
         <v-divider />
       </div>
+
       <div v-if="props.portalSection.include && state !== PlayState.LOADING && files.length > 0">
         <Portals />
-        <v-divider />
       </div>
+
       <div v-if="state === PlayState.LOADING" class="d-flex align-center justify-center mt-8">
         <v-progress-circular indeterminate size="74" />
       </div>
+
+      <div class="mt-auto">
+        <VersionCard />
+      </div>
+
     </div>
   </v-navigation-drawer>
 </template>
+
 
 <script setup lang="ts">
   import { useViewerConfigStore } from '@/stores/viewer-config';
