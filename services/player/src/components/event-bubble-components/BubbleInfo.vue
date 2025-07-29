@@ -2,6 +2,7 @@
   <v-card
     class="pa-2 info-card"
     elevation="10"
+    :style="{transform: `scale(${config.mapParams.popupSize / 60})`}"
   >
     <v-card-title
       class="text-body-2 pa-0 mb-2 px-4 title-wrap"
@@ -41,16 +42,16 @@
     other: string[] | null | undefined,
   }>();
 
-  const config = useViewerConfigStore().config;
+  const { config } = storeToRefs(useViewerConfigStore());
   function getMimeColor () {
-    const defaultColor = config.mapParams.attributesColors.defaultMimeColor || '#7F8C8D';
-    const mimes = config.mapParams.attributesColors.mimes as Record<string, { count: boolean, color: string }>;
+    const defaultColor = config.value.mapParams.attributesColors.defaultMimeColor || '#7F8C8D';
+    const mimes = config.value.mapParams.attributesColors.mimes as Record<string, { count: boolean, color: string }>;
     if (!props.mime || !Object.keys(mimes).includes(props.mime.toUpperCase())) return defaultColor;
     return mimes[props.mime.toUpperCase()].color;
   }
 
   function getRTypeColor () {
-    return config.mapParams.attributesColors.rtype || '#7F8C8D';
+    return config.value.mapParams.attributesColors.rtype || '#7F8C8D';
   }
 </script>
 <style scoped lang="scss">
@@ -62,6 +63,7 @@
   min-width: 100px;
   max-width: 200px;
   opacity: 85%;
+  transform-origin: bottom center;
 
   &:hover {
     opacity: 100%;

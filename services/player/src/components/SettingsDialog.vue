@@ -112,17 +112,40 @@
       </v-row>
       <v-divider />
       <v-row class="d-flex flex-row w-full align-center pa-8" flat>
-        <div>
-          <v-card-text class="text-h6">
-            {{ t('appbar.settings-dialog.bubble-section.bubble-size') }}
-          </v-card-text>
-          <v-slider
-            v-model="bubbleSize"
-            :max="70"
-            :min="20"
-            thumb-label
-            width="400"
-          />
+        <v-col>
+          <v-row class="d-flex flex-row align-center" :flat="true">
+            <v-col cols="2">
+              <v-btn
+                :active="locked"
+                flat
+                icon="mdi-lock"
+                @click="locked = !locked"
+              />
+            </v-col>
+            <v-col cols="10">
+              <v-card-text class="text-h6">
+                {{ t('appbar.settings-dialog.bubble-section.bubble-size') }}
+              </v-card-text>
+              <v-slider
+                v-model="bubbleSize"
+                :max="90"
+                :min="20"
+                thumb-label
+                width="300"
+              />
+              <v-card-text class="text-h6">
+                {{ t('appbar.settings-dialog.bubble-section.popup-size') }}
+              </v-card-text>
+              <v-slider
+                v-model="popupSize"
+                :disabled="locked"
+                :max="90"
+                :min="20"
+                thumb-label
+                width="300"
+              />
+            </v-col>
+          </v-row>
           <v-card-text class="text-h6">
             {{ t('appbar.settings-dialog.bubble-section.bubble-duration') }}
           </v-card-text>
@@ -135,35 +158,23 @@
               thumb-label
             />
           </div>
-        </div>
-        <v-row>
+        </v-col>
+        <v-row class="d-flex justify-space-around align-center">
           <!-- DEMO BUBBLE-->
-          <v-col>
-            <div class="container-demo" :style="{transform: `scale(${bubbleSize / 30})`, opacity: opacity}">
-              <div class="bubble-popup-test">
-                <p class="title-font popup-title-test"><strong>{{ t('appbar.settings-dialog.bubble-section.bubble-title') }}</strong></p>
-                <p v-if="showTitles" class="body-font">{{ t('appbar.settings-dialog.bubble-section.publication-title') }}</p>
-                <div class="types-container-test">
-                  <p class="title-font" :style="{backgroundColor: '#7F8C8D'}">{{ t('appbar.settings-dialog.bubble-section.rtype') }}</p>
-                  <p class="title-font" :style="{backgroundColor: '#D35400'}">{{ t('appbar.settings-dialog.bubble-section.mime') }}</p>
-                </div>
-              </div>
-              <div class="bubble">
-                <div
-                  class="bubble-circle-test multicolor"
-                  :style="{ width: '60px', height: '60px'}"
-                />
-                <div
-                  class="bubble-pulse-test"
-                  :style="{ width: '120px', height: '120px', boxShadow: '1px 1px 8px 0 black', animation: 'pulsate 1s ease-in-out infinite'}"
-                  width:
+          <div class="event-bubble" :style="{opacity: opacity}">
+            <div class="bubble-container">
+              <div class="bubble-info">
+                <BubbleInfo
+                  mime="HTML"
+                  :other="[t('appbar.settings-dialog.bubble-section.publication-title')]"
+                  r-type="ARTICLE"
+                  :title="t('appbar.settings-dialog.bubble-section.bubble-title')"
                 />
               </div>
+              <MulticolorBubble />
             </div>
-          </v-col>
-          <v-col>
-            <v-progress-circular :model-value="counter" size="90" />
-          </v-col>
+          </div>
+          <v-progress-circular :model-value="counter" size="90" />
         </v-row>
       </v-row>
       <v-divider />
@@ -192,6 +203,7 @@
   import { type Field, useSortFieldStore } from '@/stores/sort-field';
   import { usePlayerMultiplierStore } from '@/stores/player-multiplier';
   import { type Mime, useMimeStore } from '@/stores/mime';
+  import MulticolorBubble from './event-bubble-components/MulticolorBubble.vue';
 
   const { t } = useI18n();
 
@@ -199,6 +211,7 @@
   const { fields: allFields } = storeToRefs(useSortFieldStore());
   const { mimes: allMimes } = storeToRefs(useMimeStore());
   const bubbleSize = ref(currentConfig.value.mapParams.bubbleSize || 60);
+  const popupSize = ref(currentConfig.value.mapParams.popupSize || 30);
   const bubbleDuration = ref(currentConfig.value.mapParams.bubbleDuration || 5);
   const emitter = useMitt();
   const active = ref(false);
@@ -206,6 +219,7 @@
   const counterActive = ref(true);
   const { multiplier } = storeToRefs(usePlayerMultiplierStore());
   const opacity = ref(1);
+  const locked = ref(false);
 
   emitter.on('showSettings', () => {
     active.value = true;
@@ -224,7 +238,7 @@
           opacity.value = 1;
         }, 3000);
       }
-    }, 1000)
+    }, 1000);
   }
 
   const interval = ref(createInterval());
@@ -235,9 +249,15 @@
     interval.value = createInterval();
   })
 
-  watch(bubbleSize, () => {
-    currentConfig.value.mapParams.bubbleSize = bubbleSize.value;
+  watch(bubbleSize, (currentBubbleSize: number, previousBubbleSize: number) => {
+    currentConfig.value.mapParams.bubbleSize = currentBubbleSize;
+    if (!locked.value) return;
+    popupSize.value += currentBubbleSize - previousBubbleSize;
   });
+
+  watch(popupSize, () => {
+    currentConfig.value.mapParams.popupSize = popupSize.value;
+  })
 
   watch(bubbleDuration, () => {
     currentConfig.value.mapParams.bubbleDuration = bubbleDuration.value;
@@ -328,78 +348,32 @@
 
   $box-shadow: 1px 1px 8px 0 rgba(0, 0, 0, 0.75);
 
-  .container-demo {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-end;
-    position: relative;
-    width: 100%;
-    transition: opacity var(--opacity-transition-speed) ease-in;
-    transform-origin: center center;
-  }
+  .event-bubble {
+  position: relative;
+  width: fit-content;
+  height: fit-content;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 1s ease-in;
+}
 
-  .bubble-test {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
+.bubble-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-  .bubble-circle-test {
-    border-radius: 100%;
-    box-shadow: $box-shadow;
-    position: absolute;
-  }
+.bubble-core {
+  z-index: 0;
+}
 
-  .bubble-pulse-test {
-    animation: pulsate var(--pulsate-speed) ease-in-out infinite;
-    position: absolute;
-    border-radius: 100%;
-  }
-
-  .bubble-popup-test {
-    background-color: rgba(255, 255, 255, 0.75);
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    border-radius: 4px;
-    z-index: 2;
-    bottom: 100%;
-    padding: .2em 1em;
-    box-shadow: $box-shadow;
-    min-width: 100px;
-    max-width: 300px;
-    white-space: normal;
-    font-size: 14px;
-
-    p {
-      color: black;
-      margin: 0;
-    }
-
-    .types-container-test {
-      display: flex;
-      justify-content: center;
-      gap: .5em;
-      font-size: 10px;
-
-      p{
-        margin: 3px;
-        padding: 5px 8px;
-        font-size: 1.2em;
-        border-radius: 3px;
-        color: #fff;
-        box-sizing: border-box;
-      }
-    }
-  }
-
-  .multicolor {
-    animation: multicolor-animation 7s ease-in-out infinite;
-  }
+.bubble-info {
+  position: absolute;
+  bottom: 100%;
+  z-index: 1;
+}
 
   .popup-title {
     font-size: 14px;

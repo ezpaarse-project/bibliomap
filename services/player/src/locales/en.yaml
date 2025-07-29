@@ -26,8 +26,7 @@ appbar:
       bubble-duration: Bubble duration
       bubble-title: Platform
       publication-title: Publication title
-      rtype: ARTICLE
-      mime: HTML
+      popup-size: Information card size
     mimes-section:
       title: File types to display
       select-all: Select all

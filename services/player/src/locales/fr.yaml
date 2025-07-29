@@ -26,8 +26,7 @@ appbar:
       bubble-duration: Persistance de la bulle
       bubble-title: Plateforme
       publication-title: Titre de la publication
-      rtype: ARTICLE
-      mime: HTML
+      popup-size: Taille de la carte d'informations
     mimes-section:
       title: Types de fichiers à afficher
       select-all: Tout cocher
