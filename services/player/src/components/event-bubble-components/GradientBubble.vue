@@ -2,11 +2,11 @@
   <div class="bubble">
     <div
       class="bubble-circle"
-      :style="{width: size, height: size, background: gradient}"
+      :style="{ width: size + 'px', height: size + 'px', background: gradient}"
     />
     <div
       class="bubble-pulse"
-      :style="{width: size*2, height: size*2, boxShadow: `1 1 8 0 black`}"
+      :style="{ width: size * 2 + 'px', height: size * 2 + 'px', boxShadow: `1 1 8 0 black`}"
     />
   </div>
 </template>
@@ -21,7 +21,7 @@
   }>()
 
   const gradient = computed(() => {
-    if (!props.colors || props.colors.length === 0) return 'transparent'
+    if (!props.colors || props.colors.length === 0) return 'transparent';
     return `linear-gradient(to right, ${props.colors.join(', ')})`
   })
 </script>

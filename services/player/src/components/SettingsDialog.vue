@@ -118,8 +118,8 @@
           </v-card-text>
           <v-slider
             v-model="bubbleSize"
-            :max="50"
-            :min="5"
+            :max="70"
+            :min="20"
             thumb-label
             width="400"
           />

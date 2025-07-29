@@ -11,6 +11,8 @@
   import useMitt from '@/composables/useMitt';
   import { useTimerStore } from '@/stores/timer';
   import { usePlayerMultiplierStore } from '@/stores/player-multiplier';
+  import vuetify from '@/plugins/vuetify';
+  import EventBubble from './event-bubble-components/EventBubble.vue';
 
   const { config } = storeToRefs(useViewerConfigStore());
   const params = config.value.minimapParams;
@@ -36,11 +38,25 @@
     if (!params.include || (usingPhone && params.disableOnPhone)) return;
 
     const emitter = useMitt();
-    emitter.on('minimap', ({ log, bubble }: { log: Log; bubble: L.DivIcon }) => {
+    emitter.on('minimap', ({ log }: { log: Log }) => {
       if (!timer.value) return;
       hasEntered = true;
 
-      const marker = L.marker([log['geoip-latitude'], log['geoip-longitude']], { icon: bubble }).addTo(minimap);
+      const container = document.createElement('div');
+
+      const app = createApp(EventBubble, {
+        log,
+      });
+      app.use(vuetify);
+      app.mount(container);
+
+      const icon = L.divIcon({
+        html: container,
+        className: 'leaflet-marker',
+        iconSize: [40, 40],
+      })
+
+      const marker = L.marker(new L.LatLng(log['geoip-latitude'], log['geoip-longitude']), { icon }).addTo(minimap);
 
       const elt = marker.getElement();
       minimap.setView([log['geoip-latitude'], log['geoip-longitude']], params.defaultZoom || 4);
@@ -122,9 +138,6 @@
 <style lang="scss" scoped>
     .minimap-container{
       display: block;
-      position: fixed;
-      top: 20px + 48px;
-      right: 45px;
       width: 250px;
       height: 250px;
       z-index: 4;

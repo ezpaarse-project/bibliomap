@@ -13,14 +13,14 @@
   import { useTimerStore } from '@/stores/timer';
   import { type Field, useSortFieldStore } from '@/stores/sort-field';
   import { usePlayerMultiplierStore } from '@/stores/player-multiplier';
+  import vuetify from '@/plugins/vuetify';
+  import EventBubble from './event-bubble-components/EventBubble.vue';
 
   const emitter = useMitt();
 
   const { config } = storeToRefs(useViewerConfigStore());
   const mapParams = config.value.mapParams;
-  const mimes = config.value.mapParams.attributesColors.mimes as Record<string, { count: boolean, color: string }>;
   const { fieldIdentifier } = storeToRefs(useSortFieldStore());
-  const fieldStore = useSortFieldStore();
   const { multiplier } = storeToRefs(usePlayerMultiplierStore());
 
   useBubbleStore();
@@ -96,23 +96,6 @@
       changeMapLayer(layers[layerName] as TileLayer);
     });
 
-    function getBubbleColor (log: Log) {
-      const value = log[fieldIdentifier.value];
-
-      if (typeof value !== 'string') return 'transparent';
-
-      if (!value.includes('+')) {
-        return fieldStore.getFieldColor(value) || config.value.mapParams.attributesColors.defaultColor;
-      }
-
-      const gradient = value
-        .split('+')
-        .map((field: string) => fieldStore.getFieldColor(field) || config.value.mapParams.attributesColors.defaultColor)
-        .join(', ');
-
-      return `linear-gradient(to right, ${gradient})`;
-    }
-
     const bubblesToRemove: { marker : L.Marker, frame: { start: number, fade: number, end: number } }[] = [];
 
     function removeExpiredBubbles (timestamp: number) {
@@ -152,45 +135,34 @@
       if (!log || !log['geoip-latitude'] || !log['geoip-longitude']) return;
       if (!log[fieldIdentifier.value] || !fieldInConfig(log[fieldIdentifier.value] + '')) return;
 
-      let color = getBubbleColor(log);
-      const gradient = color.includes('linear-gradient') ? color : undefined;
+      const container = document.createElement('div');
 
-      if (gradient) color = '';
-
-      const bubbleHtml = getBubbleHtml(gradient, color)
-
-      const size = config.value.mapParams.bubbleSize;
-
-      const bubble = L.divIcon({
-        className: 'leaflet-marker',
-        iconSize: [size, size],
-        iconAnchor: [size / 2, size / 2],
-        html: `
-          <div class='container' style="transform: scale(${config.value.mapParams.bubbleSize / 30})">
-            <div class='bubble-popup' ${mapParams.includePopup ? '' : 'style="display: none;"'}>
-              <p ${mapParams.popupText.platform_name ? '' : 'style="display: none;"'} class='title-font popup-title'><strong>${log.platform_name}</strong></p>
-              <p ${config.value.mapParams.popupText.publication_title && log.publication_title ? '' : 'style="display: none;"'} class='body-font'>${log.publication_title}</p>
-              <div class='types-container'>
-                <p style='${mapParams.popupText.rtype && log.rtype ? '' : 'display: none;'} background-color: ${mapParams.attributesColors.rtype || '#7F8C8D'}' class='title-font'>${log.rtype}</p>
-                <p style='${mapParams.popupText.mime && log.mime ? '' : 'display: none;'} background-color: ${log.mime && mimes[log.mime as keyof typeof mimes] && mimes[log.mime as keyof typeof mimes].color || '#D35400'}' class='title-font'>${log.mime}</p>
-              </div>
-            </div>
-            ${bubbleHtml}
-          </div>
-        `,
+      const app = createApp(EventBubble, {
+        log,
       });
+      app.use(vuetify);
+      app.mount(container);
 
-      const marker = L.marker([log['geoip-latitude'], log['geoip-longitude']], { icon: bubble }).addTo(map);
+      const icon = L.divIcon({
+        html: container,
+        className: 'leaflet-marker',
+        iconSize: [40, 40],
+      })
+
+      const marker = L.marker(new L.LatLng(log['geoip-latitude'], log['geoip-longitude']), { icon }).addTo(map);
+
+      const elt = marker.getElement();
+      if (!elt) return;
+      elt.classList.add('opacity-transition');
+
       const timestamp = new Date(log.datetime).getTime();
       const startTimestamp = timestamp;
       const fadeTimestamp = timestamp + multiplier.value * ((config.value.mapParams.bubbleDuration || 5) * 1000);
       const endTimestamp = timestamp + multiplier.value * ((config.value.mapParams.bubbleDuration || 5) * 1000) + 3000;
       bubblesToRemove.push({ marker, frame: { start: startTimestamp, fade: fadeTimestamp, end: endTimestamp } });
-      const elt = marker.getElement();
-      if (!elt) return;
 
       if (!map.getBounds().contains(L.latLng(log['geoip-latitude'], log['geoip-longitude']))) {
-        emitter.emit('minimap', { log, bubble });
+        emitter.emit('minimap', { log });
       }
     }
 
@@ -204,32 +176,6 @@
   watch(multiplier, () => {
     changeAnimationSpeed(multiplier.value);
   });
-
-  function getBubbleHtml (gradient: string | undefined, color: string) {
-    let classes = '';
-    let backgroundColor = '';
-    switch (color) {
-      case 'random': {
-        backgroundColor = getRandomHexColor();
-        break;
-      }
-      case 'rgb':
-      case'multicolor': {
-        classes += 'multicolor';
-        break;
-      }
-      default: backgroundColor = color;
-    }
-    return `<div class='bubble'>
-              <div style='background: ${gradient || backgroundColor || 'transparent'}; width: 60px; height: 60px' class='bubble-circle ${classes}'></div>
-              <div style='box-shadow: 1px 1px 8px 0 ${backgroundColor || 'black'}; width: 120px; height: 120px' class='bubble-pulse'></div>
-            </div>`
-  }
-
-  function getRandomHexColor () {
-    const hex = Math.floor(Math.random() * 0xFFFFFF).toString(16);
-    return `#${hex.padStart(6, '0')}`;
-  }
 </script>
 
 <style lang="scss">
@@ -256,66 +202,6 @@
   .leaflet-marker {
     transition: opacity var(--opacity-transition-speed) ease-in;
   }
-
-  .bubble {
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .bubble-circle {
-    border-radius: 100%;
-    box-shadow: $box-shadow;
-    position: absolute;
-  }
-
-  .bubble-pulse {
-    animation: pulsate var(--pulsate-speed) ease-in-out infinite;
-    position: absolute;
-    border-radius: 100%;
-  }
-
-  .bubble-popup {
-    background-color: rgba(255, 255, 255, 0.75);
-    position: absolute;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    border-radius: 4px;
-    z-index: 2;
-    bottom: 100%;
-    padding: .2em 1em;
-    box-shadow: $box-shadow;
-    min-width: 100px;
-    max-width: 300px;
-    white-space: normal;
-
-    p {
-      color: black;
-      margin: 0;
-    }
-
-    .types-container {
-      display: flex;
-      justify-content: center;
-      gap: .5em;
-      font-size: 10px;
-
-      p{
-        margin: 3px;
-        padding: 5px 8px;
-        font-size: 1.2em;
-        border-radius: 3px;
-        color: #fff;
-        box-sizing: border-box;
-      }
-    }
-  }
-
   .multicolor {
     animation: multicolor-animation 7s ease-in-out infinite;
   }

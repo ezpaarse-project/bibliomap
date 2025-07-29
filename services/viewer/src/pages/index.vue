@@ -9,7 +9,7 @@
           <ModeCard />
         </v-col>
         <v-col cols="auto">
-          <Minimap class="ma-6" style="z-index: 1000;" />
+          <Minimap class="ma-6 mr-14" style="z-index: 1000;" />
         </v-col>
       </v-row>
 

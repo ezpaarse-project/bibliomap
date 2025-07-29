@@ -1,11 +1,10 @@
 import type { Log } from '@/main';
 import mitt from 'mitt';
-import L from 'leaflet';
 
 type Events = {
   centerMap: null;
   changeMapType: string;
-  minimap: { log: Log; bubble: L.DivIcon };
+  minimap: { log: Log };
   showInfoDialog: null;
   showSettings: null;
   toggleDrawer: null;
