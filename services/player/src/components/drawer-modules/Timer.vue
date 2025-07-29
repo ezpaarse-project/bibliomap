@@ -22,6 +22,7 @@
           dense
           hide-details="auto"
           :label="t('drawer.timer.multiplier-field')"
+          :max="100"
           :min="1"
         />
       </div>
