@@ -35,7 +35,7 @@
   const include = !(!dialogDrawerParams || dialogDrawerParams.include === false);
   const drawer = ref(false);
   const drawerLocation = (dialogDrawerParams.position ?? 'left') as 'left' | 'top' | 'bottom' | 'start' | 'end' | 'right' | undefined;
-  const width = Math.min(600, window.innerWidth);
+  const width = Math.min(450, window.innerWidth);
 
   onMounted(() => {
     /*
