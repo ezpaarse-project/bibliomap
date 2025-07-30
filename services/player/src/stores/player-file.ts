@@ -16,7 +16,6 @@ export const usePlayerFileStore = defineStore('player-file', () => {
   const { t } = useI18n();
 
   async function setFiles (newFiles: File[]) {
-    if (newFiles.length === 0) return;
     if (areFilesTooLarge(newFiles) && !permission.value) {
       largeFiles.value = newFiles;
       filesTooLargeActive.value = true;

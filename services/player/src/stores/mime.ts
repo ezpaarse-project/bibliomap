@@ -3,6 +3,7 @@ import { useViewerConfigStore } from './viewer-config';
 import { usePlayStateStore } from './play-state';
 import { usePlayerFileStore } from './player-file';
 import type { EC } from './ec-count';
+import useMitt from '@/composables/useMitt';
 
 export type Mime = {
   name: string;
@@ -11,12 +12,15 @@ export type Mime = {
 
 export const useMimeStore = defineStore('mime', () => {
 
+  const emitter = useMitt();
+
   const mimes = ref([] as Mime[]);
   const shownMimes = ref([] as Mime[]);
   const { files } = storeToRefs(usePlayerFileStore());
   const { db } = storeToRefs(useIndexedDBStore());
 
   async function setMimes () {
+    mimes.value = [];
     const { config: viewerConfig } = storeToRefs(useViewerConfigStore());
     if (!db.value) return;
     return new Promise<void>(resolve => {
@@ -62,6 +66,10 @@ export const useMimeStore = defineStore('mime', () => {
   watch(files, () => {
     setMimes();
   });
+
+  emitter.on('resetFileField', () => {
+    mimes.value = [];
+  })
 
   return { mimes, shownMimes };
 })

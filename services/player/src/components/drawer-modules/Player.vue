@@ -35,7 +35,6 @@
   const messages = ref([] as string[]);
 
   watch(files, () => {
-    if (!files.value) return
     files.value.forEach(file => {
       if (!file.name.endsWith('.csv')) {
         const message = t('drawer.player.error.invalid-file', { name: file.name });
