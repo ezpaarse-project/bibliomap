@@ -18,13 +18,11 @@ export const usePlayerFileStore = defineStore('player-file', () => {
   const { t } = useI18n();
 
   async function setFiles (newFiles: File[]) {
-    console.log(permission.value, newFiles)
     if (areFilesTooLarge(newFiles) && !permission.value) {
       largeFiles.value = newFiles;
       filesTooLargeActive.value = true;
       return;
     }
-    console.log('HERE', newFiles.length)
     usePlayStateStore().loading();
     await clearDB();
     await insertFilesIntoDB(newFiles);
@@ -90,7 +88,6 @@ export const usePlayerFileStore = defineStore('player-file', () => {
   async function clearDB () {
     if (!db.value) return;
     return new Promise<void>(resolve => {
-      console.log('CLEARING DB')
       message.value = t('progress-bar.clearing-db');
       progress.value = -1;
       progressBarActive.value = true;

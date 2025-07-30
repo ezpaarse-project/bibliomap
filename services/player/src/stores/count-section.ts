@@ -84,7 +84,6 @@ export const useCountSectionStore = defineStore('count-section', () => {
   }
 
   watch (fields, async () => {
-    console.log(fieldIdentifier.value);
     sections.value = await createSections() as Section[];
   });
 

@@ -36,7 +36,6 @@
     active.value = false;
     largeFiles.value = [];
     permission.value = false;
-    console.log('DISAGREED')
     emitter.emit('resetFileField', null);
   }
 </script>
