@@ -11,7 +11,7 @@
   import useMitt from '@/composables/useMitt';
   import { useBubbleStore } from '@/stores/bubble';
   import { useTimerStore } from '@/stores/timer';
-  import { type Field, useSortFieldStore } from '@/stores/sort-field';
+  import { useSortFieldStore } from '@/stores/sort-field';
   import { usePlayerMultiplierStore } from '@/stores/player-multiplier';
   import vuetify from '@/plugins/vuetify';
   import EventBubble from './event-bubble-components/EventBubble.vue';
@@ -123,18 +123,10 @@
       if (timer.value) removeExpiredBubbles(timer.value);
     });
 
-    function fieldInConfig (field: string) {
-      if (field.includes('+')) {
-        return field.split('+').reduce((a: boolean, b: string) => a || config.value.drawerParams.portalSection.portals.map((p: Field) => p.name.toUpperCase()).includes(b.toUpperCase()), false);
-      }
-      return config.value.drawerParams.portalSection.portals.map((p: Field) => p.name.toUpperCase()).includes(field.toUpperCase());
-    }
-
     function showBubble (log: Log) {
       if (log.platform_name && !usePlatformFilterStore().isNameOkay(log.platform_name)) return;
       if (!log || !log['geoip-latitude'] || !log['geoip-longitude']) return;
-      if (!log[fieldIdentifier.value] || !fieldInConfig(log[fieldIdentifier.value] + '')) return;
-
+      if (!log[fieldIdentifier.value]) log[fieldIdentifier.value] = 'UNKNOWN';
       const container = document.createElement('div');
 
       const app = createApp(EventBubble, {
@@ -145,7 +137,7 @@
 
       const icon = L.divIcon({
         html: container,
-        className: 'leaflet-marker',
+        className: '',
         iconSize: [40, 40],
       })
 
@@ -198,9 +190,8 @@
     flex-direction: column;
     align-items: center;
   }
-
-  .leaflet-marker {
-    transition: opacity var(--opacity-transition-speed) ease-in;
+  .opacity-transition{
+    transition: opacity 1s ease-in;
   }
   .multicolor {
     animation: multicolor-animation 7s ease-in-out infinite;

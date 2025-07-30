@@ -96,6 +96,7 @@ export const useEcCountStore = defineStore('ec-count', () => {
   }
 
   function getCountOfFieldAndMime (field: string, mime: string) {
+    if (!field) field = 'UNKNOWN';
     return count.value[field.toUpperCase()][mime];
   }
 

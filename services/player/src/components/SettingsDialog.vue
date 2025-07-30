@@ -78,27 +78,6 @@
           style="height: 72px;"
         >
           <v-card-title class="text-h6" style="font-weight: 400;">
-            {{ t('appbar.settings-dialog.review-titles-section.title') }}
-          </v-card-title>
-          <div>
-            <v-switch
-              v-model="showTitles"
-              class="ma-0 pa-0"
-              color="primary"
-              :hide-details="true"
-              inset
-              style="margin-top: 2px;"
-            />
-          </div>
-        </div>
-      </v-row>
-      <v-divider />
-      <v-row class="pa-4" :flat="true">
-        <div
-          class="d-flex justify-space-between align-center pr-4 w-100"
-          style="height: 72px;"
-        >
-          <v-card-title class="text-h6" style="font-weight: 400;">
             {{ t('appbar.settings-dialog.multiplier-section.title') }}
           </v-card-title>
           <div>
@@ -176,6 +155,27 @@
           </div>
           <v-progress-circular :model-value="counter" size="90" />
         </v-row>
+      </v-row>
+      <v-divider />
+      <v-row class="pa-4" :flat="true">
+        <div
+          class="d-flex justify-space-between align-center pr-4 w-100"
+          style="height: 72px;"
+        >
+          <v-card-title class="text-h6" style="font-weight: 400;">
+            {{ t('appbar.settings-dialog.review-titles-section.title') }}
+          </v-card-title>
+          <div>
+            <v-switch
+              v-model="showTitles"
+              class="ma-0 pa-0"
+              color="primary"
+              :hide-details="true"
+              inset
+              style="margin-top: 2px;"
+            />
+          </div>
+        </div>
       </v-row>
       <v-divider />
       <v-row class="pa-4 d-flex align-center" :flat="true">

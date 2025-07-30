@@ -59,8 +59,9 @@ drawer:
     error:
       invalid-file: 'Invalid file: {name}'
   fields:
-    title: 'Count by:'
+    title: 'Count by: ({n} fields)'
     placeholder: 'ex: Publisher name'
+    unknown: Unspecified
 version-card:
   connection: Connected to ezPAARSE
 progress-bar:

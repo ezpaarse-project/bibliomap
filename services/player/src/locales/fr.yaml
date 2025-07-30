@@ -59,8 +59,9 @@ drawer:
     error:
       invalid-file: 'Fichier invalide : {name}'
   fields:
-    title: 'Compter par :'
+    title: 'Compter par : ({n} champs)'
     placeholder: 'ex: Nom de la plateforme'
+    unknown: Non-spécifié
 version-card:
   connection: Connecté à ezPAARSE
 progress-bar:

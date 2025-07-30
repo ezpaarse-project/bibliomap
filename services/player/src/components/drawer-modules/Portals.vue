@@ -1,7 +1,7 @@
 <template>
   <v-card flat>
     <v-card-title>
-      {{ t('drawer.fields.title') }}
+      {{ t('drawer.fields.title', { n: headers.length }) }}
     </v-card-title>
     <v-select
       v-model="fieldIdentifier"
@@ -27,7 +27,7 @@
           <template #activator="{ props }">
             <v-row class="mx-2 my-1" v-bind="props" justify="space-between">
               <v-col cols="auto">
-                <h3 style="font-size: 16px">{{ name.length ? name.toUpperCase() : 'UNKNOWN' }}</h3>
+                <h3 style="font-size: 16px">{{ name.length ? name.toUpperCase() : t('drawer.fields.unknown') }}</h3>
               </v-col>
               <v-col cols="auto">
                 <v-chip
@@ -56,17 +56,15 @@
 
 <script setup lang="ts">
   import { useEcCountStore } from '@/stores/ec-count';
-  import { type Field, useSortFieldStore } from '@/stores/sort-field';
+  import { useSortFieldStore } from '@/stores/sort-field';
   import { useI18n } from 'vue-i18n';
   import { PlayState, usePlayStateStore } from '@/stores/play-state';
-  import { useViewerConfigStore } from '@/stores/viewer-config';
 
   const { t } = useI18n();
   const countStore = useEcCountStore();
   const { state } = storeToRefs(usePlayStateStore());
-  const { config: viewerConfig } = storeToRefs(useViewerConfigStore());
 
-  const fields = computed(() => viewerConfig.value.drawerParams.portalSection.portals as Field[]);
+  const { fields } = storeToRefs(useSortFieldStore());
   const { headers, fieldIdentifier } = storeToRefs(useSortFieldStore());
 </script>
 

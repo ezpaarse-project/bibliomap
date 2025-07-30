@@ -57,5 +57,9 @@ export const useTimerStore = defineStore('timer', () => {
     timer.value = timeframe.value.startDatetime || 0;
   })
 
+  watch (timer, () => {
+    if (timer.value % 1000 > 0) timer.value = Math.floor(timer.value / 1000) * 1000;
+  })
+
   return { timer };
 });
