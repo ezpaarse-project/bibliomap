@@ -15,8 +15,6 @@ export const useBubbleStore = defineStore('bubble', () => {
     const tx = db.value.transaction('events', 'readonly');
     const store = tx.objectStore('events');
     const index = store.index('by_date');
-
-    console.log(timer.value)
     const request = index.getAll(timer.value);
 
     request.onsuccess = (event: Event) => {
