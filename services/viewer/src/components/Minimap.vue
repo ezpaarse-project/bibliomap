@@ -11,7 +11,6 @@
   import useMitt from '@/composables/useMitt';
 
   const config = useViewerConfigStore().config;
-  const mapParams = config.mapParams;
   const params = config.minimapParams;
   const currentLogs = ref(<Log[]>[]);
   const usingPhone = window.innerWidth <= 768;
@@ -34,25 +33,15 @@
     if (!params.include || (usingPhone && params.disableOnPhone)) return;
 
     const emitter = useMitt();
-    emitter.on('minimap', ({ log, bubble }: { log: Log; bubble: L.DivIcon }) => {
-      hasEntered = true;
-
-      const marker = L.marker([log['geoip-latitude'], log['geoip-longitude']], { icon: bubble }).addTo(minimap);
-
-      const elt = marker.getElement();
-      minimap.setView([log['geoip-latitude'], log['geoip-longitude']], params.defaultZoom || 4);
-      if (!elt) {
-        minimap.removeLayer(marker);
-        return;
-      }
+    emitter.on('minimap', ({ log, showEvent }: { log: Log, showEvent: (log: Log, map: L.Map) => void }) => {
       currentLogs.value.push(log);
+      minimap.setView([log['geoip-latitude'], log['geoip-longitude']], params.defaultZoom || 4);
+      hasEntered = true;
+      showEvent(log, minimap);
+
       setTimeout(() => {
-        elt.style.opacity = '0';
-        setTimeout(() => {
-          minimap.removeLayer(marker);
-          currentLogs.value.shift();
-        }, 2000);
-      }, (mapParams.bubbleDuration || 5) * 1000);
+        currentLogs.value.shift();
+      }, ((config.mapParams.bubbleDuration || 5) + 2) * 1000);
     });
 
     const defaultLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -97,9 +86,6 @@
 <style lang="scss" scoped>
     .minimap-container{
       display: block;
-      position: fixed;
-      top: 20px + 48px;
-      right: 45px;
       width: 250px;
       height: 250px;
       z-index: 4;

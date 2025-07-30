@@ -1,9 +1,7 @@
 import { PassThrough, Readable } from 'stream';
 import JSONStream from 'JSONStream';
-import pino from 'pino';
+import logger from './lib/logger.js';
 import config from '../config/config.json' with { type: 'json' };
-
-const logger = pino();
 
 class PaarseQueue {
   constructor(onData, cb) {
@@ -44,7 +42,7 @@ class PaarseQueue {
           this.onData(output);
         })
         .on('end', () => {
-          logger.info('[ezPAARSE] connection closed');
+          logger.info('[ezPAARSE] connection ended');
           this.writeStream.end();
           this.cb();
         })

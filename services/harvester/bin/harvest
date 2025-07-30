@@ -26,7 +26,7 @@ try {
   }
 }
 
-const appInstance = process.env.HARVESTER_DEMO_DIR;
+const appInstance = process.env.DEMO_DIR;
 
 if (appInstance) {
   try {
@@ -47,16 +47,6 @@ if (enricherPort) {
   config.server.port = enricherPort;
 }
 
-if (process.env.HARVESTER_STREAMNAMES && process.env.HARVESTER_STREAMPATHS) {
-  const streamNames = process.env.HARVESTER_STREAMNAMES.split(' ');
-  const streamPaths = process.env.HARVESTER_STREAMPATHS.split(' ');
-
-  config.logStreams = {};
-
-  streamNames.forEach((streamName, i) => {
-    config.logStreams[streamName] = [streamPaths[i]];
-  });
-}
 
 const harvester = new LogHarvester(config);
 harvester.run();

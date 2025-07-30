@@ -1,6 +1,7 @@
 {
-  "appbar": {
+  "fabButton": {
     "tooltips": {
+      "counter": "Show counters",
       "center-map": "Center the map",
       "translation": "Translation",
       "change-map": "Change map background",

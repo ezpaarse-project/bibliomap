@@ -244,14 +244,6 @@ The description section configuration are done in the `"replayDescriptionSection
 | `include` | Indicates if the portal section should be shown or hidden. | `true` |
 | `index` | Indicates in which order this component should be in the drawer. | `0.5` |
 
-### Appbar configurations
-
-The appbar configurations are done in the `"appbarParams"` block. Here are the different parameters:
-
-| Name | Description | Default | 
-| --- | --- | --- |
-| `include` | Indicates if the appbar should be shown or hidden. | `true` |
-
 ### Minimap configurations
 
 The appbar configurations are done in the `"minimapParams"` block. Here are the different parameters:

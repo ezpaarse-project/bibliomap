@@ -6,3 +6,7 @@ node_modules/.package-lock.json
 data/
 old_config_files/
 setup*
+.idea
+/.idea/
+/services/player/.editorconfig
+*.Identifier

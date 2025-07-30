@@ -2,18 +2,11 @@
 import { EventEmitter } from 'events';
 import fs from 'fs';
 import net from 'net';
-import { startOfDay, endOfDay, addDays } from 'date-fns';
+import { endOfDay, addDays } from 'date-fns';
 import { TZDate } from '@date-fns/tz';
 import zlib from 'zlib';
-import pino from 'pino';
+import logger from './lib/logger.js';
 import EventFileReader from './event_file_reader.js';
-
-const logger = pino();
-
-async function handleGzFile(stream) {
-  return stream.pipe(zlib.createGunzip());
-}
-
 class Replay extends EventEmitter {
   constructor(replayStartTime, replayEndTime, replayMultiplier, replayFiles, replayDuration, description) {
     super();
@@ -32,15 +25,14 @@ class Replay extends EventEmitter {
 
   async listen(cb) {
     this.server = net.createServer();
-
-    for (const file of this.replayFiles) {
-      const ext = file.split('.').pop();
+    for (const filename of this.replayFiles) {
+      const ext = path.extname(file);
       if (ext === 'gz') {
-        const baseFileName = file.split('.').slice(0, -1).join('.');
-        const stream = await handleGzFile(fs.createReadStream(file));
+        const baseFileName = filename.slice(0, -3);
+        const stream = await stream.pipe(zlib.createGunzip());
         this.logReaders.push(new EventFileReader(baseFileName, stream));
       } else {
-        this.logReaders.push(new EventFileReader(file, fs.createReadStream(file)));
+        this.logReaders.push(new EventFileReader(filename, fs.createReadStream(filename)));
       }
     }
 
@@ -48,11 +40,10 @@ class Replay extends EventEmitter {
 
     return cb();
   }
-
-  setReplayConfig(startTimerAt, endTimerAt) {
-    this.startTimerAt = new Date(startTimerAt).getTime();
-    this.endTimerAt = new Date(endTimerAt).getTime();
-    this.timer = this.startTimerAt;
+  setReplayConfig(timerStartTime, timerEndTime) {
+    this.timerStartTime = new Date(timerStartTime).getTime();
+    this.timerEndTime = new Date(timerEndTime).getTime();
+    this.timer = this.timerStartTime;
     this.loading = false;
     this.initSendTimerInterval();
     this.emit('ready', null);
@@ -61,32 +52,31 @@ class Replay extends EventEmitter {
   initTimer() {
     if (this.replayStartDatetime) {
       if (this.replayEndTime && this.replayStartDatetime < this.replayEndTime) return this.setReplayConfig(this.replayStartDatetime, this.replayEndTime);
-      const dayEnd = endOfDay(addDays(TZDate.tz('Europe/Paris', new Date(this.replayStartDatetime)), this.replayDuration - 1)).getTime();
-      this.setReplayConfig(this.replayStartDatetime, dayEnd);
+      const endOfDayOfFile = endOfDay(addDays(TZDate.tz('Europe/Paris', new Date(this.replayStartDatetime)), this.replayDuration - 1)).getTime();
+      this.setReplayConfig(this.replayStartDatetime, endOfDay);
       return;
     }
 
     const firstLogDate = this.logReaders
       .reduce((acc, reader) => Math.min(acc, reader.firstLog.date.getTime()), Infinity);
+    const endOfDayOfFile = endOfDay(addDays(TZDate.tz('Europe/Paris', firstLogDate), this.replayDuration - 1)).getTime();
+    const timerStartTime = this.dayStart + (this.replayStartDatetime ? new Date(`1970-01-01T${this.replayStartDatetime}`).getTime() : 0);
 
-    const dayEnd = endOfDay(addDays(TZDate.tz('Europe/Paris', firstLogDate), this.replayDuration - 1)).getTime();
-    const startTimerAt = this.dayStart + (this.replayStartDatetime ? new Date(`1970-01-01T${this.replayStartDatetime}`).getTime() : 0);
-
-    this.setReplayConfig(startTimerAt, dayEnd);
+    this.setReplayConfig(timerStartTime, endOfDay);
   }
 
   updateTimer() {
     if (this.loading) {
-      logger.debug('[debug] loading');
+      logger.debug('loading');
       return;
     }
     this.timer += 1000;
-    logger.debug('[debug] timer:', new Date(this.timer));
+    logger.debug('timer:', new Date(this.timer));
   }
 
   initInterval(timeout) {
     return setInterval(() => {
-      if (this.timer >= this.endTimerAt) {
+      if (this.timer >= this.timerEndTime) {
         this.emit('timerEnd');
         return;
       };
@@ -96,15 +86,14 @@ class Replay extends EventEmitter {
       this.logReaders = this.logReaders.filter((reader) => !reader.eof);
 
       if (this.loading) {
-        if ((this.replayStartDatetime)
-        || this.logReaders.every((reader) => reader.firstLog)) {
+        if ((this.replayStartDatetime) || this.logReaders.every((reader) => reader.firstLog)) {
           this.initTimer();
-        } else return;
+        } else { return; }
       }
 
       this.logReaders
         .flatMap((reader) => reader.returnAllPassedLogs(this.timer))
-        .filter((log) => log.date.getTime() >= this.startTimerAt)
+        .filter((log) => log.date.getTime() >= this.timerStartTime)
         .map((log) => this.parseLine(log.log));
     }, timeout);
   }
@@ -116,7 +105,7 @@ class Replay extends EventEmitter {
 
   initSendTimerInterval() {
   const intervalId = setInterval(() => {
-    if (this.timer > this.endTimerAt) {
+    if (this.timer > this.timerEndTime) {
       this.emit('timeUpdate', this.timer);
     } else {
       clearInterval(intervalId);

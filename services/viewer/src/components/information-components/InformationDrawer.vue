@@ -36,9 +36,15 @@
   const usingPhone = window.innerWidth <= 768;
   const drawer = ref(!usingPhone);
   const drawerLocation = (props.position ?? 'left') as 'left' | 'top' | 'bottom' | 'start' | 'end' | 'right' | undefined;
-  const width = Math.min(600, window.innerWidth);
+  const width = Math.min(400, window.innerWidth);
 
   onMounted(() => {
+    /*
+      This code is used for Expo mode.
+      Expo mode is a way to display the information drawer for a certain amount of time.
+      To activate expo mode, you need to pass a query parameter to the URL.
+      Mode information in viewer README file.
+    */
     const expoParam = route.query.expo as string || route.query.e as string;
     const eParamRaw = route.fullPath.includes('?e') || route.fullPath.includes('&e');
     const intervals = expoParam ? expoParam.split(',').map(s => parseInt(s, 10)) : eParamRaw ? [1 * 60, 10 * 60] : null;
@@ -48,24 +54,26 @@
 
   function showDrawerInterval (t: (number)[]){
     drawer.value = true;
+    const shownTime = t[0]
 
     setTimeout(() => {
       if(infoDrawer.value === null) return;
       scrollToBottom();
-    }, (t[0]/2)*1000);
+    }, (shownTime/2)*1000);
 
     setTimeout(() => {
       hideDrawerInterval(t);
-    }, t[0]*1000);
+    }, shownTime*1000);
   }
 
   function hideDrawerInterval (t: (number)[]){
     if(infoDrawer.value === null) return;
+    const hiddenTime = t[1];
     drawer.value = false;
     scrollToTop();
     setTimeout(() => {
       showDrawerInterval(t);
-    }, t[1]*1000);
+    }, hiddenTime*1000);
   }
 
   function scrollToBottom () {

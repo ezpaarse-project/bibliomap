@@ -1,13 +1,10 @@
 /* eslint-disable import/extensions */
 import LogIoListener from 'log.io-server-parser';
-import pino from 'pino';
+import logger from './lib/logger.js';
 import http from 'http';
 import { Server } from 'socket.io';
 import PaarseQueue from './paarse-queue.js';
-import config from '../config/config.json' with { type: 'json' };
 import ReplayManager from './replay-manager.js';
-
-const logger = pino();
 
 /**
  * Connect to bibliomap-viewer
@@ -25,8 +22,8 @@ const io = new Server(server, {
   },
 });
 
-server.listen(process.env.WEBSOCKET_PORT, () => {
-  logger.info(`Websocket server is running on port ${process.env.WEBSOCKET_PORT}`);
+server.listen(27780, () => {
+  logger.info('Websocket server is running on port 27780');
 });
 
 const viewers = new Set();
@@ -35,7 +32,6 @@ const viewers = new Set();
  * Listen events coming from harvester
  * then forward it to ezpaarse jobs
  */
-logger.debug('config:', config);
 
 const harvesterConfig = {
   host: process.env.HARVESTER_URL.split(':')[0],

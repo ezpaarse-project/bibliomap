@@ -75,7 +75,7 @@ services:
       interval: 2s
       timeout: 2s
       retries: 10
-    #restart: unless-stopped
+    restart: unless-stopped
 
   ezpaarse_db:
     image: mongo:7.0.20

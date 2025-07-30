@@ -1,3 +1,6 @@
+<!-- This component is the content of the information drawer -->
+<!-- You need to change it in order to display your customized information -->
+
 <template>
   <div class="drawer-elements-container">
     <div>
@@ -5,7 +8,7 @@
         <v-card :flat="true">
           <v-card-title
             class="text-h4 justify-center title-font bold"
-            style="white-space: normal; overflow: visible;"
+            style="white-space: normal; overflow: visible; text-align: center;"
           >{{ t('info-card.title') }}</v-card-title>
           <v-card-text><p v-html="t('info-card.p1')" /></v-card-text>
         </v-card>
@@ -28,8 +31,9 @@
       <v-list-item>
         <v-card :flat="true">
           <div class="org-logos">
-            <a href="http://www.couperin.org/" target="_blank"><img alt="Couperin" src="@/assets/logo-couperin.jpg"></a>
-            <a href="http://www.cnrs.fr/" target="_blank"><img id="cnrs-logo" alt="CNRS" src="@/assets/logo.svg"></a>
+            <a href="https://www.couperin.org/" target="_blank"><img alt="Couperin" src="@/assets/logo-couperin.png"></a>
+            <a href="https://www.cnrs.fr/fr" target="_blank"><img id="cnrs-logo" alt="CNRS" src="@/assets/logo-cnrs.svg"></a>
+            <a href="https://www.inist.fr/" target="_blank"><img id="inist-logo" alt="CNRS" src="@/assets/logo-inist.png"></a>
           </div>
         </v-card>
       </v-list-item>

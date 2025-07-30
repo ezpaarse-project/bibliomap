@@ -1,0 +1,80 @@
+appbar:
+  tooltips:
+    center-map: Center the map
+    translation: Translation
+    change-map: Change map background
+    settings: Settings
+    info: About BiblioMap
+    counter: Show counters
+  settings-dialog:
+    title: Settings
+    minimap-section:
+      title: Show minimap
+    portals-section:
+      title: Fields to display
+      select-all: Select all
+      select-none: Select none
+    journal-titles-section:
+      title: Display journal titles
+    filter-section:
+      title: Filter by editor platforms
+      placeholder: 'ex: Wiley'
+    multiplier-section:
+      title: Simulation speed multiplier
+    bubble-section:
+      bubble-size: Bubble size
+      bubble-duration: Bubble duration
+      bubble-title: Platform
+      publication-title: Publication title
+      popup-size: Information card size
+    mimes-section:
+      title: File types to display
+      select-all: Select all
+      select-none: Select none
+drawer:
+  timer:
+    tooltips:
+      live-timer: 'You have been connected for {time}'
+      simulation-datetime: Date and time of simulation
+      multiplier: 'Time is {multiplier} faster than real time'
+      simulation-percentage: 'Simulation progress: {percentage}%'
+      start-datetime: Date and time of start of the simulation
+      end-datetime: Date and time of end of the simulation
+      stopped: Play a simulation to access the timer
+    loading: Loading...
+    multiplier-field: Simulation speed
+  counter:
+    title: Count by mime
+    tooltips:
+      file-type-consultations: '{n} consultations of {type} documents'
+      total-consultations: 'Total consultations: {n}'
+    total: Total
+  replay-description:
+    replay-label: 'Replay: '
+  player:
+    title: Event file player
+    choose-file: Please select a consultation event file.
+    file-input-placeholder: example.csv
+    play: Play simulation
+    error:
+      invalid-file: 'Invalid file: {name}'
+  fields:
+    title: 'Count by: ({n} fields)'
+    placeholder: 'ex: Publisher name'
+    unknown: Unspecified
+version-card:
+  connection: Connected to ezPAARSE
+progress-bar:
+  clearing-db: Clearing database...
+  inserting-file: Inserting file {name}...
+  sim-loading: Generating simulation...
+file-too-large-dialog:
+  title: Large files
+  message: These files are large (>50Mo). Those files may take a long time to load and may use a certain number of resources. Do you want to continue ?
+  agree: Load
+  disagree: Cancel
+state-card:
+  playing: Playing
+  stopped: Stopped
+  paused: Paused
+  loading: Loading

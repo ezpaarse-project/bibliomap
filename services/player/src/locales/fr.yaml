@@ -1,0 +1,81 @@
+appbar:
+  tooltips:
+    center-map: Recentrer la carte
+    translation: Traduction
+    change-map: Changer de fond de carte
+    settings: Paramètres
+    info: A propos de BiblioMap
+    counter: Afficher les compteurs
+  settings-dialog:
+    title: Paramètres
+    minimap-section:
+      title: Afficher la minimap
+    portals-section:
+      title: Champs à afficher
+      select-all: Tout cocher
+      select-none: Tout décocher
+    review-titles-section:
+      title: Afficher le titre des revues
+    filter-section:
+      title: Filtrer par plateforme éditeur
+      placeholder: 'ex: Wiley'
+    multiplier-section:
+      title: Multiplicateur de vitesse de la simulation
+    bubble-section:
+      bubble-size: Taille des bulles
+      bubble-duration: Persistance de la bulle
+      bubble-title: Plateforme
+      publication-title: Titre de la publication
+      popup-size: Taille de la carte d'informations
+    mimes-section:
+      title: Types de fichiers à afficher
+      select-all: Tout cocher
+      select-none: Tout décocher
+drawer:
+  timer:
+    tooltips:
+      live-timer: 'Vous avez été connecté pendant {time}'
+      simulation-datetime: Date et heure de la simulation
+      multiplier: 'Le temps passe {multiplier} fois plus vite qu''en temps réel'
+      simulation-percentage: 'Pourcentage de la simulation : {percentage}%'
+      start-datetime: Date et heure de début de la simulation
+      end-datetime: Date et heure de fin de la simulation
+      stopped: Jouez une simulation pour accéder au timer
+    loading: Chargement en cours...
+    multiplier-field: Vitesse de la simulation
+  counter:
+    title: Compter par mime
+    tooltips:
+      file-type-consultations: '{n} consultations de fichiers {type}'
+      total-consultations: 'Nombre total de consultations : {n}'
+    total: Total
+  replay-description:
+    replay-label: 'Replay : '
+  player:
+    title: Lecteur de fichiers d'événements
+    choose-file: Sélectionnez un ou plusieurs fichiers d'événements de consultations.
+    file-input-placeholder: exemple.csv
+    play: Jouer la simulation
+    error:
+      invalid-file: 'Fichier invalide : {name}'
+  fields:
+    title: 'Compter par : ({n} champs)'
+    placeholder: 'ex: Nom de la plateforme'
+    unknown: Non-spécifié
+version-card:
+  connection: Connecté à ezPAARSE
+progress-bar:
+  clearing-db: Nettoyage de la base de données...
+  
+  inserting-file: Chargement du fichier {name}...
+  sim-loading: Génération de la simulation...
+file-too-large-dialog:
+  title: Fichiers lourds
+  message: Ces fichiers sont lourds (>50Mo). Ceux-ci peuvent mettre du temps à charger et peuvent utiliser un certain nombre de ressources. Voulez-vous continuer ?
+  agree: Charger
+  disagree: Annuler
+state-card:
+  playing: Lecture
+  stopped: Arret
+  paused: Pause
+  loading: Chargement

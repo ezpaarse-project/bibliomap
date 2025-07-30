@@ -3,17 +3,12 @@ version: "3.3"
 services:
 
   harvester:
-    build: 
-      context: ./services/harvester
+    image: node:22.14.0
     container_name: bibliomap-harvester-dev
     environment:
       ENRICHER_URL: "enricher:27777"
-      HARVESTER_NO_DEMO:     "" # demo is activated
-      HARVESTER_STREAMNAMES: "" # default streams are for the demo
-      HARVESTER_STREAMPATHS: ""
-      HARVESTER_LOG_FOLDER: demo-logs/cnrs
-      HARVESTER_DEMO_DIR: cnrs
-      HARVESTER_LOGS_PER_SECOND: 10
+      DEMO_DIR: cnrs
+      LOGS_PER_SECOND: 15
     command: "npm run dev"
     working_dir: /usr/src/app
     volumes:
@@ -35,6 +30,15 @@ services:
     depends_on:
       enricher:
         condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -Y off --no-verbose --tries=1 --spider http://localhost:3000 || exit 1"
+        ]
+      interval: 2s
+      timeout: 2s
+      retries: 10
 
   enricher:
     image: node:22.14.0

@@ -44,7 +44,7 @@
         "position": "left",
         "width": 350,
         "descriptionSection": {
-            "include": false,
+            "include": true,
             "index": 0,
             "icon": "logo.svg"
         },

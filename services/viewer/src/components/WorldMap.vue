@@ -1,5 +1,5 @@
 <template>
-  <div id="map" :style="{height: height}" />
+  <div id="map" />
 </template>
 
 <script lang="ts" setup>
@@ -10,45 +10,50 @@
   import { usePlatformFilterStore } from '@/stores/platform-filter';
   import useMitt from '@/composables/useMitt';
   import { useSocketStore } from '@/stores/socket';
+  import vuetify from '@/plugins/vuetify';
+  import EventBubble from './event-bubble-components/EventBubble.vue';
 
   const emitter = useMitt();
   const io = useSocketStore().socket;
 
-  const config = useViewerConfigStore().config;
-  const mapParams = config.mapParams;
-  const mimes = config.mapParams.attributesColors.mimes as Record<string, { count: boolean, color: string }>;
+  const { config } = storeToRefs(useViewerConfigStore());
+  const mapParams = ref(config.value.mapParams);
+  const mimes = ref(config.value.mapParams.attributesColors.mimes as Record<string, { count: boolean, color: string }>);
+  const portals = ref(config.value.drawerParams.portalSection.portals);
+  const size = ref(config.value.mapParams.bubbleSize) || 60;
 
-  const height = config.appbarParams.include ? 'calc(100vh - 48px)' : '100vh';
-
-  const onlyPortal = Object.keys(config.drawerParams.portalSection.portals).length === 1 ? Object.keys(config.drawerParams.portalSection.portals)[0] : null;
+  watch(config, () => {
+    mapParams.value = config.value.mapParams;
+    mimes.value = config.value.mapParams.attributesColors.mimes as Record<string, { count: boolean, color: string }>;
+    size.value = config.value.mapParams.bubbleSize || 60;
+    portals.value = config.value.drawerParams.portalSection.portals;
+  });
 
   let map: L.Map;
 
-  const size = mapParams.bubbleSize || 60;
-
   onMounted(() => {
 
-    if (!mapParams || mapParams.include === false) return;
+    if (!mapParams.value || mapParams.value.include === false) return;
 
-    let defaultZoom = window.innerWidth <= 768 ? mapParams.defaultPhoneZoom : mapParams.defaultZoom;
+    let defaultZoom = window.innerWidth <= 768 ? mapParams.value.defaultPhoneZoom : mapParams.value.defaultZoom;
 
-    if((defaultZoom || 6) > (mapParams.maxZoom || 9)){
+    if((defaultZoom || 6) > (mapParams.value.maxZoom || 9)){
       console.error('Default zoom cannot be higher than max zoom')
       defaultZoom = 6;
-      mapParams.maxZoom = 9;
+      mapParams.value.maxZoom = 9;
     }
 
-    if((defaultZoom || 6) < (mapParams.minZoom || 3)){
+    if((defaultZoom || 6) < (mapParams.value.minZoom || 3)){
       console.error('Default zoom cannot be lower than max zoom')
       defaultZoom = 6;
-      mapParams.minZoom = 3;
+      mapParams.value.minZoom = 3;
     }
 
     map = L.map('map', {
-      minZoom: mapParams.minZoom || 3,
-      maxZoom: mapParams.maxZoom || 9,
+      minZoom: mapParams.value.minZoom || 3,
+      maxZoom: mapParams.value.maxZoom || 9,
       zoomControl: false,
-    }).setView([mapParams.defaultX || 46.603354, mapParams.defaultY || 1.888334], defaultZoom || 6);
+    }).setView([mapParams.value.defaultX || 46.603354, mapParams.value.defaultY || 1.888334], defaultZoom || 6);
 
     L.control.zoom({
       position: 'topright',
@@ -88,101 +93,52 @@
     }
 
     emitter.on('centerMap', () => {
-      map.setView([mapParams.defaultX || 46.603354, mapParams.defaultY || 1.888334], defaultZoom || 6);
+      map.setView([mapParams.value.defaultX || 46.603354, mapParams.value.defaultY || 1.888334], defaultZoom || 6);
     });
 
     emitter.on('changeMapType', (layerName: string) => {
       changeMapLayer(layers[layerName] as TileLayer);
     });
 
-    function getBubbleColor (log: Log) {
-      const colorBy = config.mapParams.colorBy;
-      switch(colorBy) {
-        case 'mime':
-          if (!log.mime || !Object.keys(mimes).includes(log.mime.toUpperCase())) return config.mapParams.attributesColors.defaultMimeColor || '#7F8C8D';
-          return (mimes[log.mime.toUpperCase()] as { color: string }).color;
-        case 'portal':
-        default:
-          if (onlyPortal) return config.drawerParams.portalSection.portals[0].color;
-          const colors: string[] = [];
-          log.ezproxyName.split('+').forEach((portal: string) => {
-            if (config.drawerParams.portalSection.portals.filter(p => p.name.toUpperCase() === portal.toUpperCase()).length > 0) colors.push(config.drawerParams.portalSection.portals.filter(p => p.name.toUpperCase() === portal.toUpperCase())[0].color);
-          })
-          if (!colors || colors.length === 0) return config.drawerParams.portalSection.defaultPortalColor || 'random';
-          if (colors.length === 1) return colors[0];
-          return 'linear-gradient(to right, ' + colors.join(', ') + ')';
-      }
-    }
-
     io.on('log', (log: Log) => {
-      if (usePlatformFilterStore().getFilter() && log.platform_name && !((usePlatformFilterStore().getFilter().toUpperCase().includes(log.platform_name.toUpperCase()) || log.platform_name.toUpperCase().includes(usePlatformFilterStore().getFilter().toUpperCase())))) return;
-      if (!log || !log['geoip-latitude'] || !log['geoip-longitude']) return;
-
-      const color = getBubbleColor(log);
-      const gradient = color.includes('linear-gradient') ? color : undefined;
-
-      const bubbleHtml = getBubbleHtml(gradient, color)
-
-      const bubble = L.divIcon({
-        className: 'leaflet-marker',
-        iconSize: [size, size],
-        iconAnchor: [size / 2, size / 2],
-        html: `
-          <div class='container'>
-            <div class='bubble-popup' ${mapParams.includePopup ? '' : 'style="display: none;"'}>
-              <p ${mapParams.popupText.platform_name ? '' : 'style="display: none;"'} class='title-font popup-title'><strong>${log.platform_name}</strong></p>
-              <p ${config.mapParams.popupText.publication_title && log.publication_title ? '' : 'style="display: none;"'} class='body-font'>${log.publication_title}</p>
-              <div class='types-container'>
-                <p style='${mapParams.popupText.rtype && log.rtype ? '' : 'display: none;'} background-color: ${mapParams.attributesColors.rtype || '#7F8C8D'}' class='title-font'>${log.rtype}</p>
-                <p style='${mapParams.popupText.mime && log.mime ? '' : 'display: none;'} background-color: ${log.mime && mimes[log.mime as keyof typeof mimes].color || '#D35400'}' class='title-font'>${log.mime}</p>
-              </div>
-            </div>
-            ${bubbleHtml}
-          </div>
-        `,
-      });
-
-      const marker = L.marker([log['geoip-latitude'], log['geoip-longitude']], { icon: bubble }).addTo(map);
-      const elt = marker.getElement();
-      if (!elt) return;
-
-      setTimeout(() => {
-        elt.style.opacity = '0';
-        setTimeout(() => {
-          map.removeLayer(marker);
-        }, 2000);
-      }, (mapParams.bubbleDuration || 5) * 1000)
+      showEvent(log, map);
 
       if (!map.getBounds().contains(L.latLng(log['geoip-latitude'], log['geoip-longitude']))) {
-        emitter.emit('minimap', { log, bubble });
+        emitter.emit('minimap', { log, showEvent });
       }
     });
   });
 
-  function getBubbleHtml (gradient: string | undefined, color: string) {
-    let classes = '';
-    let backgroundColor = '';
-    switch (color) {
-      case 'random': {
-        backgroundColor = getRandomHexColor();
-        break;
-      }
-      case 'rgb':
-      case'multicolor': {
-        classes += 'multicolor';
-        break;
-      }
-      default: backgroundColor = color;
-    }
-    return `<div class='bubble'>
-              <div style='background: ${gradient || backgroundColor || 'transparent'}; width: ${size}px; height: ${size}px' class='bubble-circle ${classes}'></div>
-              <div style='box-shadow: 1px 1px 8px 0 ${backgroundColor || 'gray'}; width: ${size*2}px; height: ${size*2}px' class='bubble-pulse'></div>
-            </div>`
-  }
+  function showEvent (log: Log, map: L.Map) {
+    if (usePlatformFilterStore().getFilter() && log.platform_name && !((usePlatformFilterStore().getFilter().toUpperCase().includes(log.platform_name.toUpperCase()) || log.platform_name.toUpperCase().includes(usePlatformFilterStore().getFilter().toUpperCase())))) return;
+    if (!log || !log['geoip-latitude'] || !log['geoip-longitude']) return;
 
-  function getRandomHexColor () {
-    const hex = Math.floor(Math.random() * 0xFFFFFF).toString(16);
-    return `#${hex.padStart(6, '0')}`;
+    const container = document.createElement('div');
+
+    const app = createApp(EventBubble, {
+      log,
+    });
+    app.use(vuetify);
+    app.mount(container);
+
+    const icon = L.divIcon({
+      html: container,
+      className: '',
+      iconSize: [40, 40],
+    })
+
+    const marker = L.marker(new L.LatLng(log['geoip-latitude'], log['geoip-longitude']), { icon }).addTo(map);
+
+    const elt = marker.getElement();
+    if (!elt) return;
+    elt.classList.add('opacity-transition');
+
+    setTimeout(() => {
+      elt.style.opacity = '0';
+      setTimeout(() => {
+        map.removeLayer(marker);
+      }, 2000);
+    }, (mapParams.value.bubbleDuration || 5) * 1000)
   }
 </script>
 
@@ -190,10 +146,15 @@
 
   $box-shadow: 1px 1px 8px 0 rgba(0, 0, 0, 0.75);
 
+  :root {
+    --opacity-transition-speed: 1.5s;
+    --pulsate-speed: 1s;
+  }
+
   #map{
     width: 100%;
     height: 100%;
-    position: absolute;
+    position: fixed;
     bottom: 0;
     right: 0;
   }
@@ -204,12 +165,16 @@
     align-items: center;
   }
 
+  .opacity-transition{
+    transition: opacity var(--opacity-transition-speed) ease-in;
+  }
+
   .leaflet-marker {
-    transition: opacity 1.5s ease-in;
+    transition: opacity var(--opacity-transition-speed) ease-in;
   }
 
   .bubble {
-    position: absoute;
+    position: absolute;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -223,7 +188,7 @@
   }
 
   .bubble-pulse {
-    animation: pulsate 1s ease-in-out infinite;
+    animation: pulsate var(--pulsate-speed) ease-in-out infinite;
     position: absolute;
     border-radius: 100%;
   }
@@ -236,10 +201,10 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    border-radius: 8px;
+    border-radius: 4px;
     z-index: 2;
     bottom: 100%;
-    padding: .5em 2.5em;
+    padding: .2em 1em;
     box-shadow: $box-shadow;
     min-width: 100px;
     max-width: 300px;

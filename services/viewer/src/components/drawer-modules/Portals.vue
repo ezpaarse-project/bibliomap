@@ -1,7 +1,7 @@
 <template>
   <div class="portals-component">
     <a
-      v-for="(value) in config.drawerParams.portalSection.portals"
+      v-for="(value) in portals"
       :key="value.name"
       class="anchor"
       :href="value.url"
@@ -14,21 +14,36 @@
           location="right"
         >
           <template #activator="{ props }">
-            <div class="portal-list-item" v-bind="props">
-              <div class="portal-container">
-                <img v-if="value.icon" :src="getIconUrl(value.icon)">
+            <v-row
+              class="mx-2 my-3 align-center"
+              v-bind="props"
+              justify="space-between"
+              no-gutters
+            >
+              <v-col class="d-flex align-center" cols="10">
+                <img
+                  v-if="value.icon"
+                  class="mr-3"
+                  height="40"
+                  :src="getIconUrl(value.icon)"
+                  width="40"
+                >
                 <div class="portal-title-container">
-                  <h3 class="title-font">{{ t(`drawer-custom.portals.${value.name}.title`) }}</h3>
-                  <p v-if="t(`drawer-custom.portals.${value.name}.subtitle`)">{{ t(`drawer-custom.portals.${value.name}.subtitle`) }}</p>
+                  <h3 class="mb-1" style="font-size: 16px;">
+                    {{ t(`drawer-custom.portals.${value.name}.title`) }}
+                  </h3>
+                  <p v-if="t(`drawer-custom.portals.${value.name}.subtitle`)" class="mb-0">
+                    {{ t(`drawer-custom.portals.${value.name}.subtitle`) }}
+                  </p>
                 </div>
-              </div>
-              <v-chip
-                :color="value.color"
-                variant="flat"
-              >
-                {{ countStore.getCountOfPortal(value.name.toUpperCase()) }}
-              </v-chip>
-            </div>
+              </v-col>
+
+              <v-col class="d-flex justify-end" cols="2">
+                <v-chip :color="value.color" variant="flat">
+                  {{ countStore.getCountOfPortal(value.name.toUpperCase()) }}
+                </v-chip>
+              </v-col>
+            </v-row>
           </template>
           <div>
             <div
@@ -49,9 +64,17 @@
   import { useEcCountStore } from '@/stores/ec-count';
   import { useI18n } from 'vue-i18n';
 
+  type Portal = {
+    name: string,
+    url: string,
+    icon?: string,
+    color: string
+  }
+
   const config = useViewerConfigStore().config;
   const { t } = useI18n();
 
+  const portals = config.drawerParams.portalSection.portals as Portal[];
   const countStore = useEcCountStore();
 
   const getIconUrl = (iconName: string): string => {
@@ -66,39 +89,11 @@
     color: inherit;
     z-index: 100;
   }
-  .portals-component{
-    margin: .5rem 0;
-  }
   .portal-list-element{
     background-color: white;
     transition: filter 0.2s ease-in-out;
   }
   .portal-list-element:hover{
       filter: brightness(0.8);
-  }
-  .portal-list-item{
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .portal-container{
-    display: flex;
-    height: 3rem;
-    margin: .1rem 0;
-    gap: 1rem;
-  }
-  .portal-title-container{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    h3{
-      font-size: 16px;
-      font-weight: bold;
-    }
-    p{
-      font-size: 12px;
-    }
   }
 </style>

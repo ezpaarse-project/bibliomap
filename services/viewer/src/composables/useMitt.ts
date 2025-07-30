@@ -5,7 +5,8 @@ import L from 'leaflet';
 type Events = {
   centerMap: null;
   changeMapType: string;
-  minimap: { log: Log; bubble: L.DivIcon };
+  showCounterDrawer: null;
+  minimap: { log: Log; showEvent: (log: Log, map: L.Map) => void };
   showInfoDialog: null;
   showSettings: null;
   toggleDrawer: null;

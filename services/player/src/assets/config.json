@@ -1,0 +1,102 @@
+{
+    "mapParams": {
+        "include": true,
+        "defaultX": 0,
+        "defaultY": -30,
+        "defaultZoom": 3,
+        "minZoom": 2,
+        "maxZoom": 9,
+        "defaultPhoneZoom": 5,
+        "bubbleDuration": 5,
+        "bubbleSize": 60,
+        "popupSize": 60,
+        "popupText": {
+            "datetime": false,
+            "ezproxyName": false,
+            "geoip-pos": false,
+            "mime": true,
+            "platform_name": true,
+            "rtype": true,
+            "publication_title": false
+        },
+        "includePopup": true,
+        "attributesColors": {
+            "rtype": "#7F8C8D",
+            "mimes": {
+                "HTML": {
+                    "count": true,
+                    "color": "#D35400"
+                },
+                "MISC": {
+                    "count": true,
+                    "color": "#16A085"
+                },
+                "PDF": {
+                    "count": true,
+                    "color": "#C0392B"
+                },
+                "PDFPLUS": {
+                    "count": true,
+                    "color": "#C0392B"
+                },
+                "JSON": {
+                    "count": true,
+                    "color": "#9076A6"
+                }
+            },
+            "defaultColor": "#7F8C8D"
+        }
+    },
+    "drawerParams": {
+        "include": true,
+        "position": "left",
+        "width": 400,
+        "descriptionSection": {
+            "include": true,
+            "index": 0,
+            "icon": "logo.svg"
+        },
+        "timerSection": {
+            "include": true,
+            "index": 1,
+            "dayLetter": "j",
+            "hourLetter": "h",
+            "minuteLetter": "m",
+            "secondLetter": "s",
+            "timerDateFormat": "EEEE dd/MM/yyyy HH:mm:ss",
+            "showStartEndTime": true,
+            "startEndDatesFormat": "HH:mm:ss",
+            "showMultiplier": true
+        },
+        "counterSection": {
+            "include": true,
+            "index": 2,
+            "showTotal": true
+        },
+        "portalSection": {
+            "include": true,
+            "index": 3,
+            "portals": [
+                
+            ]
+        },
+        "replayDescription": {
+            "include": false,
+            "index": 0.5
+        }
+    },
+    "appbarParams": {
+        "include": true
+    },
+    "minimapParams": {
+        "include": true,
+        "defaultZoom": 4,
+        "minZoom": 2,
+        "maxZoom": 4,
+        "disableOnPhone": true
+    },
+    "dialogDrawerParams": {
+        "include": true,
+        "position": "right"
+    }
+}
