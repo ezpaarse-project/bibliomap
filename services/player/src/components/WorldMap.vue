@@ -126,7 +126,7 @@
     function showBubble (log: Log) {
       if (log.platform_name && !usePlatformFilterStore().isNameOkay(log.platform_name)) return;
       if (!log || !log['geoip-latitude'] || !log['geoip-longitude']) return;
-      if (!log[fieldIdentifier.value]) log[fieldIdentifier.value] = 'UNKNOWN';
+      if (!log[fieldIdentifier.value]) log[fieldIdentifier.value] = '';
       const container = document.createElement('div');
 
       const app = createApp(EventBubble, {

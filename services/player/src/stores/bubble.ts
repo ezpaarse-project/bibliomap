@@ -11,7 +11,6 @@ export const useBubbleStore = defineStore('bubble', () => {
   const { db } = storeToRefs(useIndexedDBStore());
 
   function sendBubbles () {
-    console.log('HERE')
     if (!db.value || state.value !== PlayState.PLAYING && state.value !== PlayState.PAUSED) return;
     const tx = db.value.transaction('events', 'readonly');
     const store = tx.objectStore('events');
@@ -26,9 +25,7 @@ export const useBubbleStore = defineStore('bubble', () => {
       const result = target.result;
       if (!result) return;
       const cursor = result;
-      console.log('CURSOR', cursor)
       if (cursor && cursor.length) {
-        console.log('THERE')
         cursor.forEach((bubble: EC) => {
           emitter.emit('EC', bubble.log);
         });
