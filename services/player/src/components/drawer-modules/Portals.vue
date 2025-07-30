@@ -10,7 +10,7 @@
       :label="t('drawer.fields.placeholder')"
     />
   </v-card>
-  <div v-if="fields && fields.length > 0" class="portals-component">
+  <div v-if="fields && fields.length > 0">
 
     <a
       v-for="{name, color} in fields"
