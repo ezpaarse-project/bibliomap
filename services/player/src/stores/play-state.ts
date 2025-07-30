@@ -48,9 +48,7 @@ export const usePlayStateStore = defineStore('play-state', () => {
     if (loadCounter.value === 0) {
       state.value = previousState.value || PlayState.STOPPED;
       const progressStore = useProgressStore();
-      if (progressStore.active) {
-        progressStore.active = false;
-      }
+      progressStore.active = false;
     }
   }
 

@@ -5,6 +5,7 @@ import { usePlayStateStore } from './play-state';
 import { useProgressStore } from './progress';
 import { useI18n } from 'vue-i18n';
 import { useLargeFileStore } from './large-file';
+import useMitt from '@/composables/useMitt';
 
 export const usePlayerFileStore = defineStore('player-file', () => {
 
@@ -12,16 +13,18 @@ export const usePlayerFileStore = defineStore('player-file', () => {
   const { db } = storeToRefs(useIndexedDBStore());
   const { progress, message, active: progressBarActive } = storeToRefs(useProgressStore());
   const { permission, largeFiles, active: filesTooLargeActive } = storeToRefs(useLargeFileStore());
+  const emitter = useMitt();
 
   const { t } = useI18n();
 
   async function setFiles (newFiles: File[]) {
+    console.log(permission.value, newFiles)
     if (areFilesTooLarge(newFiles) && !permission.value) {
       largeFiles.value = newFiles;
       filesTooLargeActive.value = true;
       return;
     }
-    permission.value = true;
+    console.log('HERE', newFiles.length)
     usePlayStateStore().loading();
     await clearDB();
     await insertFilesIntoDB(newFiles);
@@ -73,7 +76,7 @@ export const usePlayerFileStore = defineStore('player-file', () => {
   }
 
   async function insertFilesIntoDB (files: File[]) {
-    if (!db.value) return;
+    if (!db.value || !files.length) return;
     progressBarActive.value = true;
     for (const file of files) {
       progress.value = 0;
@@ -81,13 +84,15 @@ export const usePlayerFileStore = defineStore('player-file', () => {
       await insertEachLineIntoDB(file, db.value);
     }
     progressBarActive.value = false;
+    emitter.emit('filesLoaded', null);
   }
 
   async function clearDB () {
     if (!db.value) return;
     return new Promise<void>(resolve => {
+      console.log('CLEARING DB')
       message.value = t('progress-bar.clearing-db');
-      progress.value = 0;
+      progress.value = -1;
       progressBarActive.value = true;
       if (!db.value) {
         resolve();
@@ -106,7 +111,7 @@ export const usePlayerFileStore = defineStore('player-file', () => {
 
   watch(permission, () => {
     if(permission.value) setFiles(largeFiles.value);
-    else console.log('HERE');
+    setFiles([]);
   });
 
   return { files, setFiles };

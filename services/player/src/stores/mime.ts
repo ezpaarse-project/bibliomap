@@ -1,8 +1,8 @@
 import { useIndexedDBStore } from './indexed-db';
 import { useViewerConfigStore } from './viewer-config';
 import { usePlayStateStore } from './play-state';
-import { usePlayerFileStore } from './player-file';
 import type { EC } from './ec-count';
+import useMitt from '@/composables/useMitt';
 
 export type Mime = {
   name: string;
@@ -13,7 +13,7 @@ export const useMimeStore = defineStore('mime', () => {
 
   const mimes = ref([] as Mime[]);
   const shownMimes = ref([] as Mime[]);
-  const { files } = storeToRefs(usePlayerFileStore());
+  const emitter = useMitt();
   const { db } = storeToRefs(useIndexedDBStore());
 
   async function setMimes () {
@@ -60,7 +60,7 @@ export const useMimeStore = defineStore('mime', () => {
     });
   }
 
-  watch(files, () => {
+  emitter.on('filesLoaded', () => {
     setMimes();
   });
 

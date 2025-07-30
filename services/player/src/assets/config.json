@@ -8,7 +8,7 @@
         "maxZoom": 9,
         "defaultPhoneZoom": 5,
         "bubbleDuration": 5,
-        "bubbleSize": 30,
+        "bubbleSize": 60,
         "popupSize": 60,
         "popupText": {
             "datetime": false,

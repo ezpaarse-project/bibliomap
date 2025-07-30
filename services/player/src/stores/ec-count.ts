@@ -189,7 +189,7 @@ export const useEcCountStore = defineStore('ec-count', () => {
   }
 
   watch(state, async (s: PlayState) => {
-    if (s === PlayState.STOPPED) await resetCount()
+    if (s === PlayState.STOPPED || s === PlayState.LOADING) await resetCount()
   })
 
   watch(timer, () => {

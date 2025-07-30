@@ -32,7 +32,7 @@
   const filesStore = usePlayerFileStore();
   const files = ref([] as File[]);
   const { state: playState } = storeToRefs(usePlayStateStore());
-  const messages = ref([] as string[]);
+  const messages = ref<string[]>([]);
 
   watch(files, () => {
     files.value.forEach(file => {

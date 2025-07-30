@@ -1,8 +1,8 @@
 import { useIndexedDBStore } from './indexed-db';
 import type { EC } from './ec-count';
 import { usePlayStateStore } from './play-state';
-import { usePlayerFileStore } from './player-file';
 import { useViewerConfigStore } from './viewer-config';
+import useMitt from '@/composables/useMitt';
 
 export type Field = {
   name: string;
@@ -10,7 +10,7 @@ export type Field = {
 };
 
 export const useSortFieldStore = defineStore('sort-field', () => {
-  const { files } = storeToRefs(usePlayerFileStore());
+  const emitter = useMitt();
   const fields = ref([] as Field[]);
   const { db } = storeToRefs(useIndexedDBStore());
   const fieldIdentifier = ref('');
@@ -113,8 +113,8 @@ export const useSortFieldStore = defineStore('sort-field', () => {
     let ii = 0;
     while (fieldIdentifier.value === ''){
       for(let i = 0; i < Object.keys(count).length; i++) {
-        const countOfMimeInPortal = count[Object.keys(count)[i]];
-        if (countOfMimeInPortal > 1 && countOfMimeInPortal < 50 + ii) {
+        const countOfdifferentFields = count[Object.keys(count)[i]];
+        if (countOfdifferentFields > 1 && countOfdifferentFields < 50 + ii) {
           fieldIdentifier.value = Object.keys(count)[i];
           break;
         }
@@ -204,9 +204,12 @@ export const useSortFieldStore = defineStore('sort-field', () => {
     return field?.color;
   }
 
-  watch(files, async () => {
+  emitter.on('filesLoaded', async () => {
     await findFieldIdentifier();
-    setFields();
+  })
+
+  watch(fieldIdentifier, () => {
+    if (fieldIdentifier.value) setFields();
   })
 
   return { fields, getFieldColor, fieldIdentifier, headers };

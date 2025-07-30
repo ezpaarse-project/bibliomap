@@ -11,6 +11,7 @@ type Events = {
   log: Log;
   EC: Log;
   resetFileField: null;
+  filesLoaded: null;
 };
 
 const emitter = mitt<Events>();
