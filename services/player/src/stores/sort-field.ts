@@ -3,7 +3,6 @@ import type { EC } from './ec-count';
 import { usePlayStateStore } from './play-state';
 import { usePlayerFileStore } from './player-file';
 import { useViewerConfigStore } from './viewer-config';
-import useMitt from '@/composables/useMitt';
 
 export type Field = {
   name: string;
@@ -11,7 +10,6 @@ export type Field = {
 };
 
 export const useSortFieldStore = defineStore('sort-field', () => {
-  const emitter = useMitt();
   const { files } = storeToRefs(usePlayerFileStore());
   const fields = ref([] as Field[]);
   const { db } = storeToRefs(useIndexedDBStore());
@@ -209,13 +207,6 @@ export const useSortFieldStore = defineStore('sort-field', () => {
   watch(files, async () => {
     await findFieldIdentifier();
     setFields();
-  })
-
-  emitter.on('resetFileField', () => {
-    fields.value = [];
-    fieldIdentifier.value = '';
-    headers.value = [];
-    console.log('HERE')
   })
 
   return { fields, getFieldColor, fieldIdentifier, headers };

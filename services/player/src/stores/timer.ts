@@ -1,13 +1,11 @@
 import { usePlayTimeframeStore } from '@/stores/play-timeframe';
 import { usePlayerMultiplierStore } from '@/stores/player-multiplier.ts';
 import { PlayState, usePlayStateStore } from '@/stores/play-state.ts';
-import useMitt from '@/composables/useMitt';
 
 export const useTimerStore = defineStore('timer', () => {
   const timer = ref(0);
   let interval: ReturnType<typeof setInterval> | null = null;
 
-  const emitter = useMitt();
   const { multiplier } = storeToRefs(usePlayerMultiplierStore());
   const { state } = storeToRefs(usePlayStateStore());
   const { timeframe } = storeToRefs(usePlayTimeframeStore());
@@ -61,11 +59,6 @@ export const useTimerStore = defineStore('timer', () => {
 
   watch (timer, () => {
     if (timer.value % 1000 > 0) timer.value = Math.floor(timer.value / 1000) * 1000;
-  })
-
-  emitter.on('resetFileField', () => {
-    timer.value = 0;
-    if (interval) clearInterval(interval);
   })
 
   return { timer };
