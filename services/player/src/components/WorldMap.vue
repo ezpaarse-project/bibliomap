@@ -150,7 +150,7 @@
       const timestamp = new Date(log.datetime).getTime();
       const startTimestamp = timestamp;
       const fadeTimestamp = timestamp + multiplier.value * ((config.value.mapParams.bubbleDuration || 5) * 1000);
-      const endTimestamp = timestamp + multiplier.value * ((config.value.mapParams.bubbleDuration || 5) * 1000) + 3000;
+      const endTimestamp = timestamp + multiplier.value * ((config.value.mapParams.bubbleDuration || 5) * 1000) + multiplier.value * 3000;
       bubblesToRemove.push({ marker, frame: { start: startTimestamp, fade: fadeTimestamp, end: endTimestamp } });
 
       if (!map.getBounds().contains(L.latLng(log['geoip-latitude'], log['geoip-longitude']))) {
@@ -191,7 +191,7 @@
     align-items: center;
   }
   .opacity-transition{
-    transition: opacity 1s ease-in;
+    transition: opacity 1.5s ease-in;
   }
   .multicolor {
     animation: multicolor-animation 7s ease-in-out infinite;
