@@ -8,13 +8,11 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    Appbar: typeof import('./components/Appbar.vue')['default']
     BubbleInfo: typeof import('./components/event-bubble-components/BubbleInfo.vue')['default']
     CenterMapButton: typeof import('./components/fab-menu/CenterMapButton.vue')['default']
     ChangeMapTypeButton: typeof import('./components/fab-menu/ChangeMapTypeButton.vue')['default']
     Counter: typeof import('./components/drawer-modules/Counter.vue')['default']
     CounterButton: typeof import('./components/fab-menu/CounterButton.vue')['default']
-    Description: typeof import('./components/drawer-modules/Description.vue')['default']
     Drawer: typeof import('./components/Drawer.vue')['default']
     EventBubble: typeof import('./components/event-bubble-components/EventBubble.vue')['default']
     FabButton: typeof import('./components/FabButton.vue')['default']
