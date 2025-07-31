@@ -266,10 +266,7 @@
   const showMinimap = ref(currentConfig.value.minimapParams.include as boolean);
 
   const shownMimes = ref(
-    allMimes.value.map(p => p.name).reduce((acc: Record<string, boolean>, key) => {
-      acc[key] = true
-      return acc
-    }, {})
+    []
   );
 
   const shownFields = ref(
@@ -302,11 +299,11 @@
 
   watch(allFields, () => {
     resetShownFields();
-  });
+  }, { deep: true });
 
   watch(allMimes, () => {
     resetShownMimes();
-  })
+  }, { deep: true })
 
   watch(shownFields, () => {
     currentConfig.value.drawerParams.portalSection.portals = allFields.value.filter(p => shownFields.value[p.name])
