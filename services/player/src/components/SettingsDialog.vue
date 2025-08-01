@@ -293,9 +293,7 @@
 
   const showMinimap = ref(currentConfig.value.minimapParams.include as boolean);
 
-  const shownMimes = ref(
-    []
-  );
+  const shownMimes = ref<Record<string, boolean>>({});
 
   const shownFields = ref(
     allFields.value.map(p => p.name).reduce((acc: Record<string, boolean>, key) => {
@@ -312,10 +310,10 @@
   }
 
   function resetShownMimes () {
-    shownMimes.value = allMimes.value.map(p => p.name).reduce((acc: Record<string, boolean>, key) => {
-      acc[key] = true
-      return acc
-    }, {})
+    shownMimes.value = allMimes.value.reduce((acc: Record<string, boolean>, mime) => {
+      acc[mime.name] = true;
+      return acc;
+    }, {});
   }
 
   const showTitles = ref(currentConfig.value.mapParams.popupText.publication_title as boolean);

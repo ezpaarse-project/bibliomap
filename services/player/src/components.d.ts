@@ -29,6 +29,7 @@ declare module 'vue' {
     PlayingCard: typeof import('./components/state-cards/PlayingCard.vue')['default']
     Portals: typeof import('./components/drawer-modules/Portals.vue')['default']
     ProgressBar: typeof import('./components/ProgressBar.vue')['default']
+    RareCaseBubble: typeof import('./components/event-bubble-components/RareCaseBubble.vue')['default']
     RegularBubble: typeof import('./components/event-bubble-components/RegularBubble.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

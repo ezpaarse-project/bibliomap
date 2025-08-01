@@ -17,7 +17,7 @@ export const useMimeStore = defineStore('mime', () => {
   const { db } = storeToRefs(useIndexedDBStore());
 
   async function setMimes () {
-    mimes.value = [];
+    mimes.value = [] as { name: string, color: string }[];
     const { config: viewerConfig } = storeToRefs(useViewerConfigStore());
     if (!db.value) return;
     return new Promise<void>(resolve => {
