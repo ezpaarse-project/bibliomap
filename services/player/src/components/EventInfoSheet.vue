@@ -2,7 +2,7 @@
   <v-bottom-sheet v-model="showSheet" height="400">
     <v-card class="d-flex align-start" flat>
       <v-card-text v-for="(value, key) in event" :key="key" class="text-h6">
-        <strong>{{ key }}:</strong> {{ value?.trim() ? value : t('drawer.fields.unknown') }}
+        <strong>{{ key }}:</strong> {{ value ? value : t('drawer.fields.unknown') }}
       </v-card-text>
     </v-card>
   </v-bottom-sheet>
