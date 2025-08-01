@@ -58,6 +58,7 @@ drawer:
     play: Play simulation
     error:
       invalid-file: 'Invalid file: {name}'
+    files: + 1 file | + {n} files
   fields:
     title: 'Count by: ({n} fields)'
     placeholder: 'ex: Publisher name'
