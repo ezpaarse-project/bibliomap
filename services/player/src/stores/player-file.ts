@@ -108,7 +108,7 @@ export const usePlayerFileStore = defineStore('player-file', () => {
 
   watch(permission, () => {
     if(permission.value) setFiles(largeFiles.value);
-    setFiles([]);
+    else setFiles([]);
   });
 
   return { files, setFiles };

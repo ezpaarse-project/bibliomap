@@ -19,6 +19,8 @@ appbar:
     filter-section:
       title: Filtrer par plateforme éditeur
       placeholder: 'ex: Wiley'
+    blur-section:
+      title: Floutage de la localisation
     multiplier-section:
       title: Multiplicateur de vitesse de la simulation
     bubble-section:
@@ -58,6 +60,7 @@ drawer:
     play: Jouer la simulation
     error:
       invalid-file: 'Fichier invalide : {name}'
+    files: + 1 fichier | + {n} fichiers
   fields:
     title: 'Compter par : ({n} champs)'
     placeholder: 'ex: Nom de la plateforme'

@@ -6,7 +6,7 @@
     />
     <div
       class="bubble-pulse"
-      :style="{width: size*2 + 'px', height: size*2 + 'px', boxShadow: `1 1 8 0 ${color}`}"
+      :style="{width: size*2 + 'px', height: size*2 + 'px'}"
     />
   </div>
 </template>
@@ -15,13 +15,6 @@
 
   const { config } = storeToRefs(useViewerConfigStore());
   const size = computed(() => config.value.mapParams.bubbleSize || 60);
-
-  function getRandomHexColor () {
-    const hex = Math.floor(Math.random() * 0xFFFFFF).toString(16);
-    return `#${hex.padStart(6, '0')}`;
-  }
-
-  const color = getRandomHexColor();
 </script>
 <style lang="scss" scoped>
 $box-shadow: 1px 1px 8px 0 rgba(0, 0, 0, 0.75);
@@ -41,7 +34,7 @@ $box-shadow: 1px 1px 8px 0 rgba(0, 0, 0, 0.75);
   }
 
   .bubble-pulse {
-    animation: pulsate 1s ease-in-out infinite;
+    animation: pulsate 1s ease-in-out infinite, multicolor-pulse 7s ease-in-out infinite;
     position: absolute;
     border-radius: 100%;
   }
@@ -65,6 +58,24 @@ $box-shadow: 1px 1px 8px 0 rgba(0, 0, 0, 0.75);
     }
     100% {
       background-color: hsl(360, 100%, 50%);
+    }
+  }
+
+  @keyframes multicolor-pulse {
+    0% {
+      box-shadow: 0 0 8px 0 hsl(0, 100%, 50%);
+    }
+    25% {
+      box-shadow: 0 0 8px 0 hsl(90, 100%, 50%);
+    }
+    50% {
+      box-shadow: 0 0 8px 0 hsl(180, 100%, 50%);
+    }
+    75% {
+      box-shadow: 0 0 8px 0 hsl(270, 100%, 50%);
+    }
+    100% {
+      box-shadow: 0 0 8px 0 hsl(360, 100%, 50%);
     }
   }
 

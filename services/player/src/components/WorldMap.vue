@@ -13,6 +13,7 @@
   import { useTimerStore } from '@/stores/timer';
   import { useSortFieldStore } from '@/stores/sort-field';
   import { usePlayerMultiplierStore } from '@/stores/player-multiplier';
+  import { useBlurStore } from '@/stores/blur';
   import vuetify from '@/plugins/vuetify';
   import EventBubble from './event-bubble-components/EventBubble.vue';
 
@@ -22,6 +23,7 @@
   const mapParams = config.value.mapParams;
   const { fieldIdentifier } = storeToRefs(useSortFieldStore());
   const { multiplier } = storeToRefs(usePlayerMultiplierStore());
+  const { blur } = storeToRefs(useBlurStore());
 
   useBubbleStore();
 
@@ -127,6 +129,11 @@
       if (log.platform_name && !usePlatformFilterStore().isNameOkay(log.platform_name)) return;
       if (!log || !log['geoip-latitude'] || !log['geoip-longitude']) return;
       if (!log[fieldIdentifier.value]) log[fieldIdentifier.value] = '';
+
+      if (blur.value) {
+        log = blurEventPosition(log);
+      }
+
       const container = document.createElement('div');
 
       const app = createApp(EventBubble, {
@@ -150,7 +157,7 @@
       const timestamp = new Date(log.datetime).getTime();
       const startTimestamp = timestamp;
       const fadeTimestamp = timestamp + multiplier.value * ((config.value.mapParams.bubbleDuration || 5) * 1000);
-      const endTimestamp = timestamp + multiplier.value * ((config.value.mapParams.bubbleDuration || 5) * 1000) + 3000;
+      const endTimestamp = timestamp + multiplier.value * ((config.value.mapParams.bubbleDuration || 5) * 1000) + multiplier.value * 3000;
       bubblesToRemove.push({ marker, frame: { start: startTimestamp, fade: fadeTimestamp, end: endTimestamp } });
 
       if (!map.getBounds().contains(L.latLng(log['geoip-latitude'], log['geoip-longitude']))) {
@@ -160,6 +167,14 @@
 
     emitter.on('EC', showBubble);
   });
+
+  function blurEventPosition (log: Log) {
+    const randomLatOffset = 2 * (Math.random() - 0.5)
+    const randomLonOffset = 2 * (Math.random() - 0.5)
+    log['geoip-latitude'] = parseFloat(log['geoip-latitude']) + (blur.value * randomLatOffset);
+    log['geoip-longitude'] = parseFloat(log['geoip-longitude']) + (blur.value * randomLonOffset);
+    return log
+  }
 
   function changeAnimationSpeed (multiplier: number) {
     document.documentElement.style.setProperty('--opacity-transition-speed', `${1.5/multiplier}s`);
@@ -191,7 +206,7 @@
     align-items: center;
   }
   .opacity-transition{
-    transition: opacity 1s ease-in;
+    transition: opacity 1.5s ease-in;
   }
   .multicolor {
     animation: multicolor-animation 7s ease-in-out infinite;

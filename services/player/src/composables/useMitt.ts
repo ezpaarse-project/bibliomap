@@ -12,6 +12,7 @@ type Events = {
   EC: Log;
   resetFileField: null;
   filesLoaded: null;
+  eventClicked: Record<string, unknown>;
 };
 
 const emitter = mitt<Events>();
