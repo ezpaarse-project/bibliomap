@@ -34,6 +34,7 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     SettingsButton: typeof import('./components/fab-menu/SettingsButton.vue')['default']
     SettingsDialog: typeof import('./components/SettingsDialog.vue')['default']
+    SettingsMap: typeof import('./components/SettingsMap.vue')['default']
     StateCard: typeof import('./components/StateCard.vue')['default']
     StoppedCard: typeof import('./components/state-cards/StoppedCard.vue')['default']
     Timer: typeof import('./components/drawer-modules/Timer.vue')['default']

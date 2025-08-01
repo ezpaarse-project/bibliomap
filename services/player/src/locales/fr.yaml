@@ -19,6 +19,8 @@ appbar:
     filter-section:
       title: Filtrer par plateforme éditeur
       placeholder: 'ex: Wiley'
+    blur-section:
+      title: Floutage de la localisation
     multiplier-section:
       title: Multiplicateur de vitesse de la simulation
     bubble-section:

@@ -31,6 +31,28 @@
 <script lang="ts" setup>
   import Drawer from '@/components/Drawer.vue';
   import WorldMap from '@/components/WorldMap.vue';
+  import { onBeforeUnmount, onMounted } from 'vue';
+  import { PlayState, usePlayStateStore } from '@/stores/play-state';
+  import { usePlayerFileStore } from '@/stores/player-file';
+
+  const { state } = storeToRefs(usePlayStateStore());
+  const { files } = storeToRefs(usePlayerFileStore());
+
+  function handleBeforeUnload (event: BeforeUnloadEvent) {
+    if (state.value === PlayState.STOPPED && !files.value.length) return;
+
+    event.preventDefault();
+    event.returnValue = '';
+  }
+
+  onMounted(() => {
+    window.addEventListener('beforeunload', handleBeforeUnload);
+  });
+
+  onBeforeUnmount(() => {
+    window.removeEventListener('beforeunload', handleBeforeUnload);
+  });
+
 </script>
 
 <style>
