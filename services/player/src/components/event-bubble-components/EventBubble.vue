@@ -1,5 +1,8 @@
 <template>
-  <div class="event-bubble">
+  <div
+    class="event-bubble"
+    @click="eventClicked"
+  >
     <div class="bubble-container">
       <div class="bubble-info">
         <BubbleInfo
@@ -38,6 +41,10 @@
   import { usePlayerFileStore } from '@/stores/player-file';
   import { useSortFieldStore } from '@/stores/sort-field';
   import { useViewerConfigStore } from '@/stores/viewer-config';
+  import useMitt from '@/composables/useMitt';
+
+  const emitter = useMitt();
+
   const props = defineProps<{
     log: Log
   }>();
@@ -67,6 +74,10 @@
       return { colors, type: BubbleType.Gradient } as BubbleProps;
     }
     return { color: sortFieldStore.getFieldColor(fieldValue), type: BubbleType.Regular } as BubbleProps;
+  }
+
+  function eventClicked () {
+    emitter.emit('eventClicked', log);
   }
 </script>
 <style scoped lang="scss" scopped>

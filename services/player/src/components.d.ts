@@ -15,6 +15,7 @@ declare module 'vue' {
     CounterButton: typeof import('./components/fab-menu/CounterButton.vue')['default']
     Drawer: typeof import('./components/Drawer.vue')['default']
     EventBubble: typeof import('./components/event-bubble-components/EventBubble.vue')['default']
+    EventInfoSheet: typeof import('./components/EventInfoSheet.vue')['default']
     FabButton: typeof import('./components/FabButton.vue')['default']
     FileTooLargeDialog: typeof import('./components/FileTooLargeDialog.vue')['default']
     GradientBubble: typeof import('./components/event-bubble-components/GradientBubble.vue')['default']

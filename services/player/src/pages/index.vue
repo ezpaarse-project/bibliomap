@@ -25,6 +25,7 @@
     <WorldMap style="z-index: 0;" />
     <ProgressBar />
     <FileTooLargeDialog />
+    <EventInfoSheet />
   </v-app>
 </template>
 
