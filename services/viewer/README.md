@@ -1,6 +1,6 @@
-# bibliomap Viewer
+# BiblioMap Viewer
 
-Bibliomap Viewer is a service that connects to Bibliomap enricher via websockets. It shows the received information on a map, allowing the user to concretely view the consultations events.
+BiblioMap Viewer is a service that connects to Bibliomap enricher via websockets. It shows the received information on a map, allowing the user to concretely view the consultations events.
 
 ## Communication with Enricher
 
