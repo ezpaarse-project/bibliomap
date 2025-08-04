@@ -1,6 +1,6 @@
 # BiblioMap Viewer
 
-BiblioMap Viewer is a service that connects to Bibliomap enricher via websockets. It shows the received information on a map, allowing the user to concretely view the consultations events.
+BiblioMap Viewer is a service that connects to Bibliomap Enricher via Websockets. It shows the received information on a map, allowing the user to concretely view the consultations events.
 
 ## Communication with Enricher
 
@@ -57,8 +57,8 @@ It is a subsection of the Drawer module. It displays a short description of what
 </p>
 
 It is a subsection of the Drawer module. It has two different views depending on the mode:
-- If Bibliomap is in Live mode, it displays the amount of time the page has been opened
-- If Bibliomap is in Replay mode, it displays the date and time of the simulation at the current time. It also shows a progressbar which indicates the progress of the current simulation.
+- If Bibliomap is in Live mode, it displays the amount of time the page has been open.
+- If Bibliomap is in Replay mode, it displays the date and time of the simulation at the current time. It also shows a progress bar which indicates the progress of the current simulation.
 
 Code is available in `src/components/drawer-modules/Timer.vue`.
 
@@ -85,21 +85,6 @@ It is a subsection of the Drawer module. It displays a count of articles from al
 </p>
 
 It is a subsection of the Drawer module. It displays a description about the current replay session. It does not appear on Live mode. Code is available in `src/components/drawer-modules/ReplayDescription.vue`.
-
-### Appbar
-
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/c4b0b054-8190-4e58-b8c2-d748884b669a" />
-</p>
-
-The Appbar contains five buttons as well as the button used to close or open the drawer. Here are what the buttons do:
-- Target button: centers the map (France)
-- Translate button: used to choose languages
-- map button: used to change the map background
-- cogwheel button: opens the settings menu
-- information button: opens the information drawer
-
-Code is available in `src/components/Appbar.vue/` as well as `src/components/appbar-buttons/`.
 
 ### Minimap
 
@@ -146,7 +131,7 @@ Since Bibliomap 6.0.0, it is possible to configure each of the page's modules, w
 
 **All of the customization options are done in the file src/assets/config.json.**
 
-Each module owns a json block containing parameters. All of them have a `"include"` parameter. If set to true, the module will be shown on the interface. If set to false, the module will be hidden.
+Each module has its own JSON block containing parameters. All of them have a `"include"` parameter. If set to true, the module will be shown on the interface. If set to false, the module will be hidden.
 
 ### Map configuration
 
@@ -158,20 +143,20 @@ The map configurations are done in the `"mapParams"` block. Here are the differe
 | `defaultX` | Default X coordinate when the page is opened. The 'center map' button will center the map at this X axis. Default centers to France. | `46.603354` |
 | `defaultY` |  Default Y coordinate when the page is opened. The 'center map' button will center the map at this Y axis. Default centers to France.  | `1.888334` |
 | `defaultZoom` | Default zoom when the page is opened. The 'center map' button will set the map zoom at this value. | `6` |
-| `minZoom` | Minimum zoom value. The user won't be allowed to zoom out bellow this value. | `3` |
+| `minZoom` | Minimum zoom value. The user won't be allowed to zoom out below this value. | `3` |
 | `maxZoom` | Maximum zoom value. The user won't be allowed to zoom in above this value. | `9` |
 | `defaultPhoneZoom` | Default zoom when the page is opened from a phone. The 'center map' button will set the map zoom at this value. | `5` |
 | `bubbleDuration` | The duration of a bubble appearing on the map in seconds. | `5` |
 | `bubbleSize` | The size of a bubble appearing on the map in pixels. | `60` |
 | `includePopup` | Indicates if the popup should be shown or hidden. If false, only bubbles will be shown and not their popups. | `true` |
 | `popupText` | The fields that should appear on a bubble popup. Set to true to show them, false (or nothing) to hide them. | `{"datetime": false, "ezproxyName": false, "geoip-pos": true, "mime": true, "platform_name": true, "rtype": true, "publication_title": false}` |
-| `defaultMimeColor` | Fields that indicates in which color the mimes that are not listed should be displayed. | `"#7F8C8D"` |
+| `defaultMimeColor` | Fields that indicate in which color the mimes that are not listed should be displayed. | `"#7F8C8D"` |
 | `attributesColors` | Colors of the fields in popupText. | `{"rtype": "#7F8C8D"}` |
 | `colorBy` | Indicates what field will color the bubble. Supports "mime" and "portal", defaults to "portal". | "portal" |
 
 ### Drawer configuration
 
-The drawer configurations are done in the `"drawerParams"` block. Here are the different parameters:
+The drawer configurations are done in the `"drawerParams"` block. It is possible to hide, change the order, or configure all of its modules if desired. Here are the different parameters:
 
 | Name | Description | Default | 
 | --- | --- | --- |
@@ -252,7 +237,7 @@ The appbar configurations are done in the `"minimapParams"` block. Here are the 
 | --- | --- | --- |
 | `include` | Indicates if the minimap should be shown or hidden. | `true` |
 | `defaultZoom` | Default zoom of the minimap when it appears | `4` |
-| `minZoom` | Minimum minimap zoom value. The user won't be allowed to zoom out bellow this value. | `2` |
+| `minZoom` | Minimum minimap zoom value. The user won't be allowed to zoom out below this value. | `2` |
 | `maxZoom` | Maximum minimap zoom value. The user won't be allowed to zoom in above this value. | `4` |
 | `disableOnPhone` | Indicates if the minimap should be disabled on phone, as it takes a lot of space on the screen. | `true` |
 
@@ -267,7 +252,7 @@ The Information drawer configurations are done in the `"infoDrawerParams"` block
 
 ## Customizable text
 
-It is possible to configure customizable text fields thanks to the use of i18n. The text should be written in json files at src/locals/custom/{language}.json. Writing text in these files ensure content can be translated. Here are the fields:
+It is possible to configure customizable text fields thanks to the use of i18n. The text should be written in json files at src/locals/custom/{language}.json. Writing text in these files ensures content can be translated. Here are the fields:
 
 | Name | Description |
 | -- | -- |
