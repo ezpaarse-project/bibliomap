@@ -12,27 +12,11 @@ How could it be useful ?
 [CNRS Bibliomap demonstrator](http://bibliomap.inist.fr/)
 
 ## Summary
-- [Usage options](#usage-options)
 - [Prerequisites](#prerequisites)
 - [Installation and running a quick demo](#installation-and-running-a-quick-demo)
 - [Developers](#developers)
 - [Installation for development](installation-for-development)
-- [BiblioMap Player](#bibliomap-player)
-
-## Usage options
-
-### Expo mode
-
-In expo mode, the information drawer will automatically appear and disappear at set intervals. To activate this mode, add expo or e to the query string.
-
-By default, the drawer is shown for 1 minute and then hidden for 10 minutes.
-
-To customize these intervals, assign two comma-separated numbers to the expo parameter. The first number sets how long the drawer is shown, and the second sets how long it is hidden. Both values should be specified in seconds.
-
-Examples:
-  - http://bibliomap.inist.fr?expo (activates default expo mode: 1min shown / 10 min hidden)
-  - http://bibliomap.inist.fr?e (the same but with a shortcut)  
-  - http://bibliomap.inist.fr?expo=20,120 (activates customized expo mode: 20 sec shown / 120 sec hidden)  
+- [Usage options](#usage-options)
 
 ## Prerequisites
 
@@ -81,6 +65,21 @@ Whenever you want you can git pull all the git repositories using one command:
 ```
 npm run pull
 ```
+
+## Usage options
+
+### Expo mode
+
+In expo mode, the information drawer will automatically appear and disappear at set intervals. To activate this mode, add expo or e to the query string.
+
+By default, the drawer is shown for 1 minute and then hidden for 10 minutes.
+
+To customize these intervals, assign two comma-separated numbers to the expo parameter. The first number sets how long the drawer is shown, and the second sets how long it is hidden. Both values should be specified in seconds.
+
+Examples:
+  - http://bibliomap.inist.fr?expo (activates default expo mode: 1min shown / 10 min hidden)
+  - http://bibliomap.inist.fr?e (the same but with a shortcut)  
+  - http://bibliomap.inist.fr?expo=20,120 (activates customized expo mode: 20 sec shown / 120 sec hidden)
 
 ### BiblioMap Player
 
