@@ -7,7 +7,7 @@ How could it be useful ?
 - To help ezPAARSE adoption in your institution
 - Just for fun!
 
-![bibliomap-shorter](https://github.com/user-attachments/assets/5151332c-444d-461c-89eb-e6423b154320)
+![BiblioMap](https://github.com/user-attachments/assets/4bfb703b-3541-4cfe-84cd-f620c47e3e63)
 
 [CNRS Bibliomap demonstrator](http://bibliomap.inist.fr/)
 
