@@ -11,6 +11,14 @@ How could it be useful ?
 
 [CNRS Bibliomap demonstrator](http://bibliomap.inist.fr/)
 
+## Summary
+- [Usage options](#usage-options)
+- [Prerequisites](#prerequisites)
+- [Installation and running a quick demo](#installation-and-running-a-quick-demo)
+- [Developers](#developers)
+- [Installation for development](installation-for-development)
+- [BiblioMap Player](#bibliomap-player)
+
 ## Usage options
 
 ### Expo mode
@@ -56,10 +64,6 @@ Then browse to http://localhost:3000
 ```bash
 # Clone all the required repositories
 git clone https://github.com/ezpaarse-project/bibliomap.git
-cd bibliomap
-git clone https://github.com/ezpaarse-project/bibliomap-harvester.git
-git clone https://github.com/ezpaarse-project/bibliomap-enricher.git
-git clone https://github.com/ezpaarse-project/bibliomap-viewer.git
 
 # Load one configuration file
 source ./setup_cnrs.sh 
@@ -80,8 +84,8 @@ npm run pull
 
 ### BiblioMap Player
 
-BiblioMap now has a replay mode: provide it with log files and it will play in real time. The replay mode features a time multiplier, which makes it times faster to have a quicker preview of what happened during that day.
+BiblioMap now has a player mode: provide it consultation event files and it will play in real time. The replay mode features a time multiplier and a slider, which makes it times faster to have a quicker preview of what happened during that day.
 
 __How to use the replay mode?__
 
-You will need to configure the Enricher and Viewer services. All the needed details are written in each of their README.md files.
+You will need to configure the Docker Compose files. All the needed details are written in each of their README.md files.
