@@ -1,9 +1,5 @@
 <template>
-  <v-tooltip location="left" :text="t('fabButton.tooltips.counter')">
-    <template #activator="{ props: centerMapProps }">
-      <v-btn color="indigo" icon="mdi-counter" v-bind="centerMapProps" @click="showCounterDrawer" />
-    </template>
-  </v-tooltip>
+  <v-btn v-tooltip="t('appbar.tooltips.counter')" color="indigo" icon="mdi-counter" @click="showCounterDrawer" />
 </template>
 <script setup lang="ts">
   import useMitt from '@/composables/useMitt';
