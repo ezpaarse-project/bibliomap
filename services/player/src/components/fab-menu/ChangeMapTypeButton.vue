@@ -7,7 +7,8 @@
     >
       <template #activator="{ props: mapMenuProps }">
         <v-btn
-          v-tooltip="{text: t('appbar.tooltips.change-map'), location: 'right'}"
+          v-tooltip="{text: t('appbar.tooltips.change-map'), location: 'left'}"
+          color="green"
           v-bind="{ ...mapMenuProps }"
           icon="mdi-map"
         />

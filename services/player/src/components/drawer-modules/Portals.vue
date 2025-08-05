@@ -59,12 +59,14 @@
   import { useSortFieldStore } from '@/stores/sort-field';
   import { useI18n } from 'vue-i18n';
   import { PlayState, usePlayStateStore } from '@/stores/play-state';
+  import { useViewerConfigStore } from '@/stores/viewer-config';
 
   const { t } = useI18n();
   const countStore = useEcCountStore();
   const { state } = storeToRefs(usePlayStateStore());
+  const { config } = storeToRefs(useViewerConfigStore());
 
-  const { fields } = storeToRefs(useSortFieldStore());
+  const fields = computed(() => config.value.drawerParams.portalSection.portals);
   const { headers, fieldIdentifier } = storeToRefs(useSortFieldStore());
 </script>
 

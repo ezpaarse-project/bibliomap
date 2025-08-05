@@ -157,6 +157,30 @@
         </v-row>
       </v-row>
       <v-divider />
+      <v-row align="center" class="pa-6" :flat="true" justify="space-between">
+        <v-col cols="auto">
+          <v-card-text class="text-h6">
+            {{ t('appbar.settings-dialog.blur-section.title') }}
+          </v-card-text>
+          <v-slider
+            v-model="blur"
+            :max="1"
+            :min="0"
+            :step="0.01"
+            thumb-label
+            width="300"
+          />
+        </v-col>
+        <v-col align="center" cols="auto">
+          <v-card-text class="text-h5">
+            ± {{ formatKmLabel(blur) }}
+          </v-card-text>
+        </v-col>
+        <v-col cols="auto">
+          <SettingsMap />
+        </v-col>
+      </v-row>
+      <v-divider />
       <v-row class="pa-4" :flat="true">
         <div
           class="d-flex justify-space-between align-center pr-4 w-100"
@@ -202,6 +226,7 @@
   import { useI18n } from 'vue-i18n';
   import { type Field, useSortFieldStore } from '@/stores/sort-field';
   import { usePlayerMultiplierStore } from '@/stores/player-multiplier';
+  import { useBlurStore } from '@/stores/blur';
   import { type Mime, useMimeStore } from '@/stores/mime';
   import MulticolorBubble from './event-bubble-components/MulticolorBubble.vue';
 
@@ -210,6 +235,7 @@
   const { config: currentConfig } = storeToRefs(useViewerConfigStore());
   const { fields: allFields } = storeToRefs(useSortFieldStore());
   const { mimes: allMimes } = storeToRefs(useMimeStore());
+  const { blur } = storeToRefs(useBlurStore());
   const bubbleSize = ref(currentConfig.value.mapParams.bubbleSize || 60);
   const popupSize = ref(currentConfig.value.mapParams.popupSize || 30);
   const bubbleDuration = ref(currentConfig.value.mapParams.bubbleDuration || 5);
@@ -220,6 +246,8 @@
   const { multiplier } = storeToRefs(usePlayerMultiplierStore());
   const opacity = ref(1);
   const locked = ref(false);
+
+  const formatKmLabel = (value: number) => `~ ${Math.round(value * 111)} km`;
 
   emitter.on('showSettings', () => {
     active.value = true;
@@ -265,12 +293,7 @@
 
   const showMinimap = ref(currentConfig.value.minimapParams.include as boolean);
 
-  const shownMimes = ref(
-    allMimes.value.map(p => p.name).reduce((acc: Record<string, boolean>, key) => {
-      acc[key] = true
-      return acc
-    }, {})
-  );
+  const shownMimes = ref<Record<string, boolean>>({});
 
   const shownFields = ref(
     allFields.value.map(p => p.name).reduce((acc: Record<string, boolean>, key) => {
@@ -287,10 +310,10 @@
   }
 
   function resetShownMimes () {
-    shownMimes.value = allMimes.value.map(p => p.name).reduce((acc: Record<string, boolean>, key) => {
-      acc[key] = true
-      return acc
-    }, {})
+    shownMimes.value = allMimes.value.reduce((acc: Record<string, boolean>, mime) => {
+      acc[mime.name] = true;
+      return acc;
+    }, {});
   }
 
   const showTitles = ref(currentConfig.value.mapParams.popupText.publication_title as boolean);
@@ -302,11 +325,11 @@
 
   watch(allFields, () => {
     resetShownFields();
-  });
+  }, { deep: true });
 
   watch(allMimes, () => {
     resetShownMimes();
-  })
+  }, { deep: true })
 
   watch(shownFields, () => {
     currentConfig.value.drawerParams.portalSection.portals = allFields.value.filter(p => shownFields.value[p.name])

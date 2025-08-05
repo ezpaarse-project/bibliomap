@@ -1,9 +1,19 @@
 <template>
   <div class="bubble">
-    <div
-      class="bubble-circle"
-      :style="{ width: size + 'px', height: size + 'px', background: color }"
-    />
+    <div class="bubble-circle">
+      <div class="image-wrapper" :style="{ width: size * 1.5 + 'px', height: size * 1.5 + 'px' }">
+        <img
+          ref="imageEl"
+          src="@/assets/rare-case.png"
+          :style="{ width: '100%', height: '100%' }"
+        >
+        <div
+          class="color-overlay"
+          :style="{ backgroundColor: `${color}80` }"
+        />
+      </div>
+    </div>
+
     <div
       v-if="state === PlayState.PLAYING"
       class="bubble-pulse"
@@ -32,11 +42,11 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    transform: translateY(20px)
   }
 
   .bubble-circle {
     border-radius: 100%;
-    box-shadow: $box-shadow;
     position: absolute;
   }
 
@@ -71,4 +81,61 @@
     opacity: 0;
   }
 }
+
+
+.color-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 100%;
+  background-color: rgba(255, 0, 0, 0.2);
+  pointer-events: none;
+}
+
+.image-wrapper {
+  position: relative;
+  animation: img-animation 1s ease-in-out infinite;
+}
+
+.image-wrapper img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes img-animation {
+  0%{
+    transform: scale(1);
+  }
+  50%{
+    transform: scale(1.2);
+  }
+  100%{
+    transform: scale(1);
+  }
+}
+
+.color-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  pointer-events: none;
+
+  mask-image: url('@/assets/rare-case.png');
+  mask-size: cover;
+  mask-repeat: no-repeat;
+  mask-position: center;
+
+  -webkit-mask-image: url('@/assets/rare-case.png');
+  -webkit-mask-size: cover;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+}
+
+
 </style>
