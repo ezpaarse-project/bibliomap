@@ -8,7 +8,7 @@ services:
     environment:
       ENRICHER_URL: "enricher:27777"
       DEMO_DIR: cnrs
-      LOGS_PER_SECOND: 15
+      LOGS_PER_SECOND: 1
     command: "npm run dev"
     working_dir: /usr/src/app
     volumes:
