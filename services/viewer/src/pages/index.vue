@@ -3,7 +3,7 @@
     <Drawer />
     <InformationDrawer />
     <SettingsDialog />
-    <v-main style="">
+    <v-main>
       <v-container class="position-relative" fluid>
         <div class="position-absolute" style="top: 0; left: 0; z-index: 10;">
           <ModeCard />
@@ -60,8 +60,5 @@
   .position-absolute {
     position: absolute;
     margin: 16px;
-  }
-  .fixed-corner {
-    position: fixed;
   }
 </style>

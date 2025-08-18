@@ -23,6 +23,7 @@ declare module 'vue' {
     Drawer: typeof import('./components/Drawer.vue')['default']
     EventBubble: typeof import('./components/event-bubble-components/EventBubble.vue')['default']
     FabButton: typeof import('./components/FabButton.vue')['default']
+    GitHubButton: typeof import('./components/information-components/GitHubButton.vue')['default']
     GradientBubble: typeof import('./components/event-bubble-components/GradientBubble.vue')['default']
     InfoButton: typeof import('./components/fab-menu/InfoButton.vue')['default']
     InformationContent: typeof import('./components/information-components/InformationContent.vue')['default']
