@@ -32,10 +32,6 @@
         <v-progress-circular indeterminate size="74" />
       </div>
 
-      <div class="mt-auto">
-        <VersionCard />
-      </div>
-
     </div>
   </v-navigation-drawer>
 </template>

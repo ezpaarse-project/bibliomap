@@ -82,3 +82,7 @@ state-card:
   stopped: Arret
   paused: Pause
   loading: Chargement
+info: 
+  text1: Bibliomap Player vous permet de visualiser vos fichiers traités par ezPAARSE directement dans l’application Bibliomap et de suivre vos événements de consultation sur une carte interactive sans avoir besoin d'installer Bibliomap. C'est un lecteur d’événements de consultation (EC) générés par ezPAARSE.
+  text2: Pour l’utiliser, il suffit de déposer vos fichiers à l’emplacement prévu, de les charger, puis de lancer la simulation, qui fonctionne comme un lecteur vidéo. Vous pouvez ajuster la vitesse de lecture pour analyser vos données plus rapidement ou plus lentement.
+  text3: L’interface vous permet de compter les événements de consultation par type MIME (HTML, PDF, XML, etc.) ou selon l’un des nombreux champs présents dans vos données ezPAARSE, comme le nom de la plateforme, la collection ou le type de document. Chaque événement est représenté par un marqueur sur la carte, indiquant sa provenance et son type.
