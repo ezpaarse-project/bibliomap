@@ -11,7 +11,6 @@
     <div ref="infoDrawer" style="height: 100%; overflow-y: auto;">
       <v-btn :flat="true" icon="mdi-close" @click.stop="drawer = false" />
       <InformationContent />
-      <GitHubButton />
     </div>
   </v-navigation-drawer>
 </template>

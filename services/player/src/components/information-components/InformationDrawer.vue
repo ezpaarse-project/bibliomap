@@ -28,7 +28,11 @@
       </v-card>
     </div>
     <template #append>
-      <GitHubButton />
+      <v-row justify="center">
+        <v-col cols="auto">
+          <a href="https://www.inist.fr/" target="_blank"><img id="inist-logo" alt="CNRS" src="@/assets/logo-inist.png" style="max-width: 120px; max-height: 120px;"></a>
+        </v-col>
+      </v-row>
     </template>
   </v-navigation-drawer>
 </template>
