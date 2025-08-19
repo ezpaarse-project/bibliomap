@@ -67,6 +67,26 @@ services:
       timeout: 2s
       retries: 10
 
+  player:
+    image: node:22.14.0
+    container_name: bibliomap-player-dev
+    command: "npm run dev"
+    working_dir: /usr/src/app
+    volumes:
+      - ./services/player:/usr/src/app
+    ports:
+      - 3001:3000
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -Y off --no-verbose --tries=1 --spider http://localhost:3000 || exit 1"
+        ]
+      interval: 2s
+      timeout: 2s
+      retries: 10
+
   ezpaarse:
     container_name: bibliomap-ezpaarse-dev
     image: ezpaarseproject/ezpaarse:3.10.5
@@ -105,3 +125,29 @@ services:
       interval: 2s
       timeout: 2s
       retries: 10
+
+  nginx:
+    image: nginx:1.29.1
+    container_name: ezunpaywall-nginx-dev
+    environment:
+      # host of service
+      - BIBLIOMAP_VIEWER_URL=http://viewer:3000/
+      - BIBLIOMAP_PLAYER_URL=http://player:3000/
+    ports:
+      - ${NGINX_PORT:-80}:80
+    volumes:
+      - ./services/nginx/templates/http.conf.template:/etc/nginx/templates/default.conf.template:ro
+    restart: unless-stopped
+    depends_on:
+      viewer:
+        condition: service_healthy
+      player:
+        condition: service_healthy
+    healthcheck:
+      test: [
+        "CMD-SHELL",
+        "service nginx status || exit 1" 
+      ]
+      interval: 10s
+      timeout: 10s
+      retries: 5

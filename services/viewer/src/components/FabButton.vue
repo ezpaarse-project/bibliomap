@@ -10,15 +10,15 @@
 
       <InfoButton v-if="config.dialogDrawerParams.include" key="1" />
 
-      <SettingsButton key="2" />
+      <CounterButton key="2" />
 
-      <ChangeMapTypeButton key="3" />
+      <SettingsButton key="3" />
 
       <TranslationButton key="4" />
 
-      <CenterMapButton key="5" />
+      <ChangeMapTypeButton key="5" />
 
-      <CounterButton key="6" />
+      <CenterMapButton key="6" />
     </v-speed-dial>
   </v-fab>
 </template>

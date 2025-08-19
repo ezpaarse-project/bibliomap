@@ -1,28 +1,26 @@
 <template>
   <v-app>
+    <Drawer />
+    <InformationDrawer />
+    <SettingsDialog />
     <v-main>
-      <Drawer />
-      <InformationDrawer />
-      <SettingsDialog />
-      <v-row align="start" class="pa-0" justify="space-between">
-        <v-col class="ma-4" cols="auto" style="z-index: 1000;">
+      <v-container class="position-relative" fluid>
+        <div class="position-absolute" style="top: 0; left: 0; z-index: 10;">
           <ModeCard />
-        </v-col>
-        <v-col cols="auto">
-          <Minimap class="ma-6 mr-14" style="z-index: 1000;" />
-        </v-col>
-      </v-row>
+        </div>
 
-      <v-row align="end" class="pa-0" justify="end" style="height: 64vh;">
-        <v-col class="mr-4 pa-0" cols="auto" style="z-index: 1000;">
-          <VersionCard />
-        </v-col>
-        <v-col class="mr-6 pa-0" cols="auto" style="z-index: 1000;">
-          <FabButton />
-        </v-col>
-      </v-row>
+        <div class="position-absolute" style="top: 0; right: 0; z-index: 10;">
+          <Minimap />
+        </div>
+
+        <div class="position-absolute" style="bottom: 0; right: 0; z-index: 10;">
+          <div class="d-flex align-center mb-2">
+            <VersionCard />
+            <FabButton class="ml-4 mr-2" />
+          </div>
+        </div>
+      </v-container>
     </v-main>
-    <v-container />
     <WorldMap style="z-index: 0;" />
   </v-app>
 </template>
@@ -53,5 +51,14 @@
   html {
     overflow-y: auto;
     overflow-x: hidden;
+  }
+
+  .position-relative {
+    position: relative;
+    height: 100%;
+  }
+  .position-absolute {
+    position: absolute;
+    margin: 16px;
   }
 </style>

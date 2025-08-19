@@ -84,9 +84,16 @@ export default defineConfig({
       '.vue',
     ],
   },
+  base: '/player',
   server: {
-    host: '0.0.0.0',
+    host: true,
     port: 3000,
+    strictPort: true,
+    hmr: {
+      host: 'localhost',
+      port: 3000,
+      protocol: 'ws',
+    },
   },
   css: {
     preprocessorOptions: {

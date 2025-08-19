@@ -10,8 +10,30 @@
   >
     <div ref="infoDrawer" style="height: 100%; overflow-y: auto;">
       <v-btn :flat="true" icon="mdi-close" @click.stop="drawer = false" />
-      <InformationContent />
+      <v-card :flat="true" style="text-align: justify;">
+        <v-card-title>
+          <h1 class="mb-4">BiblioMap Player</h1>
+        </v-card-title>
+        <v-card-text>
+          <p> {{ t('info.text1') }} </p>
+        </v-card-text>
+
+        <v-card-text>
+          <p> {{ t('info.text2') }} </p>
+        </v-card-text>
+
+        <v-card-text>
+          <p> {{ t('info.text3') }} </p>
+        </v-card-text>
+      </v-card>
     </div>
+    <template #append>
+      <v-row justify="center">
+        <v-col cols="auto">
+          <a href="https://www.inist.fr/" target="_blank"><img id="inist-logo" alt="CNRS" src="@/assets/logo-inist.png" style="max-width: 120px; max-height: 120px;"></a>
+        </v-col>
+      </v-row>
+    </template>
   </v-navigation-drawer>
 </template>
 
@@ -20,6 +42,9 @@
   import useMitt from '@/composables/useMitt';
   import { useViewerConfigStore } from '@/stores/viewer-config';
   import { useRoute } from 'vue-router';
+  import { useI18n } from 'vue-i18n';
+
+  const { t } = useI18n();
 
   const config = useViewerConfigStore().config;
   const infoDrawer = ref<HTMLElement | null>(null);
