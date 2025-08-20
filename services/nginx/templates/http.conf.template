@@ -25,7 +25,7 @@ server {
   }
 
   location /player {
-    proxy_pass http://${PLAYER_URL}:3000;
+    proxy_pass ${PLAYER_URL};
     proxy_http_version 1.1;
     proxy_set_header Upgrade $http_upgrade;
     proxy_set_header Connection 'upgrade';
