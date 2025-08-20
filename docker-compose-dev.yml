@@ -131,8 +131,8 @@ services:
     container_name: ezunpaywall-nginx-dev
     environment:
       # host of service
-      - BIBLIOMAP_VIEWER_URL=http://viewer:3000/
-      - BIBLIOMAP_PLAYER_URL=http://player:3000/
+      - VIEWER_URL=http://viewer:3000/
+      - PLAYER_URL=http://player:3000/
     ports:
       - ${NGINX_PORT:-80}:80
     volumes:
