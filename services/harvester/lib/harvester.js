@@ -126,9 +126,10 @@ class LogHarvester {
     console.log(`Try to connect to server ${process.env.ENRICHER_URL}`);
 
     this.socket = new net.Socket();
-    this.socket.on('error', () => {
+    this.socket.on('error', (err) => {
       this._connected = false;
       console.error(`Unable to connect server ${process.env.ENRICHER_URL} trying again in 2 seconds`);
+      console.error(err);
       setTimeout(() => this._connect(), 2000);
     });
 
