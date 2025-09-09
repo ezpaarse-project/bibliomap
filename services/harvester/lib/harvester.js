@@ -123,17 +123,17 @@ class LogHarvester {
   }
 
   _connect() {
-    console.log('Connecting to server...');
+    console.log(`Try to connect to server ${process.env.ENRICHER_URL}`);
 
     this.socket = new net.Socket();
     this.socket.on('error', () => {
       this._connected = false;
-      console.error('Unable to connect server, trying again...');
+      console.error(`Unable to connect server ${process.env.ENRICHER_URL} trying again in 2 seconds`);
       setTimeout(() => this._connect(), 2000);
     });
 
     this.socket.connect(this.server.port, this.server.host, () => {
-      console.log('Connected');
+      console.log(`Connected to server ${process.env.ENRICHER_URL}`);
       this._connected = true;
       this._announce();
     });
