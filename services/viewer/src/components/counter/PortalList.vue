@@ -1,5 +1,5 @@
 <template>
-  <div class="portals-component">
+  <div>
     <a
       v-for="(value) in portals"
       :key="value.name"
@@ -7,8 +7,7 @@
       :href="value.url"
       target="_blank"
     >
-      <v-list-item class="portal-list-element">
-
+      <v-list-item>
         <v-tooltip
           :disabled="!countStore.getCountOfPortal(value.name.toUpperCase())"
           location="right"
@@ -28,7 +27,7 @@
                   :src="getIconUrl(value.icon)"
                   width="40"
                 >
-                <div class="portal-title-container">
+                <div>
                   <h3 class="mb-1" style="font-size: 16px;">
                     {{ t(`drawer-custom.portals.${value.name}.title`) }}
                   </h3>
@@ -60,7 +59,7 @@
 </template>
 
 <script setup lang="ts">
-  import { useViewerConfigStore } from '@/stores/viewer-config';
+  import { useConfigStore } from '@/stores/config';
   import { useEcCountStore } from '@/stores/ec-count';
   import { useI18n } from 'vue-i18n';
 
@@ -71,10 +70,11 @@
     color: string
   }
 
-  const config = useViewerConfigStore().config;
+  const configStore = useConfigStore();
   const { t } = useI18n();
 
-  const portals = config.drawerParams.portalSection.portals as Portal[];
+  const portals = computed(() => configStore.config.drawerParams.portalSection.portals as Portal[]);
+
   const countStore = useEcCountStore();
 
   const getIconUrl = (iconName: string): string => {
@@ -88,10 +88,6 @@
     text-decoration: none;
     color: inherit;
     z-index: 100;
-  }
-  .portal-list-element{
-    background-color: white;
-    transition: filter 0.2s ease-in-out;
   }
   .portal-list-element:hover{
       filter: brightness(0.8);

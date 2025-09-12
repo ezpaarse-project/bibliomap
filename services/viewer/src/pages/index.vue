@@ -27,8 +27,10 @@
 
 <script lang="ts" setup>
   import { onMounted } from 'vue';
-  import Drawer from '@/components/CounterDrawer.vue';
-  import WorldMap from '@/components/WorldMap.vue';
+  import Drawer from '@/components/counter/Drawer.vue';
+  import WorldMap from '@/components/map/WorldMap.vue';
+  import FabButton from '@/components/fab/FabButton.vue';
+  import SettingsDialog from '@/components/fab/settings/Dialog.vue';
   import { useSocketStore } from '@/stores/socket';
   import { type ReplayConfig, useReplayConfigStore } from '@/stores/replay-config';
 

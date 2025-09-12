@@ -2,7 +2,8 @@
   <div class="event-bubble">
     <div class="bubble-container">
       <div class="bubble-info">
-        <BubbleInfo
+        <InfoCard
+          v-if="bubble.type !== BubbleType.LittleRegular"
           :mime="props.log.mime"
           :other="other"
           :r-type="props.log.rtype"
@@ -14,6 +15,7 @@
         <RegularBubble v-if="bubble.type === BubbleType.Regular" :color="bubble.color" />
         <GradientBubble v-else-if="bubble.type === BubbleType.Gradient" :colors="bubble.colors" />
         <MulticolorBubble v-else-if="bubble.type === BubbleType.Multicolor" />
+        <LittleRegularBubble v-else-if="bubble.type === BubbleType.LittleRegular" :color="bubble.color" />
       </div>
     </div>
   </div>
@@ -23,27 +25,33 @@
   enum BubbleType {
     Regular,
     Gradient,
-    Multicolor
+    Multicolor,
+    LittleRegular
   }
 
   type BubbleProps =
     | { type: BubbleType.Regular; color: string }
     | { type: BubbleType.Gradient; colors: string[] }
     | { type: BubbleType.Multicolor }
+    | { type: BubbleType.LittleRegular }
 </script>
+
 <script setup lang="ts">
+  import initialConfig from '@/assets/config.json';
   import { type Log } from '@/main';
-  import { useViewerConfigStore } from '@/stores/viewer-config';
+  import InfoCard from '@/components/bubble/InfoCard.vue';
+  import { useConfigStore } from '@/stores/config';
   const props = defineProps<{
     log: Log
   }>()
-  const { config } = storeToRefs(useViewerConfigStore());
+  const { config } = storeToRefs(useConfigStore());
   const mapParams = computed(() => config.value.mapParams);
   const mimes = computed(() => config.value.mapParams.attributesColors.mimes as Record<string, { count: boolean, color: string }>);
   const portals = computed(() => config.value.drawerParams.portalSection.portals);
   const log = props.log
   const bubble = computed(() => getBubblePropsFromLog(log));
   const other = config.value.mapParams.popupText.publication_title && log.publication_title ? [log.publication_title] : [];
+
 
   function getBubblePropsFromLog (log: Log) {
     const colorBy = mapParams.value.colorBy;
@@ -59,20 +67,40 @@
         return { type: BubbleType.Regular, color } as BubbleProps;
       case 'portal':
       default:
+        const userPortalConfig = config.value.drawerParams.portalSection.portals;
+        const allPortals = initialConfig.drawerParams.portalSection.portals;
+
+        const shownPortals = Object.fromEntries(userPortalConfig.map(p => [p.name, true]))
+
+        // if (userPortalConfig.length === allPortals.length) {
+        //   return { type: BubbleType.Regular, color: 'blue' } as BubbleProps;
+        // }
+
         if (onlyPortal) {
           const color = portals.value[0].color;
           return { type: BubbleType.Regular, color } as BubbleProps;
         }
         const colors: string[] = [];
         log.ezproxyName.split('+').forEach((portal: string) => {
-          if (portals.value.filter(p => p.name.toUpperCase() === portal.toUpperCase()).length > 0) colors.push(portals.value.filter(p => p.name.toUpperCase() === portal.toUpperCase())[0].color);
+          if (allPortals.filter(p => p.name.toUpperCase() === portal.toUpperCase()).length > 0) {
+            colors.push(allPortals.filter(p => p.name.toUpperCase() === portal.toUpperCase())[0].color);
+          }
         })
+
         if (!colors || colors.length === 0) {
           const color = config.value.drawerParams.portalSection.defaultPortalColor || 'random';
           return { type: BubbleType.Regular, color } as BubbleProps;
         }
+
+        if (colors.length > 1) {
+          return { type: BubbleType.Gradient, colors } as BubbleProps;
+        }
+
         if (colors.length === 1) {
           const color = colors[0];
+          if (!shownPortals[log.ezproxyName]) {
+            return { type: BubbleType.LittleRegular, color } as BubbleProps;
+          }
           return { type: BubbleType.Regular, color } as BubbleProps;
         }
         return { type: BubbleType.Gradient, colors } as BubbleProps;
@@ -80,6 +108,7 @@
   }
 </script>
 <style scoped lang="scss" scopped>
+
 .event-bubble {
   position: relative;
   width: fit-content;

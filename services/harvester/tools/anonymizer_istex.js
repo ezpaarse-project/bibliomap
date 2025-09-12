@@ -18,7 +18,7 @@ if (process.argv[2] != null) {
 if (process.argv[3] != null) {
   outputLogName = process.argv[3];
 } else {
-  console.log("You need to pass in 2nd parameter, a valid destination path to the anonimized log file");
+  console.log("You need to pass in 2nd parameter, a valid destination path to the anonymized log file");
   process.exit();
 }
 

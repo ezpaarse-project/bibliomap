@@ -9,19 +9,33 @@
     :width="width"
   >
     <div ref="infoDrawer" style="height: 100%; overflow-y: auto;">
-      <v-btn :flat="true" icon="mdi-close" @click.stop="drawer = false" />
-      <InformationContent />
+
+      <div class="d-flex justify-end align-start my-2">
+        <v-btn :flat="true" icon="mdi-close" @click.stop="drawer = false" />
+        <p
+          class="text-h4 mt-4 mr-10 justify-center title-font bold"
+          style="white-space: normal; overflow: visible; text-align: center;"
+        >
+          {{ t('info-card.title') }}
+        </p>
+      </div>
+      <div class="d-flex justify-between align-start my-2">
+        <InformationContent />
+      </div>
     </div>
   </v-navigation-drawer>
 </template>
 
 <script setup lang="ts">
 
+  import { useI18n } from 'vue-i18n';
   import useMitt from '@/composables/useMitt';
-  import { useViewerConfigStore } from '@/stores/viewer-config';
+  import { useConfigStore } from '@/stores/config';
   import { useRoute } from 'vue-router';
 
-  const config = useViewerConfigStore().config;
+  const { t } = useI18n();
+
+  const config = useConfigStore().config;
   const infoDrawer = ref<HTMLElement | null>(null);
 
   const emitter = useMitt();

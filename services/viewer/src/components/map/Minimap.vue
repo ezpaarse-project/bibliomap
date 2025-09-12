@@ -6,11 +6,11 @@
 
 <script setup lang="ts">
   import L, { TileLayer } from 'leaflet';
-  import { useViewerConfigStore } from '@/stores/viewer-config';
+  import { useConfigStore } from '@/stores/config';
   import type { Log } from '@/main';
   import useMitt from '@/composables/useMitt';
 
-  const config = useViewerConfigStore().config;
+  const config = useConfigStore().config;
   const params = config.minimapParams;
   const currentLogs = ref(<Log[]>[]);
   const usingPhone = window.innerWidth <= 768;
@@ -35,7 +35,7 @@
     const emitter = useMitt();
     emitter.on('minimap', ({ log, showEvent }: { log: Log, showEvent: (log: Log, map: L.Map) => void }) => {
       currentLogs.value.push(log);
-      minimap.setView([log['geoip-latitude'], log['geoip-longitude']], params.defaultZoom || 4);
+      minimap.setView([log['geoip-latitude']+1.2, log['geoip-longitude']-2], params.defaultZoom || 4);
       hasEntered = true;
       showEvent(log, minimap);
 

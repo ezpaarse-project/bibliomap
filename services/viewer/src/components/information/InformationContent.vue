@@ -1,0 +1,94 @@
+<!-- This component is the content of the information drawer -->
+<!-- You need to change it in order to display your customized information -->
+
+<template>
+  <div class="drawer-elements-container">
+    <div>
+      <v-list-item class="mt-8">
+        <p v-html="t('info-card.p1')" />
+      </v-list-item>
+      <v-list-item class="mt-8">
+        <div class="ez-logos">
+          <a href="https://www.readmetrics.org/" target="_blank"><img alt="ReadMetrics" src="@/assets/logo-readmetrics.png"></a>
+        </div>
+      </v-list-item>
+      <v-list-item class="mt-8">
+        <p v-html="t('info-card.p2')" />
+      </v-list-item>
+      <v-list-item class="mt-8">
+        <p v-html="t('info-card.p3')" />
+      </v-list-item>
+      <v-list-item class="mt-8">
+        {{ t('info-card.comment') }}
+      </v-list-item>
+      <v-list-item>
+        <div class="org-logos">
+          <a href="https://www.couperin.org/" target="_blank"><img alt="Couperin" src="@/assets/logo-couperin.png"></a>
+          <a href="https://www.cnrs.fr/fr" target="_blank"><img id="cnrs-logo" alt="CNRS" src="@/assets/logo-cnrs.svg"></a>
+          <a href="https://www.inist.fr/" target="_blank"><img id="inist-logo" alt="CNRS" src="@/assets/logo-inist.png"></a>
+        </div>
+      </v-list-item>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+  import { useI18n } from 'vue-i18n';
+
+  const { t } = useI18n();
+</script>
+
+<style lang="scss">
+
+.drawer-elements-container {
+  p {
+    text-align: justify;
+  }
+}
+
+  a{
+    color: #039be5;
+    text-decoration: none;
+  }
+
+  .bibcnrs-img{
+    max-width: 90%;
+    height: auto;
+    display: block;
+    margin: 1.5em auto;
+  }
+  .ez-logos{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    margin: 1em 0;
+
+    a img{
+      max-width: 50%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+  }
+  .org-logos{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    margin: 1em 0;
+
+    a {
+      width: 100%;
+      img{
+        max-width: 75%;
+        height: auto;
+        display: block;
+        margin: 0 auto;
+      }
+      #cnrs-logo{
+        max-width: 35%;
+      }
+    }
+  }
+</style>

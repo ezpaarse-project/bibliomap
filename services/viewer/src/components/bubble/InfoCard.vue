@@ -1,38 +1,44 @@
 <template>
   <v-card
-    class="pa-2 info-card"
+    class="pa-2"
     elevation="10"
+    style="opacity: 85%;"
   >
     <v-card-title
-      class="text-body-2 pa-0 mb-2 px-4 title-wrap"
+      class="text-body-2 pa-0 mb-2 px-4"
       style="text-align: center;"
     >
       {{ title }}
     </v-card-title>
 
-    <p v-for="elt in other" :key="elt" class="pa-0 mb-2 w-100 justify-center align-center" style="text-align: center;">{{ elt }}</p>
+    <p v-for="elt in other" :key="elt" class="pa-0 mb-2 justify-center align-center" style="text-align: center;">{{ elt }}</p>
 
-    <div class="chip-container">
+    <div style="display: flex; justify-content: center;">
       <v-chip
         v-if="rType"
-        class="chip"
+        class="mx-1"
         :color="getRTypeColor()"
         size="small"
         variant="flat"
-      >{{ rType }}</v-chip>
+      >
+        {{ rType }}
+      </v-chip>
+
       <v-chip
         v-if="mime"
-        class="chip"
+        class="mx-1"
         :color="getMimeColor()"
         size="small"
         variant="flat"
-      >{{ mime }}</v-chip>
+      >
+        {{ mime }}
+      </v-chip>
     </div>
   </v-card>
 </template>
 
 <script setup lang="ts">
-  import { useViewerConfigStore } from '@/stores/viewer-config';
+  import { useConfigStore } from '@/stores/config';
 
   const props = defineProps<{
     title: string | null | undefined,
@@ -41,7 +47,7 @@
     other: string[] | null | undefined,
   }>();
 
-  const config = useViewerConfigStore().config;
+  const config = useConfigStore().config;
   function getMimeColor () {
     const defaultColor = config.mapParams.attributesColors.defaultMimeColor || '#7F8C8D';
     const mimes = config.mapParams.attributesColors.mimes as Record<string, { count: boolean, color: string }>;
@@ -53,37 +59,3 @@
     return config.mapParams.attributesColors.rtype || '#7F8C8D';
   }
 </script>
-<style scoped lang="scss">
-
-.info-card {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: stretch;
-  min-width: 100px;
-  max-width: 200px;
-  opacity: 85%;
-
-  &:hover {
-    opacity: 100%;
-    z-index: 1002;
-  }
-}
-
-.title-wrap {
-  white-space: normal;
-  overflow: visible;
-  text-overflow: unset;
-  text-align: center;
-}
-
-.chip-container {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 8px;
-  justify-content: center;
-}
-
-.chip {
-  white-space: nowrap;
-}
-</style>

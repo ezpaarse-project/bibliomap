@@ -1,13 +1,13 @@
 import { defineStore } from 'pinia';
 import { useSocketStore } from './socket';
-import { useViewerConfigStore } from './viewer-config';
+import { useConfigStore } from './config';
 import { usePlatformFilterStore } from './platform-filter';
 
 export const useEcCountStore = defineStore('ec-count', () => {
   const count = reactive({} as Record<string, Record<string, number>>);
   const filter = usePlatformFilterStore().filter;
 
-  const config = useViewerConfigStore().config;
+  const config = useConfigStore().config;
   const portals = config.drawerParams.portalSection.portals.map(portal => portal.name);
 
   portals.forEach(portal => {

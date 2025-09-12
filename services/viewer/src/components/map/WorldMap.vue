@@ -5,18 +5,18 @@
 <script lang="ts" setup>
   import L, { TileLayer } from 'leaflet';
   import { onMounted } from 'vue';
-  import { useViewerConfigStore } from '@/stores/viewer-config';
+  import { useConfigStore } from '@/stores/config';
   import type { Log } from '@/main';
   import { usePlatformFilterStore } from '@/stores/platform-filter';
   import useMitt from '@/composables/useMitt';
   import { useSocketStore } from '@/stores/socket';
   import vuetify from '@/plugins/vuetify';
-  import EventBubble from './event-bubble-components/EventBubble.vue';
+  import EventBubble from '../bubble/EventBubble.vue';
 
   const emitter = useMitt();
   const io = useSocketStore().socket;
 
-  const { config } = storeToRefs(useViewerConfigStore());
+  const { config } = storeToRefs(useConfigStore());
   const mapParams = ref(config.value.mapParams);
   const mimes = ref(config.value.mapParams.attributesColors.mimes as Record<string, { count: boolean, color: string }>);
   const portals = ref(config.value.drawerParams.portalSection.portals);
@@ -103,8 +103,13 @@
     io.on('log', (log: Log) => {
       showEvent(log, map);
 
+
+      const isIncludeMiniMap = config.value.minimapParams.include
+
       if (!map.getBounds().contains(L.latLng(log['geoip-latitude'], log['geoip-longitude']))) {
-        emitter.emit('minimap', { log, showEvent });
+        if (isIncludeMiniMap) {
+          emitter.emit('minimap', { log, showEvent });
+        }
       }
     });
   });
@@ -131,7 +136,9 @@
 
     const elt = marker.getElement();
     if (!elt) return;
+
     elt.classList.add('opacity-transition');
+    elt.style.zIndex = '1';
 
     setTimeout(() => {
       elt.style.opacity = '0';

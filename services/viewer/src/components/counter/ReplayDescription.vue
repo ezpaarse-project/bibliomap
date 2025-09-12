@@ -1,6 +1,9 @@
 <template>
   <div class="replay-description-section">
-    <div v-if="config && config.description"><span class="bold">{{ t('drawer.replay-description.replay-label') }}</span><span>{{ descriptionText }}</span></div>
+    <div v-if="config && config.description">
+      <span class="bold">{{ t('drawer.replay-description.replay-label') }}</span>
+      <span>{{ descriptionText }}</span>
+    </div>
     <v-skeleton-loader v-else-if="!config" height="20" type="paragraph" />
   </div>
 </template>

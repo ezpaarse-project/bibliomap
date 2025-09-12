@@ -7,22 +7,20 @@
     :width="props.width"
   >
     <div>
-      <div class="d-flex justify-end">
+      <div class="d-flex justify-end align-start my-2">
+        <Description v-if="props.descriptionSection.include" />
         <v-btn :flat="true" icon="mdi-close" @click.stop="drawer = false" />
       </div>
-      <div v-if="props.descriptionSection.include" :style="{ order: props.descriptionSection.index }">
-        <Description />
-        <v-divider />
-      </div>
+      <v-divider />
       <div v-if="props.timerSection.include" :style="{ order: props.timerSection.index }">
         <Timer />
       </div>
       <div v-if="props.counterSection.include" :style="{ order: props.counterSection.index }">
-        <Counter />
+        <MimeList />
         <v-divider />
       </div>
       <div v-if="props.portalSection.include" :style="{ order: props.portalSection.index }">
-        <Portals />
+        <PortalList />
       </div>
       <div v-if="replayMode && props.replayDescription.include" :style="{ order: props.replayDescription.index }">
         <ReplayDescription />
@@ -33,18 +31,19 @@
 </template>
 
 <script setup lang="ts">
-  import { useViewerConfigStore } from '@/stores/viewer-config';
+  import { useConfigStore } from '@/stores/config';
+  import Timer from '@/components/counter/timers/Timer.vue';
+  import MimeList from '@/components/counter/MimeList.vue';
+  import PortalList from '@/components/counter/PortalList.vue';
   import useMitt from '@/composables/useMitt';
 
   const replayMode = import.meta.env.VITE_REPLAY_MODE === 'true';
-  const config = useViewerConfigStore().config;
+  const config = useConfigStore().config;
   const props = config.drawerParams;
   const emitter = useMitt();
   emitter.on('showCounterDrawer', () => {
     drawer.value = true;
   });
-
-  const include = !(!props || props.include === false);
 
   const usingPhone = window.innerWidth <= 768;
 

@@ -25,9 +25,9 @@
 
 <script setup lang="ts">
   import { ref } from 'vue'
-  import { useViewerConfigStore } from '@/stores/viewer-config';
+  import { useConfigStore } from '@/stores/config';
 
-  const config = useViewerConfigStore().config;
+  const config = useConfigStore().config;
 
   const open = ref(false)
 </script>

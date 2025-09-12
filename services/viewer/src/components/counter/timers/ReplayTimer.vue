@@ -54,12 +54,12 @@
 <script setup lang="ts">
   import { useReplayConfigStore } from '@/stores/replay-config';
   import { useReplayTimerStore } from '@/stores/replay-timer';
-  import { useViewerConfigStore } from '@/stores/viewer-config';
+  import { useConfigStore } from '@/stores/config';
   import { format } from 'date-fns';
   import { TZDate } from '@date-fns/tz';
   import { useI18n } from 'vue-i18n';
 
-  const config = useViewerConfigStore().config;
+  const config = useConfigStore().config;
   const { config: replayConfig } = storeToRefs(useReplayConfigStore());
   const { timer } = storeToRefs(useReplayTimerStore());
   const params = config.drawerParams.timerSection;

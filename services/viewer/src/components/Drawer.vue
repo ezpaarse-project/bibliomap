@@ -34,11 +34,11 @@
 </template>
 
 <script setup lang="ts">
-  import { useViewerConfigStore } from '@/stores/viewer-config';
+  import { useConfigStore } from '@/stores/config';
   import useMitt from '@/composables/useMitt';
 
   const replayMode = import.meta.env.VITE_REPLAY_MODE === 'true';
-  const config = useViewerConfigStore().config;
+  const config = useConfigStore().config;
   const props = config.drawerParams;
   const emitter = useMitt();
 

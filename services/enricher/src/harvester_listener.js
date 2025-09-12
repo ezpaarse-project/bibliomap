@@ -12,7 +12,6 @@ export default class HarvesterListener extends EventEmitter {
       host,
       port,
     };
-    console.log('OPTIONS:', this.options);
   }
 
   listen(cb) {

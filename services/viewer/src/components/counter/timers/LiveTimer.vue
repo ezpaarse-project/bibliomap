@@ -12,10 +12,10 @@
 </template>
 
 <script setup lang="ts">
-  import { useViewerConfigStore } from '@/stores/viewer-config';
+  import { useConfigStore } from '@/stores/config';
   import { useI18n } from 'vue-i18n';
 
-  const config = useViewerConfigStore().config;
+  const config = useConfigStore().config;
   const params = config.drawerParams.timerSection;
   const { t } = useI18n();
 

@@ -52,5 +52,6 @@
   },
   "version-card": {
     "connection": "Connecté à ezPAARSE"
-  }
+  },
+  "close": "Fermer"
 }

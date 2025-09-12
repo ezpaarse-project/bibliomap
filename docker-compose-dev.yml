@@ -7,7 +7,7 @@ services:
     environment:
       ENRICHER_URL: "enricher:27777"
       DEMO_DIR: cnrs
-      LOGS_PER_SECOND: 1
+      LOGS_PER_SECOND: 5
     command: "npm run dev"
     working_dir: /usr/src/app
     volumes:
@@ -128,7 +128,7 @@ services:
 
   nginx:
     image: nginx:1.29.1
-    container_name: ezunpaywall-nginx-dev
+    container_name: bibliomap-nginx-dev
     environment:
       # host of service
       - VIEWER_URL=http://viewer:3000/

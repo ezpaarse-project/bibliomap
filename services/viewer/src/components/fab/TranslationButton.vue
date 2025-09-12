@@ -9,19 +9,12 @@
         v-tooltip="{text: t('fabButton.tooltips.translation'), location: 'left'}"
         color="purple"
         v-bind="{ ...translationMenuProps }"
-        icon="mdi-translate"
-      />
-    </template>
-
-    <v-list>
-      <v-list-item
-        v-for="(lang, index) in ['FR', 'EN']"
-        :key="index"
-        @click="selectLanguage(lang)"
+        icon
+        @click="selectLanguage()"
       >
-        <v-list-item-title>{{ lang }}</v-list-item-title>
-      </v-list-item>
-    </v-list>
+        {{ locale }}
+      </v-btn>
+    </template>
   </v-menu>
 </template>
 <script setup lang="ts">
@@ -30,7 +23,8 @@
   const { t, locale } = useI18n();
   const translationMenu = ref(false);
 
-  function selectLanguage (lang: string) {
+  function selectLanguage () {
+    const lang = locale.value === 'en' ? 'fr' : 'en';
     locale.value = lang.toLowerCase();
     translationMenu.value = false
   }

@@ -46,10 +46,11 @@
   },
   "info-card": {
     "title": "\"Research never stops\"",
-    "p1": "<strong>BiblioMap</strong> reflects the reals time <a target=\"_blank\" href=\"http://www.cnrs.fr/fr/organisme/presentation.htm\">CNRS</a> members accessing digital resources through the <a target=\"_blank\" href=\"https://bib.cnrs.fr/\">bibCNRS</a> portal. This digital tool provides access to the full text of articles from several thousand electronic scientific journals and to bibliographic databases.",
+    "p1": "<strong>BiblioMap</strong> reflects the reals time <a target=\"_blank\" href=\"https://www.cnrs.fr/fr/organisme/presentation.htm\">CNRS</a> members accessing digital resources through the <a target=\"_blank\" href=\"https://bib.cnrs.fr/\">bibCNRS</a> portal. This digital tool provides access to the full text of articles from several thousand electronic scientific journals and to bibliographic databases.",
     "img1-alt": "BibCNRS, the CNRS portal for access to electronic documentary resources",
-    "img1-caption": "The platforms of specialized access portals are managed by <a target=\"_blank\" href=\"http://www.inist.fr/\">Inist-CNRS</a>.",
-    "p2": "The visualizations available in <a target=\"_blank\" href=\"https://github.com/ezpaarse-project/bibliomap\">BiblioMap</a> are made possible through the use of <a target=\"_blank\" href=\"http://ezpaarse.couperin.org/\">ezPAARSE</a>, an <a target=\"_blank\" href=\"https://github.com/ezpaarse-project/ezpaarse\">open-source software</a> developed by l'<a target=\"_blank\" href=\"http://www.inist.fr/\">Inist-CNRS</a> and <a target=\"_blank\" href=\"https://www.couperin.org/\">Couperin</a> ",
+    "img1-caption": "The platforms of specialized access portals are managed by <a target=\"_blank\" href=\"https://www.inist.fr/\">Inist-CNRS</a>.",
+    "p2": "The visualizations available in <a target=\"_blank\" href=\"https://github.com/ezpaarse-project/bibliomap\">BiblioMap</a> are made possible through the use of <a target=\"_blank\" href=\"https://ezpaarse.couperin.org/\">ezPAARSE</a>, an <a target=\"_blank\" href=\"https://github.com/ezpaarse-project/ezpaarse\">open-source software</a> developed by l'<a target=\"_blank\" href=\"https://www.inist.fr/\">Inist-CNRS</a> and <a target=\"_blank\" href=\"https://www.couperin.org/\">Couperin</a> ",
+    "p3": "Are you using ezPAARSE and want to try BiblioMap without installing it at your institution? An EC reader is available here: <a target=\"_blank\" href=\"https://bibliomap.inist.fr/player\">https://bibliomap.inist.fr/player</a>",
     "comment": "Note: the location of consultations shown on the map is deliberately approximate."
   },
   "replay-descriptions":{

@@ -46,10 +46,11 @@
   },
   "info-card": {
     "title": "\"La recherche ne s'arrête jamais\"",
-    "p1": "<strong>BiblioMap</strong> reflète les consultations en direct des membres du <a target=\"_blank\" href=\"http://www.cnrs.fr/fr/organisme/presentation.htm\">CNRS</a> des ressources numériques via le portail <a target=\"_blank\" href=\"https://bib.cnrs.fr/\">bibCNRS</a>. Cet outil numérique mis à leur disposition permet d’accéder au texte intégral des articles de plusieurs milliers de revues scientifiques électroniques et à des bases de données bibliographiques.",
+    "p1": "<strong>BiblioMap</strong> reflète les consultations en direct des membres du <a target=\"_blank\" href=\"https://www.cnrs.fr/fr/organisme/presentation.htm\">CNRS</a> des ressources numériques via le portail <a target=\"_blank\" href=\"https://bib.cnrs.fr/\">bibCNRS</a>. Cet outil numérique mis à leur disposition permet d’accéder au texte intégral des articles de plusieurs milliers de revues scientifiques électroniques et à des bases de données bibliographiques.",
     "img1-alt": "BibCNRS, le portail d'accès aux ressources électroniques documentaires du CNRS",
-    "img1-caption": "Les plateformes des portails d’accès spécialisés sont gérées par l'<a href=\"http://www.inist.fr/\">Inist-CNRS</a>.",
-    "p2": "Les visualisations disponibles dans <a target=\"_blank\" href=\"https://github.com/ezpaarse-project/bibliomap\">BiblioMap</a> sont rendues possibles par l’utilisation d’<a target=\"_blank\" href=\"http://demo.ezpaarse.org/\">ezPAARSE</a>, un <a target=\"_blank\" href=\"https://github.com/ezpaarse-project/ezpaarse\">logiciel libre</a> développé conjointement par l'<a target=\"_blank\" href=\"http://www.inist.fr/\">Inist-CNRS</a> et <a target=\"_blank\" href=\"https://www.couperin.org/\">Couperin</a>",
+    "img1-caption": "Les plateformes des portails d’accès spécialisés sont gérées par l'<a href=\"https://www.inist.fr/\">Inist-CNRS</a>.",
+    "p2": "Les visualisations disponibles dans <a target=\"_blank\" href=\"https://github.com/ezpaarse-project/bibliomap\">BiblioMap</a> sont rendues possibles par l’utilisation d’<a target=\"_blank\" href=\"https://demo.ezpaarse.org/\">ezPAARSE</a>, un <a target=\"_blank\" href=\"https://github.com/ezpaarse-project/ezpaarse\">logiciel libre</a> développé conjointement par l'<a target=\"_blank\" href=\"https://www.inist.fr/\">Inist-CNRS</a> et <a target=\"_blank\" href=\"https://www.couperin.org/\">Couperin</a>",
+    "p3": "Vous utilisez ezPAARSE et vous voulez tester BiblioMap sans l'installer dans votre établissement ? Un lecteur d'EC est disponible ici : <a target=\"_blank\" href=\"https://bibliomap.inist.fr/player\">https://bibliomap.inist.fr/player</a>",
     "comment": "Remarque : la localisation des consultations apparaissant sur la carte est volontairement approximative."
   },
   "replay-descriptions":{
