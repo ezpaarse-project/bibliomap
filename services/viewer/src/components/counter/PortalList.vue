@@ -13,13 +13,8 @@
           location="right"
         >
           <template #activator="{ props }">
-            <v-row
-              class="mx-2 my-3 align-center"
-              v-bind="props"
-              justify="space-between"
-              no-gutters
-            >
-              <v-col class="d-flex align-center" cols="10">
+            <div class="d-flex align-center justify-between mx-2 my-3" v-bind="props">
+              <div class="d-flex align-center">
                 <img
                   v-if="value.icon"
                   class="mr-3"
@@ -28,26 +23,27 @@
                   width="40"
                 >
                 <div>
-                  <h3 class="mb-1" style="font-size: 16px;">
+                  <h4 class="mb-1" style="font-size: 16px;">
                     {{ t(`drawer-custom.portals.${value.name}.title`) }}
-                  </h3>
+                  </h4>
                   <p v-if="t(`drawer-custom.portals.${value.name}.subtitle`)" class="mb-0">
                     {{ t(`drawer-custom.portals.${value.name}.subtitle`) }}
                   </p>
                 </div>
-              </v-col>
+              </div>
 
-              <v-col class="d-flex justify-end" cols="2">
-                <v-chip :color="value.color" variant="flat">
-                  {{ countStore.getCountOfPortal(value.name.toUpperCase()) }}
-                </v-chip>
-              </v-col>
-            </v-row>
+              <v-spacer />
+
+              <v-chip :color="value.color" :style="{ minWidth: 'fit-content' }" variant="flat">
+                {{ countStore.getCountOfPortal(value.name.toUpperCase()) }}
+              </v-chip>
+            </div>
           </template>
-          <div>
+          <div class="d-flex flex-row">
             <div
               v-for="mime in countStore.getMimeInPortal(value.name.toUpperCase())"
               :key="mime"
+              class="ma-1"
             >
               {{ mime }}: {{ countStore.getCountOfPortalAndMime(value.name.toUpperCase(), mime) }}
             </div>
