@@ -24,5 +24,11 @@
 </template>
 
 <script setup lang="ts">
+  import TranslationButton from '@/components/fab/TranslationButton.vue';
+  import ChangeMapTypeButton from '@/components/fab/ChangeMapTypeButton.vue';
+  import SettingsButton from '@/components/fab/SettingsButton.vue';
+  import InfoButton from '@/components/fab/InfoButton.vue';
+  import CenterMapButton from '@/components/fab/CenterMapButton.vue';
+
   const open = ref(false)
 </script>

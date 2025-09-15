@@ -62,6 +62,7 @@
   const bubble = computed(() => getBubblePropsFromLog(log));
   const other = config.value.mapParams.popupText.publication_title && log.publication_title ? [log.publication_title] : [];
   const { files } = storeToRefs(usePlayerFileStore());
+
   const rareCaseScenario = computed(() => files.value.reduce((a, b) => a || normalizeString(b.name).includes('leo'), false));
 
   function getBubblePropsFromLog (log: Log) {
@@ -73,6 +74,8 @@
       const colors = fieldValue.split('+').map((field: string) => sortFieldStore.getFieldColor(field));
       return { colors, type: BubbleType.Gradient } as BubbleProps;
     }
+    // TODO filter
+    const filterd = 
     return { color: sortFieldStore.getFieldColor(fieldValue), type: BubbleType.Regular } as BubbleProps;
   }
 

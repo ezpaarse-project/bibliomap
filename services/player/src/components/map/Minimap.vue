@@ -12,7 +12,7 @@
   import { useTimerStore } from '@/stores/timer';
   import { usePlayerMultiplierStore } from '@/stores/player-multiplier';
   import vuetify from '@/plugins/vuetify';
-  import EventBubble from './event-bubble-components/EventBubble.vue';
+  import EventBubble from '@/components/bubble/EventBubble.vue';
 
   const { config } = storeToRefs(useViewerConfigStore());
   const params = config.value.minimapParams;

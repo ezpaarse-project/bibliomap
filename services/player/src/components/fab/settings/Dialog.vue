@@ -228,7 +228,7 @@
   import { usePlayerMultiplierStore } from '@/stores/player-multiplier';
   import { useBlurStore } from '@/stores/blur';
   import { type Mime, useMimeStore } from '@/stores/mime';
-  import MulticolorBubble from './event-bubble-components/MulticolorBubble.vue';
+  import MulticolorBubble from '@/components/bubble/MulticolorBubble.vue';
 
   const { t } = useI18n();
 

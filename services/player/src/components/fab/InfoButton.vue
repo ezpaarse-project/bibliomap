@@ -1,6 +1,11 @@
 <template>
   <span>
-    <v-btn v-tooltip="{text: t('appbar.tooltips.info'), location: 'right'}" color="red" icon="mdi-information" @click="emitter.emit('showInfoDialog', null)" />
+    <v-btn
+      v-tooltip="{ text: t('appbar.tooltips.info'), location: 'right' }"
+      color="red"
+      icon="mdi-information"
+      @click="emitter.emit('showInfoDialog', null)"
+    />
   </span>
 </template>
 <script setup lang="ts">

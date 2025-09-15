@@ -15,7 +15,7 @@
   import { usePlayerMultiplierStore } from '@/stores/player-multiplier';
   import { useBlurStore } from '@/stores/blur';
   import vuetify from '@/plugins/vuetify';
-  import EventBubble from './event-bubble-components/EventBubble.vue';
+  import EventBubble from '@/components/bubble/EventBubble.vue';
 
   const emitter = useMitt();
 
