@@ -5,7 +5,7 @@
     scrollable
   >
     <v-card flat>
-      <v-card-title class="text-h4">{{ t('appbar.settings-dialog.title') }}</v-card-title>
+      <v-card-title class="text-h4">{{ t('fab.settings-dialog.title') }}</v-card-title>
       <v-divider />
       <v-row class="d-flex flex-column pa-4" flat>
         <div
@@ -13,7 +13,7 @@
           style="height: 72px;"
         >
           <v-card-title class="text-h6" style="font-weight: 400;">
-            {{ t('appbar.settings-dialog.minimap-section.title') }}
+            {{ t('fab.settings-dialog.minimap-section.title') }}
           </v-card-title>
           <div>
             <v-switch
@@ -29,7 +29,7 @@
       </v-row>
       <v-divider />
       <v-row v-if="allFields.length > 1" class="pa-4" flat>
-        <v-card-text class="text-h6">{{ t('appbar.settings-dialog.portals-section.title') }}</v-card-text>
+        <v-card-text class="text-h6">{{ t('fab.settings-dialog.portals-section.title') }}</v-card-text>
         <div
           class="d-flex flex-row flex-wrap px-4 justify-flex-start"
           style="gap: 4px; max-height: 300px; overflow-y: auto;"
@@ -45,13 +45,13 @@
           />
         </div>
         <div class="pa-4">
-          <v-btn class="mr-4" color="primary" @click="checkAllFields">{{ t('appbar.settings-dialog.portals-section.select-all') }}</v-btn>
-          <v-btn color="primary" @click="uncheckAllFields">{{ t('appbar.settings-dialog.portals-section.select-none') }}</v-btn>
+          <v-btn class="mr-4" color="primary" @click="checkAllFields">{{ t('fab.settings-dialog.portals-section.select-all') }}</v-btn>
+          <v-btn color="primary" @click="uncheckAllFields">{{ t('fab.settings-dialog.portals-section.select-none') }}</v-btn>
         </div>
       </v-row>
       <v-divider />
       <v-row v-if="allMimes.length > 1" class="pa-4" flat>
-        <v-card-text class="text-h6">{{ t('appbar.settings-dialog.mimes-section.title') }}</v-card-text>
+        <v-card-text class="text-h6">{{ t('fab.settings-dialog.mimes-section.title') }}</v-card-text>
         <div
           class="d-flex flex-row flex-wrap px-4 justify-flex-start"
           style="gap: 4px; max-height: 300px; overflow-y: auto;"
@@ -67,8 +67,8 @@
           />
         </div>
         <div class="pa-4">
-          <v-btn class="mr-4" color="primary" @click="checkAllMimes">{{ t('appbar.settings-dialog.portals-section.select-all') }}</v-btn>
-          <v-btn color="primary" @click="uncheckAllMimes">{{ t('appbar.settings-dialog.portals-section.select-none') }}</v-btn>
+          <v-btn class="mr-4" color="primary" @click="checkAllMimes">{{ t('fab.settings-dialog.portals-section.select-all') }}</v-btn>
+          <v-btn color="primary" @click="uncheckAllMimes">{{ t('fab.settings-dialog.portals-section.select-none') }}</v-btn>
         </div>
       </v-row>
       <v-divider />
@@ -78,7 +78,7 @@
           style="height: 72px;"
         >
           <v-card-title class="text-h6" style="font-weight: 400;">
-            {{ t('appbar.settings-dialog.multiplier-section.title') }}
+            {{ t('fab.settings-dialog.multiplier-section.title') }}
           </v-card-title>
           <div>
             <v-number-input
@@ -103,7 +103,7 @@
             </v-col>
             <v-col cols="10">
               <v-card-text class="text-h6">
-                {{ t('appbar.settings-dialog.bubble-section.bubble-size') }}
+                {{ t('fab.settings-dialog.bubble-section.bubble-size') }}
               </v-card-text>
               <v-slider
                 v-model="bubbleSize"
@@ -113,7 +113,7 @@
                 width="300"
               />
               <v-card-text class="text-h6">
-                {{ t('appbar.settings-dialog.bubble-section.popup-size') }}
+                {{ t('fab.settings-dialog.bubble-section.popup-size') }}
               </v-card-text>
               <v-slider
                 v-model="popupSize"
@@ -126,7 +126,7 @@
             </v-col>
           </v-row>
           <v-card-text class="text-h6">
-            {{ t('appbar.settings-dialog.bubble-section.bubble-duration') }}
+            {{ t('fab.settings-dialog.bubble-section.bubble-duration') }}
           </v-card-text>
           <div>
             <v-slider
@@ -145,9 +145,9 @@
               <div class="bubble-info">
                 <BubbleInfo
                   mime="HTML"
-                  :other="[t('appbar.settings-dialog.bubble-section.publication-title')]"
+                  :other="[t('fab.settings-dialog.bubble-section.publication-title')]"
                   r-type="ARTICLE"
-                  :title="t('appbar.settings-dialog.bubble-section.bubble-title')"
+                  :title="t('fab.settings-dialog.bubble-section.bubble-title')"
                 />
               </div>
               <MulticolorBubble />
@@ -160,7 +160,7 @@
       <v-row align="center" class="pa-6" :flat="true" justify="space-between">
         <v-col cols="auto">
           <v-card-text class="text-h6">
-            {{ t('appbar.settings-dialog.blur-section.title') }}
+            {{ t('fab.settings-dialog.blur-section.title') }}
           </v-card-text>
           <v-slider
             v-model="blur"
@@ -187,7 +187,7 @@
           style="height: 72px;"
         >
           <v-card-title class="text-h6" style="font-weight: 400;">
-            {{ t('appbar.settings-dialog.review-titles-section.title') }}
+            {{ t('fab.settings-dialog.review-titles-section.title') }}
           </v-card-title>
           <div>
             <v-switch
@@ -204,14 +204,14 @@
       <v-divider />
       <v-row class="pa-4 d-flex align-center" :flat="true">
         <v-card-text class="text-h6">
-          {{ t('appbar.settings-dialog.filter-section.title') }}
+          {{ t('fab.settings-dialog.filter-section.title') }}
         </v-card-text>
         <v-text-field
           v-model="filter"
           class="mx-4"
           :clearable="true"
           color="primary"
-          :placeholder="t('appbar.settings-dialog.filter-section.placeholder')"
+          :placeholder="t('fab.settings-dialog.filter-section.placeholder')"
         />
       </v-row>
       <v-divider />

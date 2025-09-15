@@ -99,7 +99,7 @@ The Appbar contains five buttons as well as the button used to close or open the
 - cogwheel button: opens the settings menu
 - information button: opens the information drawer
 
-Code is available in `src/components/Appbar.vue/` as well as `src/components/appbar-buttons/`.
+Code is available in `src/components/fab.vue/` as well as `src/components/appbar-buttons/`.
 
 ### Minimap
 

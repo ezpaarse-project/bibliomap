@@ -1,6 +1,6 @@
 <template>
   <v-btn
-    v-tooltip="{ text: t('appbar.tooltips.center-map'), location: 'right' }"
+    v-tooltip="{ text: t('fab.tooltips.center-map'), location: 'right' }"
     color="blue"
     icon="mdi-target"
     @click="centerMap"

@@ -1,7 +1,7 @@
 <template>
   <span>
     <v-btn
-      v-tooltip="{ text: t('appbar.tooltips.info'), location: 'right' }"
+      v-tooltip="{ text: t('fab.tooltips.info'), location: 'right' }"
       color="red"
       icon="mdi-information"
       @click="emitter.emit('showInfoDialog', null)"

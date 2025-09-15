@@ -1,6 +1,6 @@
 <template>
   <v-btn
-    v-tooltip="{text: t('appbar.tooltips.settings'), location: 'right'}"
+    v-tooltip="{text: t('fab.tooltips.settings'), location: 'right'}"
     color="blue-grey-darken-4"
     :disabled="state === PlayState.LOADING"
     icon="mdi-cog"

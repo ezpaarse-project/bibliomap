@@ -149,19 +149,22 @@
       })
 
       const marker = L.marker(new L.LatLng(log['geoip-latitude'], log['geoip-longitude']), { icon }).addTo(map);
-
       const elt = marker.getElement();
+
       if (!elt) return;
       elt.classList.add('opacity-transition');
-
       const timestamp = new Date(log.datetime).getTime();
       const startTimestamp = timestamp;
       const fadeTimestamp = timestamp + multiplier.value * ((config.value.mapParams.bubbleDuration || 5) * 1000);
       const endTimestamp = timestamp + multiplier.value * ((config.value.mapParams.bubbleDuration || 5) * 1000) + multiplier.value * 3000;
       bubblesToRemove.push({ marker, frame: { start: startTimestamp, fade: fadeTimestamp, end: endTimestamp } });
 
+      const isIncludeMiniMap = config.value.minimapParams.include
+
       if (!map.getBounds().contains(L.latLng(log['geoip-latitude'], log['geoip-longitude']))) {
-        emitter.emit('minimap', { log });
+        if (isIncludeMiniMap) {
+          emitter.emit('minimap', { log });
+        }
       }
     }
 

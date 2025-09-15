@@ -75,7 +75,7 @@
       return { colors, type: BubbleType.Gradient } as BubbleProps;
     }
     // TODO filter
-    const filterd = 
+    // const filterd =
     return { color: sortFieldStore.getFieldColor(fieldValue), type: BubbleType.Regular } as BubbleProps;
   }
 
