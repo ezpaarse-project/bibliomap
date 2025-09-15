@@ -43,6 +43,7 @@ services:
     image: node:22.14.0
     container_name: bibliomap-enricher-dev
     environment:
+      NODE_ENV: "development"
       EZPAARSE_URL: "ezpaarse:59599"
       HARVESTER_URL: "harvester:27777"
       WEBSOCKET_PORT: 27780
