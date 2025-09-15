@@ -25,7 +25,7 @@
 
   function selectLanguage () {
     const lang = locale.value === 'en' ? 'fr' : 'en';
-    locale.value = lang.toLowerCase();
-    translationMenu.value = false
+    locale.value = lang;
+    translationMenu.value = false;
   }
 </script>

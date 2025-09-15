@@ -1,5 +1,10 @@
 <template>
-  <v-btn v-tooltip="{text: t('fabButton.tooltips.center-map'), location: 'left'}" color="blue" icon="mdi-target" @click="centerMap" />
+  <v-btn
+    v-tooltip="{ text: t('fabButton.tooltips.center-map'), location: 'left' }"
+    color="blue"
+    icon="mdi-target"
+    @click="centerMap"
+  />
 </template>
 <script setup lang="ts">
   import useMitt from '@/composables/useMitt';
