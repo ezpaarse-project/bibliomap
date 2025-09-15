@@ -28,6 +28,7 @@
 <script lang="ts" setup>
   import Drawer from '@/components/menu/Drawer.vue';
   import WorldMap from '@/components/map/WorldMap.vue';
+  import SettingsDialog from '@/components/fab/settings/Dialog.vue';
   import { onBeforeUnmount, onMounted } from 'vue';
   import { PlayState, usePlayStateStore } from '@/stores/play-state';
   import { usePlayerFileStore } from '@/stores/player-file';
