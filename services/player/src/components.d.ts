@@ -13,6 +13,7 @@ declare module 'vue' {
     ChangeMapTypeButton: typeof import('./components/fab/ChangeMapTypeButton.vue')['default']
     Counter: typeof import('./components/menu/Counter.vue')['default']
     CounterButton: typeof import('./components/fab/CounterButton.vue')['default']
+    Dialog: typeof import('./components/fab/settings/Dialog.vue')['default']
     Drawer: typeof import('./components/menu/Drawer.vue')['default']
     EventBubble: typeof import('./components/bubble/EventBubble.vue')['default']
     EventInfoSheet: typeof import('./components/EventInfoSheet.vue')['default']
