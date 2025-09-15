@@ -18,6 +18,7 @@ class PaarseQueue {
         headers: config.headers,
         body: this.writeStream,
         duplex: 'half',
+        bodyTimeout: 120000,
       });
 
       if (!res.ok) {
@@ -28,6 +29,14 @@ class PaarseQueue {
       const broadcastedFields = config.broadcasted_fields;
 
       const nodeReadable = Readable.fromWeb(res.body);
+
+      nodeReadable.on('error', (err) => {
+        logger.error('[ezPAARSE] nodeReadable error');
+        logger.error(err);
+        this.writeStream.end();
+        this.start();
+      });
+
       nodeReadable
         .pipe(JSONStream.parse())
         .on('data', (data) => {
@@ -44,20 +53,26 @@ class PaarseQueue {
         .on('end', () => {
           logger.info('[ezPAARSE] connection ended');
           this.writeStream.end();
+          this.start()
           this.cb();
         })
         .on('close', () => {
           logger.info('[ezPAARSE] connection closed');
           this.writeStream.end();
+          this.start()
           this.cb();
         })
         .on('error', (err) => {
-          logger.error('[ezPAARSE] error');
+          logger.error('[ezPAARSE] JSONStream error');
           logger.error(err);
+          this.start()
+          this.cb();
         });
     } catch (err) {
       logger.error('[ezPAARSE] error');
       logger.error(err);
+      this.start()
+      this.cb();
     }
   }
 
