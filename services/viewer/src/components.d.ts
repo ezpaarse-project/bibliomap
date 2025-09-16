@@ -44,7 +44,7 @@ declare module 'vue' {
     MimeList: typeof import('./components/counter/MimeList.vue')['default']
     Minimap: typeof import('./components/map/Minimap.vue')['default']
     ModeCard: typeof import('./components/mode/ModeCard.vue')['default']
-    ModeIndicator: typeof import('./componen./components/bubble/LittleMulticolorBubble.vue
+    ModeIndicator: typeof import('./componen./components/bubble/LittleMulticolorBubble.vue')
     MulticolorBubble: typeof import('./components/bubble/MulticolorBubble.vue')['default']
     NavigationDrawer: typeof import('./components/counter/Drawer.vue')['default']
     ParametersDialog: typeof import('./components/ParametersDialog.vue')['default']
