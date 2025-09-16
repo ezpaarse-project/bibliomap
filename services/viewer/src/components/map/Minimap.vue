@@ -35,7 +35,9 @@
     const emitter = useMitt();
     emitter.on('minimap', ({ log, showEvent }: { log: Log, showEvent: (log: Log, map: L.Map) => void }) => {
       currentLogs.value.push(log);
-      minimap.setView([log['geoip-latitude']+1.2, log['geoip-longitude']-2], params.defaultZoom || 4);
+      const lat = Number(log['geoip-latitude'])+1.2;
+      const lng = Number(log['geoip-longitude'])-2;
+      minimap.setView([lat, lng], params.defaultZoom || 4);
       hasEntered = true;
       showEvent(log, minimap);
 
