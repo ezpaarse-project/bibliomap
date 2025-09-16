@@ -54,8 +54,8 @@ drawer:
   replay-description:
     replay-label: 'Replay : '
   player:
-    title: Lecteur de fichiers d'événements
-    choose-file: Sélectionnez un ou plusieurs fichiers d'événements de consultations.
+    title: Lecteur de fichiers ezPAARSE
+    choose-file: Sélectionnez un ou plusieurs fichiers ezPAARSE.
     file-input-placeholder: exemple.csv
     play: Jouer la simulation
     error:

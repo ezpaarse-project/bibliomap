@@ -7,7 +7,7 @@ type Events = {
   minimap: { log: Log };
   showInfoDialog: null;
   showSettings: null;
-  toggleDrawer: null;
+  showCounterDrawer: null;
   log: Log;
   EC: Log;
   resetFileField: null;

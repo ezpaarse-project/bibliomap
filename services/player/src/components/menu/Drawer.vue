@@ -8,6 +8,12 @@
     :width="props.width"
   >
     <div class="drawer-elements-container d-flex flex-column fill-height">
+      <div class="d-flex justify-end align-start my-2">
+        <p class="text-h6 mt-2">
+          {{ t('drawer.player.title') }}
+        </p>
+        <v-btn :flat="true" icon="mdi-close" @click.stop="drawer = false" />
+      </div>
 
       <div>
         <Player />
@@ -42,6 +48,9 @@
   import useMitt from '@/composables/useMitt';
   import { PlayState, usePlayStateStore } from '@/stores/play-state';
   import { usePlayerFileStore } from '@/stores/player-file';
+  import { useI18n } from 'vue-i18n';
+
+  const { t } = useI18n();
 
   const config = useConfigStore().config;
   const props = config.drawerParams;
@@ -62,10 +71,11 @@
     drawer.value = false
   })
 
-  emitter.on('toggleDrawer', () => {
-    drawer.value = !drawer.value;
+  emitter.on('showCounterDrawer', () => {
+    drawer.value = true;
   });
 </script>
+
 <style lang="scss">
   .drawer-elements-container{
     display: flex;

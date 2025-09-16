@@ -1,8 +1,5 @@
 <template>
   <v-card :flat="true">
-    <v-card-title>
-      {{ t('drawer.player.title') }}
-    </v-card-title>
     <v-card-text>
       {{ t('drawer.player.choose-file') }}
     </v-card-text>
