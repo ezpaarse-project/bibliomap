@@ -5,7 +5,7 @@
 <script lang="ts" setup>
   import L, { TileLayer } from 'leaflet';
   import { onMounted } from 'vue';
-  import { useViewerConfigStore } from '@/stores/viewer-config';
+  import { useConfigStore } from '@/stores/config';
   import type { Log } from '@/main';
   import { usePlatformFilterStore } from '@/stores/platform-filter';
   import useMitt from '@/composables/useMitt';
@@ -19,7 +19,7 @@
 
   const emitter = useMitt();
 
-  const { config } = storeToRefs(useViewerConfigStore());
+  const { config } = storeToRefs(useConfigStore());
   const mapParams = config.value.mapParams;
   const { fieldIdentifier } = storeToRefs(useSortFieldStore());
   const { multiplier } = storeToRefs(usePlayerMultiplierStore());

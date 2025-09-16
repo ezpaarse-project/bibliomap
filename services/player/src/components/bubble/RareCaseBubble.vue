@@ -22,10 +22,10 @@
   </div>
 </template>
 <script setup lang="ts">
-  import { useViewerConfigStore } from '@/stores/viewer-config';
+  import { useConfigStore } from '@/stores/config';
   import { PlayState, usePlayStateStore } from '@/stores/play-state';
 
-  const { config } = storeToRefs(useViewerConfigStore());
+  const { config } = storeToRefs(useConfigStore());
   const size = computed(() => config.value.mapParams.bubbleSize || 60);
   const { state } = storeToRefs(usePlayStateStore());
 

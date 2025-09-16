@@ -3,7 +3,7 @@
     <div class="bubble-container">
       <div class="bubble-info">
         <InfoCard
-          v-if="bubble.type !== BubbleType.LittleRegular"
+          v-if="bubble.type !== BubbleType.Filtered"
           :mime="props.log.mime"
           :other="other"
           :r-type="props.log.rtype"
@@ -15,7 +15,7 @@
         <RegularBubble v-if="bubble.type === BubbleType.Regular" :color="bubble.color" />
         <GradientBubble v-else-if="bubble.type === BubbleType.Gradient" :colors="bubble.colors" />
         <MulticolorBubble v-else-if="bubble.type === BubbleType.Multicolor" />
-        <LittleRegularBubble v-else-if="bubble.type === BubbleType.LittleRegular" :color="bubble.color" />
+        <FilteredBubble v-else-if="bubble.type === BubbleType.Filtered" :color="bubble.color" />
       </div>
     </div>
   </div>
@@ -26,14 +26,14 @@
     Regular,
     Gradient,
     Multicolor,
-    LittleRegular
+    Filtered
   }
 
   type BubbleProps =
     | { type: BubbleType.Regular; color: string }
     | { type: BubbleType.Gradient; colors: string[] }
     | { type: BubbleType.Multicolor }
-    | { type: BubbleType.LittleRegular }
+    | { type: BubbleType.Filtered, color: string }
 </script>
 
 <script setup lang="ts">
@@ -99,7 +99,7 @@
         if (colors.length === 1) {
           const color = colors[0];
           if (!shownPortals[log.ezproxyName]) {
-            return { type: BubbleType.LittleRegular, color } as BubbleProps;
+            return { type: BubbleType.Filtered, color } as BubbleProps;
           }
           return { type: BubbleType.Regular, color } as BubbleProps;
         }

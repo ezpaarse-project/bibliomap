@@ -6,6 +6,7 @@
     <div class="bubble-container">
       <div class="bubble-info">
         <BubbleInfo
+          v-if="bubble.type !== BubbleType.Filtered"
           :mime="props.log.mime"
           :other="other"
           :r-type="props.log.rtype"
@@ -21,6 +22,7 @@
 
         <RegularBubble v-else-if="bubble.type === BubbleType.Regular" :color="bubble.color" />
         <GradientBubble v-else-if="bubble.type === BubbleType.Gradient" :colors="bubble.colors" />
+        <FilteredBubble v-else-if="bubble.type === BubbleType.Filtered" :color="bubble.color" />
       </div>
     </div>
   </div>
@@ -29,18 +31,21 @@
 <script lang="ts">
   enum BubbleType {
     Regular,
-    Gradient
+    Gradient,
+    Filtered
   }
 
   type BubbleProps =
     | { type: BubbleType.Regular; color: string }
     | { type: BubbleType.Gradient; colors: string[] }
+    | { type: BubbleType.Filtered; color: string }
 </script>
 <script setup lang="ts">
+  import FilteredBubble from '@/components/bubble/FilteredBubble.vue';
   import { type Log } from '@/main';
   import { usePlayerFileStore } from '@/stores/player-file';
   import { useSortFieldStore } from '@/stores/sort-field';
-  import { useViewerConfigStore } from '@/stores/viewer-config';
+  import { useConfigStore } from '@/stores/config';
   import useMitt from '@/composables/useMitt';
 
   const emitter = useMitt();
@@ -56,7 +61,7 @@
       .toLowerCase();
   }
 
-  const { config } = storeToRefs(useViewerConfigStore());
+  const { config } = storeToRefs(useConfigStore());
   const sortFieldStore = useSortFieldStore();
   const log = props.log
   const bubble = computed(() => getBubblePropsFromLog(log));
@@ -67,6 +72,8 @@
 
   function getBubblePropsFromLog (log: Log) {
     const fieldValue = log[sortFieldStore.fieldIdentifier];
+
+
     if (typeof fieldValue !== 'string') {
       return null;
     }
@@ -74,8 +81,18 @@
       const colors = fieldValue.split('+').map((field: string) => sortFieldStore.getFieldColor(field));
       return { colors, type: BubbleType.Gradient } as BubbleProps;
     }
-    // TODO filter
-    // const filterd =
+
+    const userPortalConfig = config.value.drawerParams.portalSection.portals;
+
+    let shownPortals = Object.fromEntries(userPortalConfig.map(p => [p.name, true]))
+    shownPortals = Object.keys(shownPortals);
+    shownPortals = shownPortals.map((portal: string) => portal.toLowerCase());
+
+
+    if (!shownPortals.includes(fieldValue.toLowerCase())) {
+      const [color] = fieldValue.split('+').map((field: string) => sortFieldStore.getFieldColor(field));
+      return { type: BubbleType.Filtered, color } as BubbleProps;
+    }
     return { color: sortFieldStore.getFieldColor(fieldValue), type: BubbleType.Regular } as BubbleProps;
   }
 

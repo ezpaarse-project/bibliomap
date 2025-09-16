@@ -7,7 +7,7 @@ import { type Count, useCountSectionStore } from './count-section.ts';
 import { usePlayTimeframeStore } from '@/stores/play-timeframe.ts';
 import { usePlayerFileStore } from '@/stores/player-file.ts';
 import type { Log } from '@/main.ts';
-import { useViewerConfigStore } from './viewer-config.ts';
+import { useConfigStore } from './config.ts';
 
 export type EC = {
   datetime: string,
@@ -17,7 +17,7 @@ export type EC = {
 export const useEcCountStore = defineStore('ec-count', () => {
   const count = ref({} as Count);
 
-  const { config: viewerConfig } = storeToRefs(useViewerConfigStore());
+  const { config: viewerConfig } = storeToRefs(useConfigStore());
   const { files } = storeToRefs(usePlayerFileStore());
   const { timer } = storeToRefs(useTimerStore());
   const { sections } = storeToRefs(useCountSectionStore());

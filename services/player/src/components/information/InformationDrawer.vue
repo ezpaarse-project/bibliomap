@@ -40,13 +40,13 @@
 <script setup lang="ts">
 
   import useMitt from '@/composables/useMitt';
-  import { useViewerConfigStore } from '@/stores/viewer-config';
+  import { useConfigStore } from '@/stores/config';
   import { useRoute } from 'vue-router';
   import { useI18n } from 'vue-i18n';
 
   const { t } = useI18n();
 
-  const config = useViewerConfigStore().config;
+  const config = useConfigStore().config;
   const infoDrawer = ref<HTMLElement | null>(null);
 
   const emitter = useMitt();

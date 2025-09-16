@@ -51,12 +51,12 @@
 <script setup lang='ts'>
   import { useEcCountStore } from '@/stores/ec-count';
   import { useMimeStore } from '@/stores/mime';
-  import { useViewerConfigStore } from '@/stores/viewer-config';
+  import { useConfigStore } from '@/stores/config';
   import { useI18n } from 'vue-i18n';
 
   const { t } = useI18n();
 
-  const { config } = storeToRefs(useViewerConfigStore());
+  const { config } = storeToRefs(useConfigStore());
   const counterProps = config.value.drawerParams.counterSection;
   const countStore = useEcCountStore();
 

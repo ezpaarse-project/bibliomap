@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-  import { useViewerConfigStore } from '@/stores/viewer-config';
+  import { useConfigStore } from '@/stores/config';
 
   const props = defineProps<{
     title: string | null | undefined,
@@ -42,7 +42,7 @@
     other: string[] | null | undefined,
   }>();
 
-  const { config } = storeToRefs(useViewerConfigStore());
+  const { config } = storeToRefs(useConfigStore());
   function getMimeColor () {
     const defaultColor = config.value.mapParams.attributesColors.defaultMimeColor || '#7F8C8D';
     const mimes = config.value.mapParams.attributesColors.mimes as Record<string, { count: boolean, color: string }>;

@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
   import L, { TileLayer } from 'leaflet';
-  import { useViewerConfigStore } from '@/stores/viewer-config';
+  import { useConfigStore } from '@/stores/config';
   import type { Log } from '@/main';
   import useMitt from '@/composables/useMitt';
   import { useTimerStore } from '@/stores/timer';
@@ -14,7 +14,7 @@
   import vuetify from '@/plugins/vuetify';
   import EventBubble from '@/components/bubble/EventBubble.vue';
 
-  const { config } = storeToRefs(useViewerConfigStore());
+  const { config } = storeToRefs(useConfigStore());
   const params = config.value.minimapParams;
   const usingPhone = window.innerWidth <= 768;
   const { timer } = storeToRefs(useTimerStore());
@@ -59,7 +59,9 @@
       const marker = L.marker(new L.LatLng(log['geoip-latitude'], log['geoip-longitude']), { icon }).addTo(minimap);
 
       const elt = marker.getElement();
-      minimap.setView([log['geoip-latitude'], log['geoip-longitude']], params.defaultZoom || 4);
+      const lat = Number(log['geoip-latitude'])+1.2;
+      const lng = Number(log['geoip-longitude'])-2;
+      minimap.setView([lat, lng], params.defaultZoom || 4);
       if (!elt) {
         minimap.removeLayer(marker);
         return;
@@ -74,16 +76,19 @@
     });
 
     function removeExpiredBubbles (timestamp: number) {
-
       bubblesToRemove.value.forEach((bubble, index) => {
+        const elt = bubble.marker.getElement();
+        if (!elt) return;
+
+        // Ajout d'une transition douce
+        elt.style.transition = 'opacity 1.5s ease';
+
         if (timestamp > bubble.frame.fade) {
-          const elt = bubble.marker.getElement();
-          if (elt) elt.style.opacity = '0';
+          elt.style.opacity = '0'; // disparaît progressivement
+        } else {
+          elt.style.opacity = '1'; // réapparaît progressivement
         }
-        else {
-          const elt = bubble.marker.getElement();
-          if (elt) elt.style.opacity = '100';
-        }
+
         if (timestamp > bubble.frame.end || timestamp < bubble.frame.start) {
           minimap.removeLayer(bubble.marker);
           if (minimap.hasLayer(bubble.marker)) return;

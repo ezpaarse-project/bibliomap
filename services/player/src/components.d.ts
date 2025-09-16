@@ -20,6 +20,7 @@ declare module 'vue' {
     ExempleFile: typeof import('./components/information/ExempleFile.vue')['default']
     FabButton: typeof import('./components/FabButton.vue')['default']
     FileTooLargeDialog: typeof import('./components/FileTooLargeDialog.vue')['default']
+    FilteredBubble: typeof import('./components/bubble/FilteredBubble.vue')['default']
     GitHubButton: typeof import('./components/information/GitHubButton.vue')['default']
     GradientBubble: typeof import('./components/bubble/GradientBubble.vue')['default']
     InfoButton: typeof import('./components/fab/InfoButton.vue')['default']

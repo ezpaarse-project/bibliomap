@@ -1,5 +1,5 @@
 import { useIndexedDBStore } from './indexed-db';
-import { useViewerConfigStore } from './viewer-config';
+import { useConfigStore } from './config';
 import { usePlayStateStore } from './play-state';
 import type { EC } from './ec-count';
 import useMitt from '@/composables/useMitt';
@@ -18,7 +18,7 @@ export const useMimeStore = defineStore('mime', () => {
 
   async function setMimes () {
     mimes.value = [] as { name: string, color: string }[];
-    const { config: viewerConfig } = storeToRefs(useViewerConfigStore());
+    const { config: viewerConfig } = storeToRefs(useConfigStore());
     if (!db.value) return;
     return new Promise<void>(resolve => {
       if (!db.value) {

@@ -220,7 +220,7 @@
 </template>
 
 <script setup lang="ts">
-  import { useViewerConfigStore } from '@/stores/viewer-config';
+  import { useConfigStore } from '@/stores/config';
   import { usePlatformFilterStore } from '@/stores/platform-filter';
   import useMitt from '@/composables/useMitt';
   import { useI18n } from 'vue-i18n';
@@ -232,7 +232,7 @@
 
   const { t } = useI18n();
 
-  const { config: currentConfig } = storeToRefs(useViewerConfigStore());
+  const { config: currentConfig } = storeToRefs(useConfigStore());
   const { fields: allFields } = storeToRefs(useSortFieldStore());
   const { mimes: allMimes } = storeToRefs(useMimeStore());
   const { blur } = storeToRefs(useBlurStore());

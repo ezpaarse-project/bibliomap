@@ -11,9 +11,9 @@
   </div>
 </template>
 <script lang="ts" setup>
-  import { useViewerConfigStore } from '@/stores/viewer-config';
+  import { useConfigStore } from '@/stores/config';
 
-  const { config } = storeToRefs(useViewerConfigStore());
+  const { config } = storeToRefs(useConfigStore());
   const size = computed(() => config.value.mapParams.bubbleSize || 60);
 </script>
 <style lang="scss" scoped>
