@@ -80,13 +80,12 @@
         const elt = bubble.marker.getElement();
         if (!elt) return;
 
-        // Ajout d'une transition douce
         elt.style.transition = 'opacity 1.5s ease';
 
         if (timestamp > bubble.frame.fade) {
-          elt.style.opacity = '0'; // disparaît progressivement
+          elt.style.opacity = '0';
         } else {
-          elt.style.opacity = '1'; // réapparaît progressivement
+          elt.style.opacity = '1';
         }
 
         if (timestamp > bubble.frame.end || timestamp < bubble.frame.start) {
