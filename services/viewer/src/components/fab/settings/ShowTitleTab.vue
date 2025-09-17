@@ -1,24 +1,21 @@
 <template>
-  <v-card :flat="true">
-    <div
-      class="d-flex justify-space-between align-center pr-4"
-      style="height: 72px;"
-    >
-      <v-card-title class="text-h6" style="font-weight: 400;">
-        {{ t('fabButton.settings-dialog.review-titles-section.title') }}
-      </v-card-title>
-      <div>
-        <v-switch
-          v-model="showTitles"
-          class="ma-0 pa-0"
-          color="primary"
-          hide-details
-          inset
-          style="margin-top: 2px;"
-        />
-      </div>
+  <div
+    class="d-flex justify-space-between align-center pr-4"
+  >
+    <v-card-title class="text-h6" style="font-weight: 400;">
+      {{ t('fabButton.settings-dialog.review-titles-section.title') }}
+    </v-card-title>
+    <div>
+      <v-switch
+        v-model="showTitles"
+        class="ma-0 pa-0"
+        color="primary"
+        hide-details
+        inset
+        style="margin-top: 2px;"
+      />
     </div>
-  </v-card>
+  </div>
 </template>
 
 <script setup lang="ts">
