@@ -47,6 +47,8 @@
     other: string[] | null | undefined,
   }>();
 
+  console.log(props.other)
+
   const config = useConfigStore().config;
   function getMimeColor () {
     const defaultColor = config.mapParams.attributesColors.defaultMimeColor || '#7F8C8D';
