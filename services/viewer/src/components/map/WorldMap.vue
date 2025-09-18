@@ -121,7 +121,7 @@
     }
 
     const filterFromUser = filter.value.map(f => f.toUpperCase());
-    if (filterFromUser.length > 0 && !filterFromUser.includes(log.platform_name.toUpperCase())) {
+    if (log.platform_name && filterFromUser.length > 0 && !filterFromUser.includes(log.platform_name.toUpperCase())) {
       return
     }
 

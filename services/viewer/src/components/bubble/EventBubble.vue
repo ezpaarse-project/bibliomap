@@ -55,7 +55,7 @@
 
   function getBubblePropsFromLog (log: Log) {
     const colorBy = mapParams.value.colorBy;
-    const onlyPortal = Object.keys(portals.value).length === 1;
+    const onlyPortal = initialConfig.drawerParams.portalSection.portals.length === 1;
     switch(colorBy) {
       case 'mime':
         const defaultDefaultMimeColor = '#7F8C8D';
@@ -71,10 +71,6 @@
         const allPortals = initialConfig.drawerParams.portalSection.portals;
 
         const shownPortals = Object.fromEntries(userPortalConfig.map(p => [p.name, true]))
-
-        // if (userPortalConfig.length === allPortals.length) {
-        //   return { type: BubbleType.Regular, color: 'blue' } as BubbleProps;
-        // }
 
         if (onlyPortal) {
           const color = portals.value[0].color;
