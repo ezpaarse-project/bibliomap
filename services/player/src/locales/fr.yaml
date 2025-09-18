@@ -46,7 +46,7 @@ drawer:
     loading: Chargement en cours...
     multiplier-field: Vitesse de la simulation
   counter:
-    title: Compter par mime
+    title: Compter par format
     tooltips:
       file-type-consultations: '{n} consultations de fichiers {type}'
       total-consultations: 'Nombre total de consultations : {n}'

@@ -44,7 +44,7 @@ drawer:
     loading: Loading...
     multiplier-field: Simulation speed
   counter:
-    title: Count by mime
+    title: Count by format
     tooltips:
       file-type-consultations: '{n} consultations of {type} documents'
       total-consultations: 'Total consultations: {n}'
