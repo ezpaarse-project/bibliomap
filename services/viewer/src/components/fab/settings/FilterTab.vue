@@ -11,7 +11,15 @@
       color="primary"
       multiple
       :placeholder="t('fabButton.settings-dialog.filter-section.placeholder')"
-    />
+    >
+      <template #chip="{ props }">
+        <v-chip v-bind="props" label>
+          <template #close>
+            <v-icon icon="$close" size="14" />
+          </template>
+        </v-chip>
+      </template>
+    </v-combobox>
   </div>
 </template>
 
