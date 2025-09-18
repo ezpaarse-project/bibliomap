@@ -174,8 +174,8 @@
   function blurEventPosition (log: Log) {
     const randomLatOffset = 2 * (Math.random() - 0.5)
     const randomLonOffset = 2 * (Math.random() - 0.5)
-    log['geoip-latitude'] = parseFloat(log['geoip-latitude']) + (blur.value * randomLatOffset);
-    log['geoip-longitude'] = parseFloat(log['geoip-longitude']) + (blur.value * randomLonOffset);
+    log['geoip-latitude'] = parseFloat(log['geoip-latitude'].toString()) + (blur.value * randomLatOffset);
+    log['geoip-longitude'] = parseFloat(log['geoip-longitude'].toString()) + (blur.value * randomLonOffset);
     return log
   }
 

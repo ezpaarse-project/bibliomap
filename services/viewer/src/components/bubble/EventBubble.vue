@@ -40,6 +40,7 @@
   import initialConfig from '@/assets/config.json';
   import { type Log } from '@/main';
   import InfoCard from '@/components/bubble/InfoCard.vue';
+  import { usePlatformFilterStore } from '@/stores/platform-filter';
   import { useConfigStore } from '@/stores/config';
   const props = defineProps<{
     log: Log
@@ -51,6 +52,7 @@
   const log = props.log
   const bubble = computed(() => getBubblePropsFromLog(log));
   const other = config.value.mapParams.popupText.publication_title && log.publication_title ? [log.publication_title] : [];
+  const { filter } = storeToRefs(usePlatformFilterStore());
 
 
   function getBubblePropsFromLog (log: Log) {
@@ -76,6 +78,7 @@
           const color = portals.value[0].color;
           return { type: BubbleType.Regular, color } as BubbleProps;
         }
+
         const colors: string[] = [];
         log.ezproxyName.split('+').forEach((portal: string) => {
           if (allPortals.filter(p => p.name.toUpperCase() === portal.toUpperCase()).length > 0) {
@@ -94,9 +97,17 @@
 
         if (colors.length === 1) {
           const color = colors[0];
+          // Filter by portal
           if (!shownPortals[log.ezproxyName]) {
             return { type: BubbleType.Filtered, color } as BubbleProps;
           }
+
+          // Filter by platform
+          const filterFromUser = filter.value.map(f => f.toUpperCase());
+          if (log.platform_name && filterFromUser.length > 0 && !filterFromUser.includes(log.platform_name.toUpperCase())) {
+            return { type: BubbleType.Filtered, color } as BubbleProps;
+          }
+
           return { type: BubbleType.Regular, color } as BubbleProps;
         }
         return { type: BubbleType.Gradient, colors } as BubbleProps;

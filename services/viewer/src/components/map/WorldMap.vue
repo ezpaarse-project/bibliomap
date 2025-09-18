@@ -7,7 +7,6 @@
   import { onMounted } from 'vue';
   import { useConfigStore } from '@/stores/config';
   import type { Log } from '@/main';
-  import { usePlatformFilterStore } from '@/stores/platform-filter';
   import useMitt from '@/composables/useMitt';
   import { useSocketStore } from '@/stores/socket';
   import vuetify from '@/plugins/vuetify';
@@ -16,7 +15,6 @@
   const emitter = useMitt();
   const io = useSocketStore().socket;
 
-  const { filter } = storeToRefs(usePlatformFilterStore());
   const { config } = storeToRefs(useConfigStore());
   const mapParams = ref(config.value.mapParams);
   const mimes = ref(config.value.mapParams.attributesColors.mimes as Record<string, { count: boolean, color: string }>);
@@ -117,11 +115,6 @@
 
   function showEvent (log: Log, map: L.Map) {
     if (!log || !log['geoip-latitude'] || !log['geoip-longitude']) {
-      return
-    }
-
-    const filterFromUser = filter.value.map(f => f.toUpperCase());
-    if (log.platform_name && filterFromUser.length > 0 && !filterFromUser.includes(log.platform_name.toUpperCase())) {
       return
     }
 
