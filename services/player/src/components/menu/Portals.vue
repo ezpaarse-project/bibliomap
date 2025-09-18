@@ -27,7 +27,7 @@
           <template #activator="{ props }">
             <v-row class="mx-2 my-1" v-bind="props" justify="space-between">
               <v-col cols="auto">
-                <h3 style="font-size: 16px">{{ name.length ? name.toUpperCase() : t('drawer.fields.unknown') }}</h3>
+                <h6>{{ name.length ? name.toUpperCase() : t('drawer.fields.unknown') }}</h6>
               </v-col>
               <v-col cols="auto">
                 <v-chip

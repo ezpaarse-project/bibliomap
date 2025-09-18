@@ -16,6 +16,7 @@
   const emitter = useMitt();
   const io = useSocketStore().socket;
 
+  const { filter } = storeToRefs(usePlatformFilterStore());
   const { config } = storeToRefs(useConfigStore());
   const mapParams = ref(config.value.mapParams);
   const mimes = ref(config.value.mapParams.attributesColors.mimes as Record<string, { count: boolean, color: string }>);
@@ -115,8 +116,14 @@
   });
 
   function showEvent (log: Log, map: L.Map) {
-    if (usePlatformFilterStore().getFilter() && log.platform_name && !((usePlatformFilterStore().getFilter().toUpperCase().includes(log.platform_name.toUpperCase()) || log.platform_name.toUpperCase().includes(usePlatformFilterStore().getFilter().toUpperCase())))) return;
-    if (!log || !log['geoip-latitude'] || !log['geoip-longitude']) return;
+    if (!log || !log['geoip-latitude'] || !log['geoip-longitude']) {
+      return
+    }
+
+    const filterFromUser = filter.value.map(f => f.toUpperCase());
+    if (filterFromUser.length > 0 && !filterFromUser.includes(log.platform_name.toUpperCase())) {
+      return
+    }
 
     const container = document.createElement('div');
 

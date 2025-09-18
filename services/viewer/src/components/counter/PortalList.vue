@@ -23,9 +23,9 @@
                   width="40"
                 >
                 <div>
-                  <h4 class="mb-1" style="font-size: 16px;">
+                  <h6 class="mb-1">
                     {{ t(`drawer-custom.portals.${value.name}.title`) }}
-                  </h4>
+                  </h6>
                   <p v-if="t(`drawer-custom.portals.${value.name}.subtitle`)" class="mb-0">
                     {{ t(`drawer-custom.portals.${value.name}.subtitle`) }}
                   </p>

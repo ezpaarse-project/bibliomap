@@ -3,11 +3,13 @@
     <v-card-text class="text-h6">
       {{ t('fabButton.settings-dialog.filter-section.title') }}
     </v-card-text>
-    <v-text-field
+    <v-combobox
       v-model="filter"
+      chips
       class="mx-4"
       :clearable="true"
       color="primary"
+      multiple
       :placeholder="t('fabButton.settings-dialog.filter-section.placeholder')"
     />
   </div>

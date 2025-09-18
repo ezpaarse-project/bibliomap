@@ -5,10 +5,10 @@
     :style="{transform: `scale(${config.mapParams.popupSize / 60})`}"
   >
     <v-card-title
-      class="text-body-2 pa-0 mb-2 px-4 title-wrap"
-      style="text-align: center;"
+      class="pa-0 mb-2 px-4"
+      style="text-align: center; font-size: 12px;"
     >
-      {{ title }}
+      <b> {{ title }} </b>
     </v-card-title>
 
     <v-row v-for="elt in other" :key="elt" class="pa-0 mb-2 px-4" style="text-align: center;">{{ elt }}</v-row>

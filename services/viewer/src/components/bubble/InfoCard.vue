@@ -5,13 +5,11 @@
     style="opacity: 85%;"
   >
     <v-card-title
-      class="text-body-2 pa-0 mb-2 px-4"
-      style="text-align: center;"
+      class="pa-0 mb-2 px-4"
+      style="text-align: center; font-size: 12px;"
     >
-      {{ title }}
+      <b> {{ title }} </b>
     </v-card-title>
-
-    <p v-for="elt in other" :key="elt" class="pa-0 mb-2 justify-center align-center" style="text-align: center;">{{ elt }}</p>
 
     <div style="display: flex; justify-content: center;">
       <v-chip
@@ -34,6 +32,9 @@
         {{ mime }}
       </v-chip>
     </div>
+
+    <p v-for="elt in other" :key="elt" class="pa-0 mb-2 justify-center align-center" style="text-align: center;">{{ elt }}</p>
+
   </v-card>
 </template>
 
