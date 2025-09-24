@@ -134,6 +134,7 @@ services:
       # host of service
       - VIEWER_URL=http://viewer:3000/
       - PLAYER_URL=http://player:3000/
+      - ENRICHER_WEBOCKET_URL=http://bibliomap_enricher:27780
     ports:
       - ${NGINX_PORT:-80}:80
     volumes:
