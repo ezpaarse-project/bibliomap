@@ -5,20 +5,29 @@
       class="d-flex flex-column flex-wrap px-4"
       style="gap: 4px; max-height: 300px; overflow-y: auto;"
     >
-      <v-checkbox
+    <v-row>
+      <v-col
+        cols="12"
+        sm="6"
+        class="pa-0"
         v-for="portal in allPortals"
         :key="portal.name"
+      >
+      <v-checkbox
         v-model="shownPortals[portal.name]"
         class="ma-0"
         :color="portal.color || 'primary'"
         hide-details
         :label="t(`drawer-custom.portals.${portal.name}.title`)"
       />
+      </v-col>
+    </v-row>
     </div>
-    <div class="pa-4">
+    <v-card-actions>
       <v-btn class="mr-4" color="primary" @click="checkAll">{{ t('fabButton.settings-dialog.portals-section.select-all') }}</v-btn>
+      <v-spacer />
       <v-btn color="primary" @click="uncheckAll">{{ t('fabButton.settings-dialog.portals-section.select-none') }}</v-btn>
-    </div>
+    </v-card-actions>
   </div>
 </template>
 
