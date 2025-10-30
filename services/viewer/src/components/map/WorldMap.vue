@@ -53,7 +53,7 @@
       maxZoom: mapParams.value.maxZoom || 9,
       zoomControl: false,
     }).setView([mapParams.value.defaultX || 46.603354, mapParams.value.defaultY || 1.888334], defaultZoom || 6);
-
+    
     L.control.zoom({
       position: 'topright',
     }).addTo(map);
@@ -158,12 +158,12 @@
     --pulsate-speed: 1s;
   }
 
-  #map{
+  #map {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-    height: 100%;
-    position: fixed;
-    bottom: 0;
-    right: 0;
+    height: 100dvh;
   }
 
   .container {
