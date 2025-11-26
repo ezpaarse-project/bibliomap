@@ -73,10 +73,14 @@
   function getBubblePropsFromLog (log: Log) {
     const fieldValue = log[sortFieldStore.fieldIdentifier];
 
-
     if (typeof fieldValue !== 'string') {
       return null;
     }
+
+    if (fieldValue === '') {
+      return { color: sortFieldStore.getFieldColor('UNKNOWN'), type: BubbleType.Regular } as BubbleProps;
+    }
+
     if (fieldValue.includes('+')){
       const colors = fieldValue.split('+').map((field: string) => sortFieldStore.getFieldColor(field));
       return { colors, type: BubbleType.Gradient } as BubbleProps;

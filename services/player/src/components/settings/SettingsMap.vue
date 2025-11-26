@@ -11,12 +11,11 @@
   import { useI18n } from 'vue-i18n';
 
   const lat = 48.65561805;
-  const lon = 6.150242312816186;
+  const lng = 6.150242312816186;
   const degToKm = 111;
 
   const { blur } = storeToRefs(useBlurStore());
   const blurInMeters = computed(() => blur.value * degToKm * 1000);
-  const { t } = useI18n();
 
   let map: L.Map;
   const circle = ref<L.Circle | null>(null);
@@ -26,15 +25,19 @@
       minZoom: 2,
       maxZoom: 9,
       zoomControl: false,
-    }).setView([lat, lon], 6);
+    }).setView([lat, lng], 5);
+
+    map.setMinZoom(5);
+    map.setMaxZoom(5);
+    map.dragging.disable();
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors',
     }).addTo(map);
 
-    L.marker([lat, lon]).addTo(map);
+    L.marker([lat, lng]).addTo(map);
 
-    circle.value = L.circle([lat, lon], {
+    circle.value = L.circle([lat, lng], {
       radius: blurInMeters.value,
       color: 'red',
       fillColor: '#f03',
@@ -47,7 +50,6 @@
 
     if (circle.value) {
       circle.value.setRadius(radius);
-      circle.value.setPopupContent(t(''));
     }
   });
 </script>

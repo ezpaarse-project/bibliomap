@@ -19,6 +19,8 @@
 
 <script setup lang="ts">
 
+import SettingsMap from '@/components/settings/SettingsMap.vue';
+
 import { useBlurStore } from '@/stores/blur';
 import { useI18n } from 'vue-i18n';
 
