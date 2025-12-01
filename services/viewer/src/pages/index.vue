@@ -1,5 +1,6 @@
 <template>
   <v-app>
+    <SnowFall v-if="isDecember" :count="250" style="z-index: 1;"/>
     <Drawer />
     <InformationDrawer />
     <SettingsDialog />
@@ -36,6 +37,11 @@
 
   const socket = useSocketStore().socket;
   const replayConfigStore = useReplayConfigStore();
+
+  const isDecember = computed(() => {
+    const month = new Date().getMonth()
+    return month === 11
+  })
 
   onMounted(() => {
     socket.on('connect', async () => {

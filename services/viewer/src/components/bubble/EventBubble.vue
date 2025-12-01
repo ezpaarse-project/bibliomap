@@ -12,7 +12,8 @@
       </div>
 
       <div class="bubble-core">
-        <RegularBubble v-if="bubble.type === BubbleType.Regular" :color="bubble.color" />
+        <ChristmasBubble v-if="bubble.type === BubbleType.Regular && isDecember" :color="bubble.color" />
+        <RegularBubble v-if="bubble.type === BubbleType.Regular && !isDecember" :color="bubble.color" />
         <GradientBubble v-else-if="bubble.type === BubbleType.Gradient" :colors="bubble.colors" />
         <MulticolorBubble v-else-if="bubble.type === BubbleType.Multicolor" />
         <FilteredBubble v-else-if="bubble.type === BubbleType.Filtered" :color="bubble.color" />
@@ -37,6 +38,7 @@
 </script>
 
 <script setup lang="ts">
+
   import initialConfig from '@/assets/config.json';
   import { type Log } from '@/main';
   import InfoCard from '@/components/bubble/InfoCard.vue';
@@ -54,6 +56,10 @@
   const other = config.value.mapParams.popupText.publication_title && log.publication_title ? [log.publication_title] : [];
   const { filter } = storeToRefs(usePlatformFilterStore());
 
+  const isDecember = computed(() => {
+    const month = new Date().getMonth()
+    return month === 11
+  })
 
   function getBubblePropsFromLog (log: Log) {
     const colorBy = mapParams.value.colorBy;
