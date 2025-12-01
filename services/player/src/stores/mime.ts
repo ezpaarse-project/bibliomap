@@ -10,7 +10,6 @@ export type Mime = {
 }
 
 export const useMimeStore = defineStore('mime', () => {
-
   const mimes = ref([] as Mime[]);
   const shownMimes = ref([] as Mime[]);
   const emitter = useMitt();

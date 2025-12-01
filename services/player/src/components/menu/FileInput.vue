@@ -1,8 +1,5 @@
 <template>
   <v-card :flat="true">
-    <v-card-text>
-      {{ t('drawer.player.choose-file') }}
-    </v-card-text>
     <v-tooltip :disabled="!files || files.length === 0" location="right">
       <template #activator="{ props }">
         <v-file-input

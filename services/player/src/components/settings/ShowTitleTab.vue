@@ -13,12 +13,20 @@
 </template>
 
 <script setup lang="ts">
-
 import { useConfigStore } from '@/stores/config';
 import { useI18n } from 'vue-i18n';
+import { computed } from 'vue';
+import { storeToRefs } from 'pinia';
 
 const { t } = useI18n();
-const { config: currentConfig } = storeToRefs(useConfigStore());
 
-const showTitles = ref(currentConfig.value.mapParams.popupText.publication_title as boolean);
+const store = useConfigStore();
+const { config } = storeToRefs(store);
+
+const showTitles = computed({
+  get: () => config.value.mapParams.popupText.publication_title,
+  set: (value: boolean) => {
+    config.value.mapParams.popupText.publication_title = value;
+  }
+});
 </script>

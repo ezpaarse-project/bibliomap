@@ -6,15 +6,43 @@
 import L, { TileLayer } from 'leaflet'
 import { onMounted, watch, createApp } from 'vue'
 import { useConfigStore } from '@/stores/config'
-import { usePlatformFilterStore } from '@/stores/platform-filter'
-import { useBubbleStore } from '@/stores/bubble'
-import { useSortFieldStore } from '@/stores/sort-field'
-import { usePlayerMultiplierStore } from '@/stores/player-multiplier'
-import { useBlurStore } from '@/stores/blur'
+
 import vuetify from '@/plugins/vuetify'
 import EventBubble from '@/components/bubble/EventBubble.vue'
 import type { Log } from '@/main'
 import useMitt from '@/composables/useMitt'
+
+
+// Load all store
+import { useBlurStore } from '@/stores/blur'
+import { useBubbleStore } from '@/stores/bubble'
+import { useCountSectionStore } from '@/stores/count-section'
+import { useEcCountStore } from '@/stores/ec-count'
+import { useIndexedDBStore } from '@/stores/indexed-db'
+import { useLargeFileStore } from '@/stores/large-file'
+import { useMimeStore } from '@/stores/mime'
+import { usePlatformFilterStore } from '@/stores/platform-filter'
+import { usePlayStateStore } from '@/stores/play-state'
+import { usePlayTimeframeStore } from '@/stores/play-timeframe'
+import { usePlayerFileStore } from '@/stores/player-file'
+import { usePlayerMultiplierStore } from '@/stores/player-multiplier'
+import { useSortFieldStore } from '@/stores/sort-field'
+import { useTimerStore } from '@/stores/timer'
+import { consoleError } from 'vuetify/lib/util/console.mjs'
+useBlurStore()
+useBubbleStore()
+useCountSectionStore()
+useEcCountStore()
+useIndexedDBStore()
+useLargeFileStore()
+useMimeStore()
+usePlatformFilterStore()
+usePlayStateStore()
+usePlayTimeframeStore()
+usePlayerFileStore()
+usePlayerMultiplierStore()
+useSortFieldStore()
+useTimerStore()
 
 const emitter = useMitt()
 
@@ -24,7 +52,7 @@ const { fieldIdentifier } = storeToRefs(useSortFieldStore())
 const { multiplier } = storeToRefs(usePlayerMultiplierStore())
 const { blur } = storeToRefs(useBlurStore())
 
-useBubbleStore()
+const { shownMimes } = storeToRefs(useMimeStore());
 
 let map: L.Map
 
@@ -110,9 +138,25 @@ onMounted(() => {
   }, 100)
 
   function showBubble(log: Log) {
+    // remove non located events
+    if (!log['geoip-latitude'] || !log['geoip-longitude']) { return }
+    // Filter by platform
+    if (log.platform_name && !usePlatformFilterStore().isNameOkay(log.platform_name)) { return }
+    // Filter by mime
+    if (!shownMimes.value.some(m => m.name === log.mime)) return;
+    // Filter by field
+    const portalValue = String(log[fieldIdentifier.value] ?? "").toUpperCase();
 
-    if (log.platform_name && !usePlatformFilterStore().isNameOkay(log.platform_name)) return
-    if (!log['geoip-latitude'] || !log['geoip-longitude']) return
+    const hasMatchingPortal = config.value.drawerParams.portalSection.portals.some(p => p.name === portalValue);
+
+    const hasUNKNOWN = config.value.drawerParams.portalSection.portals.some(p => p.name === "UNKNOWN");
+
+    const isEmptyValue = portalValue === "";
+
+    if (!hasMatchingPortal && !(hasUNKNOWN && isEmptyValue)) {
+      return;
+    }
+
     if (!log[fieldIdentifier.value]) log[fieldIdentifier.value] = ''
 
     if (blur.value) log = blurEventPosition(log)
@@ -148,7 +192,12 @@ onMounted(() => {
       }
     })
 
-    if (!map.getBounds().contains([log['geoip-latitude'], log['geoip-longitude']])) {
+    const lat = Number(log['geoip-latitude'])
+    const lng = Number(log['geoip-longitude'])
+
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return
+
+    if (!map.getBounds().contains(L.latLng(lat, lng))) {
       if (config.value.minimapParams.include) emitter.emit('minimap', { log })
     }
   }
@@ -176,7 +225,6 @@ watch(multiplier, () => {
 </script>
 
 <style lang="scss">
-
 :root {
   --opacity-transition-speed: 1.5s;
 }
@@ -196,5 +244,4 @@ watch(multiplier, () => {
   flex-direction: column;
   align-items: center;
 }
-
 </style>

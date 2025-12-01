@@ -17,6 +17,6 @@ type Events = {
 
 const emitter = mitt<Events>();
 
-export default function useMitt (){
+export default function useMitt () {
   return emitter;
 }

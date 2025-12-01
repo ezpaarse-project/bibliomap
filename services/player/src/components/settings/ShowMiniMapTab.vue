@@ -18,9 +18,14 @@ import { useConfigStore } from '@/stores/config';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
+const store = useConfigStore();
+const { config } = storeToRefs(store);
 
-const { config: currentConfig } = storeToRefs(useConfigStore());
-
-const showMinimap = ref(currentConfig.value.minimapParams.include as boolean);
+const showMinimap = computed({
+  get: () => config.value.minimapParams.include,
+  set: (value: boolean) => {
+    config.value.minimapParams.include = value;
+  }
+});
 
 </script>

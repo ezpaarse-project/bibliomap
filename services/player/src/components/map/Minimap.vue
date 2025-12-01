@@ -22,7 +22,10 @@
   let minimap: L.Map;
 
   let hasEntered = false;
-  const bubblesToRemove: Ref<{ marker : L.Marker, frame: { start: number, fade: number, end: number } }[]> = ref([]);
+  const bubblesToRemove: {
+    marker: L.Marker
+    frame: { start: number, fade: number, end: number }
+  }[] = []
 
   onMounted(() => {
     minimap = L.map('minimap', {
@@ -66,17 +69,25 @@
         minimap.removeLayer(marker);
         return;
       }
-      const logTimestamp = new Date(log.datetime).getTime();
-      if (config.value) {
-        const startTimeStamp = logTimestamp;
-        const fadeTimeStamp = logTimestamp + usePlayerMultiplierStore().multiplier * ((config.value.mapParams.bubbleDuration || 5) * 1000);
-        const endTimeStamp = logTimestamp + usePlayerMultiplierStore().multiplier * ((config.value.mapParams.bubbleDuration || 5) * 1000) + 3000;
-        bubblesToRemove.value.push({ marker, frame: { start: startTimeStamp, fade: fadeTimeStamp, end: endTimeStamp } })
-      }
+      const now = Date.now()
+      const visibleDuration = (config.value.mapParams.bubbleDuration || 5) * 1000
+
+      const fadeTimestamp = now + visibleDuration
+      const endTimestamp = fadeTimestamp + 3000
+
+      bubblesToRemove.push({
+        marker,
+        frame: {
+          start: now,
+          fade: fadeTimestamp,
+          end: endTimestamp
+        }
+      })
     });
 
+     // TODO if time is updated by user, delete all bubble
     function removeExpiredBubbles (timestamp: number) {
-      bubblesToRemove.value.forEach((bubble, index) => {
+      bubblesToRemove.forEach((bubble, index) => {
         const elt = bubble.marker.getElement();
         if (!elt) return;
 
@@ -91,14 +102,14 @@
         if (timestamp > bubble.frame.end || timestamp < bubble.frame.start) {
           minimap.removeLayer(bubble.marker);
           if (minimap.hasLayer(bubble.marker)) return;
-          bubblesToRemove.value.splice(index, 1);
+          bubblesToRemove.splice(index, 1);
         }
       });
     }
 
-    watch(timer, () => {
-      if (timer.value && bubblesToRemove.value.length) removeExpiredBubbles(timer.value);
-    })
+    setInterval(() => {
+      removeExpiredBubbles(Date.now())
+    }, 100)
 
     const defaultLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',

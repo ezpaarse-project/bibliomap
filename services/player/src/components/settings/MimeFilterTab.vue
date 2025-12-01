@@ -4,11 +4,15 @@
       {{ t('fab.settings-dialog.mimes-section.title') }}
     </v-card-text>
 
-    <div class="d-flex flex-row flex-wrap px-4" style="gap: 4px; max-height: 300px; overflow-y: auto;">
+    <div
+      class="d-flex flex-row flex-wrap px-4"
+      style="gap: 4px; max-height: 300px; overflow-y: auto;"
+    >
       <v-checkbox
         v-for="mime in mimes"
         :key="mime.name"
-        v-model="checkboxModel[mime.name]"
+        :model-value="isChecked(mime.name)"
+        @update:model-value="toggleMime(mime.name, $event)"
         :color="mime.color || 'primary'"
         :label="mime.name"
         hide-details
@@ -28,39 +32,36 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
 import { useMimeStore } from '@/stores/mime';
 import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
 const store = useMimeStore();
-const { mimes } = storeToRefs(store);
+const { mimes, shownMimes } = storeToRefs(store);
 
-const localShown = ref<Record<string, boolean>>({});
+function isChecked(name: string): boolean {
+  return shownMimes.value.some(m => m.name === name);
+}
 
-watch(mimes, () => {
-  localShown.value = Object.fromEntries(
-    mimes.value.map(m => [m.name, true])
-  );
-}, { immediate: true });
+function toggleMime(name: string, checked: boolean) {
+  if (checked) {
+    const mime = mimes.value.find(m => m.name === name);
+    if (!mime) return;
 
-const checkboxModel = computed({
-  get: () => localShown.value,
-  set: (val: Record<string, boolean>) => {
-    localShown.value = val;
-
-    store.shownMimes = mimes.value.filter(m => val[m.name]);
+    if (!shownMimes.value.some(m => m.name === name)) {
+      store.shownMimes.push(mime);
+    }
+  } else {
+    store.shownMimes = shownMimes.value.filter(m => m.name !== name);
   }
-});
+}
 
 function selectAll() {
-  const all = Object.fromEntries(mimes.value.map(m => [m.name, true]));
-  checkboxModel.value = all;
+  store.shownMimes = [...mimes.value];
 }
 
 function selectNone() {
-  const none = Object.fromEntries(mimes.value.map(m => [m.name, false]));
-  checkboxModel.value = none;
+  store.shownMimes = [];
 }
 </script>

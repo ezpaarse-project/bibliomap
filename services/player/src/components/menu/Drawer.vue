@@ -16,22 +16,27 @@
       </div>
 
       <div>
-        <Player />
+        <v-card-text>
+          {{ t('drawer.player.choose-file') }}
+        </v-card-text>
+        <FileInput />
         <v-divider />
       </div>
 
       <div v-if="state !== PlayState.LOADING && files.length > 0">
+        <Chronometer />
         <Timer />
+        <MultiplierTab />
         <v-divider />
       </div>
 
       <div v-if="props.counterSection.include && state !== PlayState.LOADING && files.length > 0">
-        <Counter />
+        <MimeCounter />
         <v-divider />
       </div>
 
       <div v-if="props.portalSection.include && state !== PlayState.LOADING && files.length > 0">
-        <Portals />
+        <PortalsCounter />
       </div>
 
       <div v-if="state === PlayState.LOADING" class="d-flex align-center justify-center mt-8">
@@ -44,11 +49,15 @@
 
 
 <script setup lang="ts">
+  import MultiplierTab from '@/components/menu/MultiplierTab.vue';
+  import Chronometer from '@/components/menu/Chronometer.vue';
+
   import { useConfigStore } from '@/stores/config';
   import useMitt from '@/composables/useMitt';
   import { PlayState, usePlayStateStore } from '@/stores/play-state';
   import { usePlayerFileStore } from '@/stores/player-file';
   import { useI18n } from 'vue-i18n';
+
 
   const { t } = useI18n();
 

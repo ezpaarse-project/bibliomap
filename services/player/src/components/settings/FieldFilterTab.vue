@@ -4,11 +4,15 @@
       {{ t('fab.settings-dialog.portals-section.title') }}
     </v-card-text>
 
-    <div class="d-flex flex-row flex-wrap px-4" style="gap: 4px; max-height: 300px; overflow-y: auto;">
+    <div
+      class="d-flex flex-row flex-wrap px-4"
+      style="gap: 4px; max-height: 300px; overflow-y: auto;"
+    >
       <v-checkbox
         v-for="field in fields"
         :key="field.name"
-        v-model="checkboxModel[field.name]"
+        :model-value="isChecked(field.name)"
+        @update:model-value="toggleField(field.name, $event)"
         :color="field.color || 'primary'"
         :label="field.name"
         hide-details
@@ -28,7 +32,6 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
 import { useSortFieldStore } from '@/stores/sort-field';
 import { useConfigStore } from '@/stores/config';
 import { useI18n } from 'vue-i18n';
@@ -40,38 +43,43 @@ const fieldStore = useSortFieldStore();
 const configStore = useConfigStore();
 
 const { fields } = storeToRefs(fieldStore);
-const { config: currentConfig } = storeToRefs(configStore);
+const { config } = storeToRefs(configStore);
 
-const localShown = ref<Record<string, boolean>>({});
 
-watch(
-  fields,
-  () => {
-    localShown.value = Object.fromEntries(
-      fields.value.map(f => [f.name, true])
-    );
-  },
-  { immediate: true }
-);
-
-const checkboxModel = computed({
-  get: () => localShown.value,
-  set: (val: Record<string, boolean>) => {
-    localShown.value = val;
-    currentConfig.value.drawerParams.portalSection.portals =
-      fields.value.filter(f => val[f.name]);
-  }
-});
-
-function selectAll() {
-  checkboxModel.value = Object.fromEntries(
-    fields.value.map(f => [f.name, true])
-  );
+function getSelectedNames(): string[] {
+  return config.value.drawerParams.portalSection.portals.map(p => p.name);
 }
 
+function setSelectedNames(names: string[]) {
+  config.value.drawerParams.portalSection.portals =
+    fields.value.filter(f => names.includes(f.name));
+}
+
+
+function isChecked(name: string): boolean {
+  return getSelectedNames().includes(name);
+}
+
+
+function toggleField(name: string, checked: boolean) {
+  const selected = getSelectedNames();
+
+  if (checked) {
+    if (!selected.includes(name)) {
+      setSelectedNames([...selected, name]);
+    }
+  } else {
+    setSelectedNames(selected.filter(n => n !== name));
+  }
+}
+
+
+function selectAll() {
+  setSelectedNames(fields.value.map(f => f.name));
+}
+
+
 function selectNone() {
-  checkboxModel.value = Object.fromEntries(
-    fields.value.map(f => [f.name, false])
-  );
+  setSelectedNames([]);
 }
 </script>
