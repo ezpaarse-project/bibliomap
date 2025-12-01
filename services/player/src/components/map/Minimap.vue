@@ -1,5 +1,5 @@
 <template>
-  <v-card :class="['minimap-container', { 'exit': bubblesToRemove.length === 0 && hasEntered, 'enter': bubblesToRemove.length > 0}]" :elevation="24">
+  <v-card :class="['minimap-container', { 'exit': nbMarker === 0 && hasEntered, 'enter': nbMarker > 0}]" :elevation="24">
     <div id="minimap" />
   </v-card>
 </template>
@@ -9,23 +9,17 @@
   import { useConfigStore } from '@/stores/config';
   import type { Log } from '@/main';
   import useMitt from '@/composables/useMitt';
-  import { useTimerStore } from '@/stores/timer';
-  import { usePlayerMultiplierStore } from '@/stores/player-multiplier';
   import vuetify from '@/plugins/vuetify';
   import EventBubble from '@/components/bubble/EventBubble.vue';
 
   const { config } = storeToRefs(useConfigStore());
   const params = config.value.minimapParams;
   const usingPhone = window.innerWidth <= 768;
-  const { timer } = storeToRefs(useTimerStore());
 
   let minimap: L.Map;
 
-  let hasEntered = false;
-  const bubblesToRemove: {
-    marker: L.Marker
-    frame: { start: number, fade: number, end: number }
-  }[] = []
+  const nbMarker = ref(0);
+  const hasEntered = ref(false)
 
   onMounted(() => {
     minimap = L.map('minimap', {
@@ -42,9 +36,7 @@
 
     const emitter = useMitt();
     emitter.on('minimap', ({ log }: { log: Log }) => {
-      if (!timer.value) return;
-      hasEntered = true;
-
+      hasEntered.value = true;
       const container = document.createElement('div');
 
       const app = createApp(EventBubble, {
@@ -58,58 +50,51 @@
         className: 'leaflet-marker',
         iconSize: [40, 40],
       })
-
+      
       const marker = L.marker(new L.LatLng(log['geoip-latitude'], log['geoip-longitude']), { icon }).addTo(minimap);
+      
+      nbMarker.value += 1;
+      
+      let elt = marker.getElement();
 
-      const elt = marker.getElement();
+      if (!elt) {
+        marker.on('add', () => {
+          elt = marker.getElement();
+        });
+      }
+
+
+      // Need +1.2 and -2 to make it center
       const lat = Number(log['geoip-latitude'])+1.2;
       const lng = Number(log['geoip-longitude'])-2;
       minimap.setView([lat, lng], params.defaultZoom || 4);
+
       if (!elt) {
         minimap.removeLayer(marker);
         return;
       }
-      const now = Date.now()
-      const visibleDuration = (config.value.mapParams.bubbleDuration || 5) * 1000
 
-      const fadeTimestamp = now + visibleDuration
-      const endTimestamp = fadeTimestamp + 3000
+      const getElt = () => marker.getElement()
 
-      bubblesToRemove.push({
-        marker,
-        frame: {
-          start: now,
-          fade: fadeTimestamp,
-          end: endTimestamp
+      const visibleDuration = 3000
+      const fadeDuration = 1500
+
+      // fade
+      setTimeout(() => {
+        const elt = getElt()
+        if (!elt) return
+        elt.classList.add('opacity-transition')
+        elt.style.opacity = '0'
+      }, visibleDuration)
+
+      // remove
+      setTimeout(() => {
+        if (minimap.hasLayer(marker)) {
+          minimap.removeLayer(marker)
+          nbMarker.value -= 1
         }
-      })
+      }, visibleDuration + fadeDuration)
     });
-
-     // TODO if time is updated by user, delete all bubble
-    function removeExpiredBubbles (timestamp: number) {
-      bubblesToRemove.forEach((bubble, index) => {
-        const elt = bubble.marker.getElement();
-        if (!elt) return;
-
-        elt.style.transition = 'opacity 1.5s ease';
-
-        if (timestamp > bubble.frame.fade) {
-          elt.style.opacity = '0';
-        } else {
-          elt.style.opacity = '1';
-        }
-
-        if (timestamp > bubble.frame.end || timestamp < bubble.frame.start) {
-          minimap.removeLayer(bubble.marker);
-          if (minimap.hasLayer(bubble.marker)) return;
-          bubblesToRemove.splice(index, 1);
-        }
-      });
-    }
-
-    setInterval(() => {
-      removeExpiredBubbles(Date.now())
-    }, 100)
 
     const defaultLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
