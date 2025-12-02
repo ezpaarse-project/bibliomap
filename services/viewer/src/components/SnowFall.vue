@@ -17,11 +17,9 @@ interface Flake {
   style: Record<string, string>;
 }
 
-const props = defineProps<{
-  count?: number; // nombre de flocons
-}>();
+const usingPhone = window.innerWidth <= 768;
 
-const flakesCount = props.count ?? 48;
+const flakesCount = usingPhone ? 50 : 100;
 const flakesArray: Flake[] = reactive([]);
 
 function random(min: number, max: number) {
@@ -53,14 +51,13 @@ onMounted(() => {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;   /* largeur totale de la page */
-  height: 100vh;  /* hauteur totale de la page */
+  width: 100vw;
+  height: 100vh;
   pointer-events: none;
-  z-index: 1;     /* faible pour rester derrière les cartes */
+  z-index: 1;
   overflow: hidden;
 }
 
-/* style d’un flocon */
 .snowflake {
   position: absolute;
   top: -10vh;
@@ -72,7 +69,6 @@ onMounted(() => {
   animation-iteration-count: infinite;
 }
 
-/* animation */
 @keyframes fall {
   0% {
     transform: translateY(-10vh) translateX(0) rotate(0deg);

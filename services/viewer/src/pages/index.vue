@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <SnowFall v-if="isDecember" :count="250" style="z-index: 1;"/>
+    <SnowFall v-if="isDecember" style="z-index: 1;"/>
     <Drawer />
     <InformationDrawer />
     <SettingsDialog />
