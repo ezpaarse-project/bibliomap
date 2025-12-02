@@ -8,7 +8,7 @@ RUN npm run build
 FROM nginx:1.27.5-alpine3.21 AS production-stage
 COPY --from=build-stage /app/dist /usr/share/nginx/html
 
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY ./nginx.conf /etc/nginx/templates/default.conf.template
 
 HEALTHCHECK --interval=15s --timeout=10s --retries=5 --start-period=20s \
   CMD wget -Y off --no-verbose --tries=1 --spider http://localhost:80 || exit 1
