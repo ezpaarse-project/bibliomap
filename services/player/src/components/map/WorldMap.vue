@@ -50,6 +50,7 @@ const { config } = storeToRefs(useConfigStore())
 const { fieldIdentifier } = storeToRefs(useSortFieldStore())
 const { blur } = storeToRefs(useBlurStore())
 const { shownMimes } = storeToRefs(useMimeStore())
+const { filter } = storeToRefs(usePlatformFilterStore())
 
 let map: L.Map
 
@@ -104,7 +105,7 @@ onMounted(() => {
 
 function showBubble(log: Log) {
   if (!log['geoip-latitude'] || !log['geoip-longitude']) return
-  if (log.platform_name && !usePlatformFilterStore().isNameOkay(log.platform_name)) return
+  if (filter.value.length > 0 && log.platform_name && !filter.value.includes(log.platform_name.toUpperCase())) return;
   if (!shownMimes.value.some(m => m.name === log.mime)) return
 
   const portalValue = String(log[fieldIdentifier.value] ?? "").toUpperCase()
@@ -118,7 +119,9 @@ function showBubble(log: Log) {
 
   if (!log[fieldIdentifier.value]) log[fieldIdentifier.value] = ''
 
-  if (blur.value) log = blurEventPosition(log)
+  if (blur.value) {
+    log = blurEventPosition(log)
+  }
 
   const container = document.createElement('div')
   const app = createApp(EventBubble, { log })
@@ -144,7 +147,7 @@ function showBubble(log: Log) {
     return;
   }
 
-  const visibleDuration = 3000
+  const visibleDuration = config.value.mapParams.bubbleDuration * 1000
   const fadeDuration = 1500
 
   // fade
@@ -177,9 +180,8 @@ function blurEventPosition(log: Log) {
   const rLat = 2 * (Math.random() - 0.5)
   const rLon = 2 * (Math.random() - 0.5)
 
-  log['geoip-latitude'] += blur.value * rLat
-  log['geoip-longitude'] += blur.value * rLon
-
+  log['geoip-latitude'] = Number(log['geoip-latitude']) + blur.value * rLat
+  log['geoip-longitude'] = Number(log['geoip-longitude']) + blur.value * rLon
   return log
 }
 </script>

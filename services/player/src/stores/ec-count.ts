@@ -8,6 +8,7 @@ import { usePlayTimeframeStore } from '@/stores/play-timeframe.ts';
 import { usePlayerFileStore } from '@/stores/player-file.ts';
 import type { Log } from '@/main.ts';
 import { useConfigStore } from './config.ts';
+import { usePlatformFilterStore } from './platform-filter.ts';
 
 export type EC = {
   datetime: string,
@@ -25,6 +26,7 @@ export const useEcCountStore = defineStore('ec-count', () => {
   const { timeframe } = storeToRefs(usePlayTimeframeStore());
   const { db } = storeToRefs(useIndexedDBStore());
   const { fieldIdentifier } = storeToRefs(useSortFieldStore());
+  const { filter } = storeToRefs(usePlatformFilterStore());
 
   const fields = ref(viewerConfig.value.drawerParams.portalSection.portals as Field[]);
 
@@ -55,6 +57,8 @@ export const useEcCountStore = defineStore('ec-count', () => {
       if (typeof rawFieldValue !== 'string') return;
 
       const mime = event.mime ? event.mime.toUpperCase() : 'UNKNOWN';
+
+      if (filter.value.length > 0 && event.platform_name && !filter.value.includes(event.platform_name.toUpperCase())) return;
 
       rawFieldValue.toUpperCase().split('+').forEach(f => {
         const field = f.length ? f.toUpperCase() : 'UNKNOWN';
@@ -168,7 +172,16 @@ export const useEcCountStore = defineStore('ec-count', () => {
     const currentEventCount = await createCountFromEvents(events);
     if (requestToken !== currentRequestToken) return;
 
-    count.value = mergeCounts(currentSection.value > 0 ? sections.value[currentSection.value -1].count : {}, currentEventCount);
+    const hasFilter = filter.value.length > 0;
+
+    if (hasFilter) {
+      const events = await getEventsBetween(timeframe.value.startDatetime!, timestamp, false);
+    
+      const filteredCount = await createCountFromEvents(events);
+    
+      count.value = filteredCount;
+      return;
+    }
   }
 
   function mergeCounts (previousSectionCount: Count, currentCount: Count) {
