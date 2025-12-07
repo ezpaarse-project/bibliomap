@@ -76,7 +76,7 @@
 
       const getElt = () => marker.getElement()
 
-      const visibleDuration = 3000
+      const visibleDuration = config.value.mapParams.bubbleDuration * 1000
       const fadeDuration = 1500
 
       // fade

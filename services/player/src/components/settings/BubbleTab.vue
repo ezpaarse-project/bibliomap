@@ -77,21 +77,21 @@ import { computed, ref, watch, onBeforeUnmount } from 'vue';
 import { storeToRefs } from 'pinia';
 
 const { t } = useI18n();
-const { config: currentConfig } = storeToRefs(useConfigStore());
+const { config } = storeToRefs(useConfigStore());
 
 const bubbleSize = computed({
-  get: () => currentConfig.value.mapParams.bubbleSize ?? 60,
-  set: v => (currentConfig.value.mapParams.bubbleSize = v),
+  get: () => config.value.mapParams.bubbleSize ?? 60,
+  set: v => (config.value.mapParams.bubbleSize = v),
 });
 
 const popupSize = computed({
-  get: () => currentConfig.value.mapParams.popupSize ?? 30,
-  set: v => (currentConfig.value.mapParams.popupSize = v),
+  get: () => config.value.mapParams.popupSize ?? 30,
+  set: v => (config.value.mapParams.popupSize = v),
 });
 
 const bubbleDuration = computed({
-  get: () => currentConfig.value.mapParams.bubbleDuration ?? 5,
-  set: v => (currentConfig.value.mapParams.bubbleDuration = v),
+  get: () => config.value.mapParams.bubbleDuration ?? 5,
+  set: v => (config.value.mapParams.bubbleDuration = v),
 });
 
 const opacity = ref(1);
