@@ -17,9 +17,12 @@ interface Flake {
   style: Record<string, string>;
 }
 
-const usingPhone = window.innerWidth <= 768;
+const usingPhone = computed(() => window.innerWidth < 768);
 
-const flakesCount = usingPhone ? 50 : 100;
+
+const flakesCount = usingPhone ? 25 : 100;
+
+
 const flakesArray: Flake[] = reactive([]);
 
 function random(min: number, max: number) {
