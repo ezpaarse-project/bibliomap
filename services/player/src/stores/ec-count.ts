@@ -6,6 +6,7 @@ import { PlayState, usePlayStateStore } from '@/stores/play-state.ts';
 import { type Count, useCountSectionStore } from './count-section.ts';
 import { usePlayTimeframeStore } from '@/stores/play-timeframe.ts';
 import { usePlayerFileStore } from '@/stores/player-file.ts';
+import { useMimeStore } from '@/stores/mime'
 import type { Log } from '@/main.ts';
 import { useConfigStore } from './config.ts';
 import { usePlatformFilterStore } from './platform-filter.ts';
@@ -27,6 +28,7 @@ export const useEcCountStore = defineStore('ec-count', () => {
   const { db } = storeToRefs(useIndexedDBStore());
   const { fieldIdentifier } = storeToRefs(useSortFieldStore());
   const { filter } = storeToRefs(usePlatformFilterStore());
+  const { shownMimes } = storeToRefs(useMimeStore())
 
   const fields = ref(viewerConfig.value.drawerParams.portalSection.portals as Field[]);
 
@@ -149,50 +151,69 @@ export const useEcCountStore = defineStore('ec-count', () => {
     timestampBorders.value = { start: sections.value[currentSection.value].datetime, end: currentSection.value + 1 < sections.value.length ? sections.value[currentSection.value + 1].datetime : Number.POSITIVE_INFINITY };
   }
 
-  async function updateCount (timestamp: number) {
-    if (!timestamp) return;
-    const requestToken = ++currentRequestToken;
-
-    if (requestToken !== currentRequestToken) return;
-
-    if (Object.values(timestampBorders.value).every(v => v === null)) {
-      timestampBorders.value = { start: timeframe.value.startDatetime, end: sections.value[0].datetime };
+  function isLogAllowed(log: Log): boolean {
+    if (
+      filter.value.length > 0 &&
+      log.platform_name &&
+      !filter.value.includes(log.platform_name.toUpperCase())
+    ) {
+      return false;
     }
+  
+    if (!shownMimes.value.some(m => m.name === log.mime)) {
+      return false;
+    }
+  
+    return true;
+  }
+  
 
-    if (timestamp > (timestampBorders.value.end ?? Number.POSITIVE_INFINITY) || timestamp < (timestampBorders.value.start ?? 0)) {
+  async function updateCount(timestamp: number) {
+    if (!timestamp) return;
+  
+    const requestToken = ++currentRequestToken;
+  
+    if (Object.values(timestampBorders.value).every(v => v === null)) {
+      timestampBorders.value = {
+        start: timeframe.value.startDatetime,
+        end: sections.value[0].datetime
+      };
+    }
+  
+    if (
+      timestamp > (timestampBorders.value.end ?? Number.POSITIVE_INFINITY) ||
+      timestamp < (timestampBorders.value.start ?? 0)
+    ) {
       updateSection(timestamp);
     }
-
-    const sectionTime = sections.value[currentSection.value].datetime;
-    if (!sectionTime) return;
-
-    const events = await getEventsBetween(sectionTime, timestamp, false) as Log[];
+  
+    const startTime = timeframe.value.startDatetime;
+    if (!startTime) return;
+  
+    const events = await getEventsBetween(startTime, timestamp, false) as Log[];
     if (requestToken !== currentRequestToken) return;
-
-    const currentEventCount = await createCountFromEvents(events);
+  
+    const filteredEvents = events.filter(isLogAllowed);
+  
+    const nextCount = await createCountFromEvents(filteredEvents);
     if (requestToken !== currentRequestToken) return;
-
-    const hasFilter = filter.value.length > 0;
-
-    if (hasFilter) {
-      const events = await getEventsBetween(timeframe.value.startDatetime!, timestamp, false);
-    
-      const filteredCount = await createCountFromEvents(events);
-    
-      count.value = filteredCount;
-      return;
-    }
+  
+    count.value = nextCount;
   }
 
-  function mergeCounts (previousSectionCount: Count, currentCount: Count) {
-    Object.keys(previousSectionCount).forEach(field => {
-      Object.keys(previousSectionCount[field]).forEach(mime => {
-        if (!currentCount[field]) currentCount[field] = {};
-        if (!currentCount[field][mime]) currentCount[field][mime] = 0;
-        if (previousSectionCount[field] && previousSectionCount[field][mime]) currentCount[field][mime] = previousSectionCount[field][mime] + currentCount[field][mime];
-      });
-    });
-    return currentCount;
+  function mergeCounts(a: Count = {}, b: Count = {}): Count {
+    const result: Count = structuredClone(a);
+  
+    for (const field in b) {
+      if (!result[field]) result[field] = {};
+  
+      for (const mime in b[field]) {
+        result[field][mime] =
+          (result[field][mime] ?? 0) + (b[field][mime] ?? 0);
+      }
+    }
+  
+    return result;
   }
 
   async function resetCount () {
