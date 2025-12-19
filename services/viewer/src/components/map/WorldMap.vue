@@ -52,10 +52,16 @@
       minZoom: mapParams.value.minZoom || 3,
       maxZoom: mapParams.value.maxZoom || 9,
       zoomControl: false,
+      worldCopyJump: true,
     }).setView([mapParams.value.defaultX || 46.603354, mapParams.value.defaultY || 1.888334], defaultZoom || 6);
     
     L.control.zoom({
       position: 'topright',
+    }).addTo(map);
+
+    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+      noWrap: true
     }).addTo(map);
 
     const defaultLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -102,7 +108,6 @@
     io.on('log', (log: Log) => {
       showEvent(log, map);
 
-
       const isIncludeMiniMap = config.value.minimapParams.include
 
       if (!map.getBounds().contains(L.latLng(log['geoip-latitude'], log['geoip-longitude']))) {
@@ -118,6 +123,9 @@
       return
     }
 
+    const lat = Number(log['geoip-latitude'])
+    const lng = Number(log['geoip-longitude'])
+
     const container = document.createElement('div');
 
     const app = createApp(EventBubble, {
@@ -132,7 +140,7 @@
       iconSize: [40, 40],
     })
 
-    const marker = L.marker(new L.LatLng(log['geoip-latitude'], log['geoip-longitude']), { icon }).addTo(map);
+    const marker = L.marker(new L.LatLng(lat, lng), { icon }).addTo(map);
 
     const elt = marker.getElement();
     if (!elt) return;

@@ -65,13 +65,19 @@ onMounted(() => {
   map = L.map('map', {
     minZoom: mapParams.minZoom || 3,
     maxZoom: mapParams.maxZoom || 9,
-    zoomControl: false
+    zoomControl: false,
+    worldCopyJump: true,
   }).setView(
     [mapParams.defaultX || 46.603354, mapParams.defaultY || 1.888334],
     defaultZoom || 6
   )
 
   L.control.zoom({ position: 'topright' }).addTo(map)
+
+  L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+    noWrap: true
+  }).addTo(map);
 
   const defaultLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map)
   const humanitarianLayer = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png')
@@ -129,8 +135,12 @@ function showBubble(log: Log) {
   app.mount(container)
 
   const icon = L.divIcon({ html: container, className: '', iconSize: [40, 40] })
+
+  const lat = Number(log['geoip-latitude'])
+  const lng = Number(log['geoip-longitude'])
+
   const marker = L.marker(
-    [log['geoip-latitude'], log['geoip-longitude']],
+    [lat, lng],
     { icon }
   ).addTo(map)
 
@@ -164,8 +174,6 @@ function showBubble(log: Log) {
   }, visibleDuration + fadeDuration)
 
   // minimap handling
-  const lat = Number(log['geoip-latitude'])
-  const lng = Number(log['geoip-longitude'])
   if (!Number.isFinite(lat) || !Number.isFinite(lng)) return
 
   if (!map.getBounds().contains(L.latLng(lat, lng))) {
