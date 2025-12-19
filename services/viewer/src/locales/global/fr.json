@@ -1,12 +1,12 @@
 {
   "fabButton": {
     "tooltips": {
-      "counter": "Afficher les compteurs",
+      "counter": "Afficher le compteur",
       "center-map": "Recentrer la carte",
       "translation": "Traduction",
       "change-map": "Changer de fond de carte",
       "settings": "Paramètres",
-      "info": "A propos de BiblioMap"
+      "info": "Informations"
     },
     "settings-dialog": {
       "title": "Paramètres",
