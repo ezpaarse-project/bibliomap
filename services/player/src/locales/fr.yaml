@@ -4,8 +4,8 @@ fab:
     translation: Traduction
     change-map: Changer de fond de carte
     settings: Paramètres
-    info: A propos de BiblioMap
-    counter: Afficher les compteurs
+    info: Informations
+    counter: Afficher le compteur
   settings-dialog:
     title: Paramètres
     minimap-section:
@@ -69,7 +69,6 @@ version-card:
   connection: Connecté à ezPAARSE
 progress-bar:
   clearing-db: Nettoyage de la base de données...
-  
   inserting-file: Chargement du fichier {name}...
   sim-loading: Génération de la simulation...
 file-too-large-dialog:
@@ -83,6 +82,14 @@ state-card:
   paused: Pause
   loading: Chargement
 info: 
-  text1: Bibliomap Player vous permet de visualiser vos fichiers traités par ezPAARSE directement dans l’application Bibliomap et de suivre vos événements de consultation sur une carte interactive sans avoir besoin d'installer Bibliomap. C'est un lecteur d’événements de consultation (EC) générés par ezPAARSE.
-  text2: Pour l’utiliser, il suffit de déposer vos fichiers à l’emplacement prévu, de les charger, puis de lancer la simulation, qui fonctionne comme un lecteur vidéo. Vous pouvez ajuster la vitesse de lecture pour analyser vos données plus rapidement ou plus lentement.
-  text3: L’interface vous permet de compter les événements de consultation par type MIME (HTML, PDF, XML, etc.) ou selon l’un des nombreux champs présents dans vos données ezPAARSE, comme le nom de la plateforme, la collection ou le type de document. Chaque événement est représenté par un marqueur sur la carte, indiquant sa provenance et son type.
+  text1: Bibliomap Player est un lecteur d’événements de consultation (EC) générés par ezPAARSE. Il permet de visualiser vos fichiers directement dans l’application Bibliomap et de suivre les événements sur une carte interactive, sans nécessiter l’installation complète de Bibliomap.
+  text2: "Pour l’utiliser, il suffit de déposer vos fichiers à l’emplacement prévu, de les charger, puis de lancer la simulation. Celle-ci fonctionne comme un lecteur vidéo : vous pouvez ajuster la vitesse de lecture afin d’analyser vos données plus ou moins rapidement."
+  text3: L’interface permet de visualiser les événements de consultation à partir des données issues d’ezPAARSE. Chaque événement est représenté sur la carte par un marqueur indiquant son origine et son type.
+  rule1: 'Règles d’utilisation :'
+  rule2: '- Utiliser des fichiers légers (moins de 50 Mo) provenant de traitements ezPAARSE.'
+  rule3:
+    text: '- Les champs "geoip-latitude" et "geoip-longitude" sont obligatoires. Ces champs sont ajoutés via l’utilisation du middleware {link}.'
+    link: geolocalizer
+  example:
+    text: Des fichiers d’exemple sont mis à disposition sur {link}.
+    link: GitHub

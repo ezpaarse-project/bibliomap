@@ -33,6 +33,7 @@ declare module 'vue' {
     InfoButton: typeof import('./components/fab/InfoButton.vue')['default']
     InformationContent: typeof import('./components/information-components/InformationContent.vue')['default']
     InformationDrawer: typeof import('./components/information/InformationDrawer.vue')['default']
+    Inist: typeof import('./components/information/Inist.vue')['default']
     InputFile: typeof import('./components/menu/InputFile.vue')['default']
     LoadingCard: typeof import('./components/state/LoadingCard.vue')['default']
     LocalisationTab: typeof import('./components/settings/LocalisationTab.vue')['default']
