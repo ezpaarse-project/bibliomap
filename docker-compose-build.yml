@@ -20,4 +20,9 @@ services:
     build:
       context: ./services/viewer
     container_name: bibliomap-viewer
+  
+  nginx:
+    build:
+      context: ./services/nginx
+    container_name: bibliomap-nginx
 

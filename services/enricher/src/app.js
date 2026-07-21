@@ -10,6 +10,8 @@ import ReplayManager from './replay-manager.js';
  * Connect to bibliomap-viewer
  */
 
+let nbLogs = 0;
+
 const server = http.createServer((req, res) => {
   res.writeHead(200, { 'Content-Type': 'text/plain' });
   res.end('Websocket server launched');
@@ -28,32 +30,35 @@ server.listen(27780, () => {
 
 const viewers = new Set();
 
-/**
- * Listen events coming from harvester
- * then forward it to ezpaarse jobs
- */
+if (!process.env.HARVESTER_URL) {
+  throw new Error("HARVESTER_URL must be defined (ex: 'localhost:28777')");
+}
 
-const harvesterConfig = {
-  host: process.env.HARVESTER_URL.split(':')[0],
-  port: process.env.HARVESTER_URL.split(':')[1],
-};
+const [host, port] = process.env.HARVESTER_URL.split(':');
+
+const harvesterConfig = { host, port };
 
 const logIoListener = process.env.REPLAY_MODE === 'true'
   ? new ReplayManager()
   : new LogIoListener(harvesterConfig);
 
 logIoListener.listen(() => {
-  if (process.env.REPLAY_MODE !== 'true') logger.info(`Waiting for harvester at ${JSON.stringify(harvesterConfig)}`);
-  else logger.info('Replay sessions starting');
+  if (process.env.REPLAY_MODE !== 'true') { 
+    logger.info(`Waiting for harvester at ${JSON.stringify(harvesterConfig)}`);
+  } else {
+    logger.info('Replay sessions starting');
+  }
 });
 
-if (process.env.REPLAY_MODE !== 'true') logIoListener.server.on('connection', (logListenerSocket) => {
-  logger.info('Harvester connected');
+if (process.env.REPLAY_MODE !== 'true') {
+  logIoListener.server.on('connection', (logListenerSocket) => {
+    logger.info(`Harvester connected [${JSON.stringify(harvesterConfig)}]`);
 
-  logListenerSocket.on('close', () => {
-    logger.info('Harvester disconnected');
+    logListenerSocket.on('close', () => {
+      logger.info('Harvester disconnected');
+    });
   });
-});
+}
 
 io.on('connection', (viewerSocket) => {
   logger.info('Viewer connected');
@@ -83,6 +88,11 @@ function randomizePos(log) {
 let paarseQueue;
 
 logIoListener.on('+log', async (streamName, node, type, log) => {
+  nbLogs += 1;
+  if (nbLogs % 100 === 0) {
+    console.log(`${new Date().toISOString()}: Received ${nbLogs} logs`);
+    nbLogs = 0;
+  }
   if (!paarseQueue) {
     paarseQueue = new PaarseQueue(
       (data) => {

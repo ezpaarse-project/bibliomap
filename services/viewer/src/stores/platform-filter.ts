@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia';
 
 export const usePlatformFilterStore = defineStore('platform-filter', () => {
-  const filter = ref('');
+  const filter = ref<string[]>([]);
 
-  function setFilter (newFilter: string) {
+  function setFilter (newFilter: string[]) {
     filter.value = newFilter;
   }
 

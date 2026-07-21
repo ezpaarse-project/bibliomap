@@ -1,13 +1,13 @@
 import { defineStore } from 'pinia';
 import { useSocketStore } from './socket';
-import { useViewerConfigStore } from './viewer-config';
+import { useConfigStore } from './config';
 import { usePlatformFilterStore } from './platform-filter';
 
 export const useEcCountStore = defineStore('ec-count', () => {
   const count = reactive({} as Record<string, Record<string, number>>);
-  const filter = usePlatformFilterStore().filter;
+  const { filter } = storeToRefs(usePlatformFilterStore());
 
-  const config = useViewerConfigStore().config;
+  const config = useConfigStore().config;
   const portals = config.drawerParams.portalSection.portals.map(portal => portal.name);
 
   portals.forEach(portal => {
@@ -56,7 +56,11 @@ export const useEcCountStore = defineStore('ec-count', () => {
   const socket = socketStore.socket;
 
   socket.on('log', log => {
-    if (filter && log.platform_name && !((filter.toUpperCase().includes(log.platform_name.toUpperCase()) || log.platform_name.toUpperCase().includes(filter.toUpperCase())))) return;
+    const filterFromUser = filter.value.map(f => f.toUpperCase());
+    if (filterFromUser.length > 0 && !filterFromUser.includes(log.platform_name.toUpperCase())) {
+      return
+    }
+
     if (portals.length === 1) return increment(portals[0].toUpperCase(), log.mime || 'unknown');
     if (!log.ezproxyName) return;
     log.ezproxyName.split('+').forEach((portal: string) => {

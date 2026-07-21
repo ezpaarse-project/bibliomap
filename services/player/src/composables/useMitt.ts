@@ -7,7 +7,7 @@ type Events = {
   minimap: { log: Log };
   showInfoDialog: null;
   showSettings: null;
-  toggleDrawer: null;
+  showCounterDrawer: null;
   log: Log;
   EC: Log;
   resetFileField: null;
@@ -17,6 +17,6 @@ type Events = {
 
 const emitter = mitt<Events>();
 
-export default function useMitt (){
+export default function useMitt () {
   return emitter;
 }

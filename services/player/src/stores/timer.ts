@@ -34,7 +34,7 @@ export const useTimerStore = defineStore('timer', () => {
       case (PlayState.STOPPED):
         if (interval) clearInterval(interval);
         interval = null;
-        timer.value = timeframe.value.startDatetime || 0;
+        timer.value = (timeframe.value.startDatetime - 1000)|| 0;
         break;
       case (PlayState.LOADING):
         if (interval) clearInterval(interval);

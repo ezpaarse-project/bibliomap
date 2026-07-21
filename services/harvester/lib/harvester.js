@@ -89,7 +89,6 @@ class LogStream extends EventEmitter {
 
     rstream.on('data', (data) => {
       const lines = data.split('\n').filter((line) => line);
-      console.log(lines);
       return lines.map((line) => this.emit('new_log', line));
     });
   }
@@ -106,6 +105,8 @@ class LogHarvester {
     this.server = config.server;
     this.delim = config.delimiter || '\r\n';
     this._log = config.logging || winston;
+    this._connected = false;
+    this.nbLogs = 0;
     this.logStreams = Object.entries(config.logStreams)
       .map(([name, paths]) => new LogStream(name, paths, this._log));
   }
@@ -123,24 +124,33 @@ class LogHarvester {
   }
 
   _connect() {
-    console.log('Connecting to server...');
-
+    console.log(`Try to connect to server ${process.env.ENRICHER_URL}`);
+  
     this.socket = new net.Socket();
-    this.socket.on('error', () => {
+  
+    this.socket.on('error', (err) => {
+      console.error(err);
+    });
+  
+    this.socket.on('close', (hadError) => {
       this._connected = false;
-      console.error('Unable to connect server, trying again...');
+      console.error(`Connection closed (hadError=${hadError}). Reconnecting in 2 seconds...`);
       setTimeout(() => this._connect(), 2000);
     });
-
+  
     this.socket.connect(this.server.port, this.server.host, () => {
-      console.log('Connected');
+      console.log(`Connected to server ${process.env.ENRICHER_URL}`);
       this._connected = true;
       this._announce();
     });
   }
 
   _sendLog(stream, msg) {
-    console.log(`Sending log: (${stream.name}) ${msg}`);
+    this.nbLogs += 1;
+    if (this.nbLogs % 100 === 0) {
+      console.log(`${new Date().toISOString()}: Sent ${this.nbLogs} logs`);
+      this.nbLogs = 0;
+    }
     return this._send('+log', stream.name, this.nodeName, 'info', msg);
   }
 
@@ -152,7 +162,11 @@ class LogHarvester {
   }
 
   _send(mtype, ...args) {
-    console.log('send:', `${mtype}|${args.join('|')}${this.delim}`);
+    this.nbLogs += 1;
+    if (this.nbLogs % 100 === 0) {
+      console.log(`${new Date().toISOString()}: Sent ${this.nbLogs} logs`);
+      this.nbLogs = 0;
+    }
     return this.socket.write(`${mtype}|${args.join('|')}${this.delim}`);
   }
 }

@@ -1,7 +1,7 @@
 import { useIndexedDBStore } from './indexed-db';
 import type { EC } from './ec-count';
 import { usePlayStateStore } from './play-state';
-import { useViewerConfigStore } from './viewer-config';
+import { useConfigStore } from './config';
 import useMitt from '@/composables/useMitt';
 
 export type Field = {
@@ -91,13 +91,23 @@ export const useSortFieldStore = defineStore('sort-field', () => {
             .filter(name => typeof name === 'string')
         );
 
-        fields.value = Array.from(fieldNames).map(fieldName => ({
-          name: fieldName,
-          color: stringToColor(fieldName),
-        })).sort((a, b) => a.name.localeCompare(b.name));
+        fields.value = Array.from(fieldNames)
+          .map(fieldName => {
+            const safeName = fieldName.trim() === "" ? "UNKNOWN" : fieldName;
+
+            return {
+              name: safeName,
+              color: stringToColor(safeName),
+            };
+          })
+          .sort((a, b) => {
+            if (a.name === "UNKNOWN") return -1;
+            if (b.name === "UNKNOWN") return 1;
+            return a.name.localeCompare(b.name);
+          });
 
         usePlayStateStore().loaded();
-        useViewerConfigStore().config.drawerParams.portalSection.portals = fields.value;
+        useConfigStore().config.drawerParams.portalSection.portals = fields.value;
         resolve()
       };
     });

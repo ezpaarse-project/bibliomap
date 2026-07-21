@@ -1,0 +1,17 @@
+<template>
+  <span>
+    <v-btn
+      v-tooltip="{ text: t('fab.tooltips.info'), location: 'right' }"
+      color="red"
+      icon="mdi-information"
+      @click="emitter.emit('showInfoDialog', null)"
+    />
+  </span>
+</template>
+<script setup lang="ts">
+  import useMitt from '@/composables/useMitt';
+  import { useI18n } from 'vue-i18n';
+
+  const { t } = useI18n();
+  const emitter = useMitt();
+</script>

@@ -51,14 +51,6 @@ export default defineConfig({
         configFile: 'src/styles/settings.scss',
       },
     }),
-    Fonts({
-      google: {
-        families: [{
-          name: 'Roboto',
-          styles: 'wght@100;300;400;500;700;900',
-        }],
-      },
-    }),
   ],
   optimizeDeps: {
     exclude: [
@@ -84,9 +76,16 @@ export default defineConfig({
       '.vue',
     ],
   },
+  base: '/player',
   server: {
-    host: '0.0.0.0',
+    host: true,
     port: 3000,
+    strictPort: true,
+    hmr: {
+      host: 'localhost',
+      port: 3000,
+      protocol: 'ws',
+    },
   },
   css: {
     preprocessorOptions: {

@@ -1,12 +1,12 @@
 {
   "fabButton": {
     "tooltips": {
-      "counter": "Show counters",
+      "counter": "Show counter menu",
       "center-map": "Center the map",
       "translation": "Translation",
       "change-map": "Change map background",
       "settings": "Settings",
-      "info": "About BiblioMap"
+      "info": "Informations"
     },
     "settings-dialog": {
       "title": "Settings",
@@ -52,5 +52,6 @@
   },
   "version-card": {
     "connection": "Connected to ezPAARSE"
-  }
+  },
+  "close": "Close"
 }
