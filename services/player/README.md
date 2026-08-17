@@ -132,14 +132,6 @@ Dialog that allows the user to customize their view. Here are the possible setti
 
 Code is available in `src/components/SettingsDialog.vue`.
 
-## Configuration
-
-Bibliomap Viewer needs two environment variables:
-| Name | Description | Default value |
-| -- | -- | -- |
-| `VITE_ENRICHER_WEBSOCKET_URL` | The URL of the enricher's websocket server. Needed to get the EC consultation events. | `localhost:27780` |
-| `VITE_REPLAY_MODE` | Boolean indicating the Bibliomap mode. Needed to know which view to use (how to display certain components). | `false` |
-
 ## Customization
 
 Since Bibliomap 6.0.0, it is possible to configure each of the page's modules, which make it easy to create a custom version of the user interface.

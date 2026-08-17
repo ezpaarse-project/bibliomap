@@ -122,7 +122,7 @@ Code is available in `src/components/SettingsDialog.vue`.
 Bibliomap Viewer needs two environment variables:
 | Name | Description | Default value |
 | -- | -- | -- |
-| `VITE_ENRICHER_WEBSOCKET_URL` | The URL of the enricher's websocket server. Needed to get the EC consultation events. | `localhost:27780` |
+| `ENRICHER_WEBSOCKET_URL` | The URL of the enricher's websocket server. Needed to get the EC consultation events. | `localhost:27780` |
 | `VITE_REPLAY_MODE` | Boolean indicating the Bibliomap mode. Needed to know which view to use (how to display certain components). | `false` |
 
 ## Customization
