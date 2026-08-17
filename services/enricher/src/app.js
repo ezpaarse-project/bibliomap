@@ -1,134 +1,227 @@
-/* eslint-disable import/extensions */
-import LogIoListener from 'log.io-server-parser';
-import logger from './lib/logger.js';
 import http from 'http';
-import { Server } from 'socket.io';
-import PaarseQueue from './paarse-queue.js';
-import ReplayManager from './replay-manager.js';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+import config from 'config';
+import { PassThrough, Readable } from 'stream';
+import { setTimeout as sleep } from 'timers/promises';
+import consumeEzproxyLogs from './live.js';
 
-/**
- * Connect to bibliomap-viewer
- */
+const filename = fileURLToPath(import.meta.url);
+const dirname = path.dirname(filename);
+const headersPath = path.join(dirname, '..', 'ezpaarse-headers.json');
 
-let nbLogs = 0;
-
-const server = http.createServer((req, res) => {
-  res.writeHead(200, { 'Content-Type': 'text/plain' });
-  res.end('Websocket server launched');
-});
-
-const io = new Server(server, {
-  cors: {
-    origin: '*', // TO CHANGE
-    methods: ['GET', 'POST'],
-  },
-});
-
-server.listen(27780, () => {
-  logger.info('Websocket server is running on port 27780');
-});
+const broadcastedFields = [
+  'geoip-latitude',
+  'geoip-longitude',
+  'ezproxyName',
+  'platform_name',
+  'publication_title',
+  'online_identifier',
+  'print_identifier',
+  'rtype',
+  'mime',
+];
 
 const viewers = new Set();
 
-if (!process.env.HARVESTER_URL) {
-  throw new Error("HARVESTER_URL must be defined (ex: 'localhost:28777')");
-}
-
-const [host, port] = process.env.HARVESTER_URL.split(':');
-
-const harvesterConfig = { host, port };
-
-const logIoListener = process.env.REPLAY_MODE === 'true'
-  ? new ReplayManager()
-  : new LogIoListener(harvesterConfig);
-
-logIoListener.listen(() => {
-  if (process.env.REPLAY_MODE !== 'true') { 
-    logger.info(`Waiting for harvester at ${JSON.stringify(harvesterConfig)}`);
-  } else {
-    logger.info('Replay sessions starting');
-  }
-});
-
-if (process.env.REPLAY_MODE !== 'true') {
-  logIoListener.server.on('connection', (logListenerSocket) => {
-    logger.info(`Harvester connected [${JSON.stringify(harvesterConfig)}]`);
-
-    logListenerSocket.on('close', () => {
-      logger.info('Harvester disconnected');
+const server = http.createServer((req, res) => {
+  if (req.url === '/events') {
+    res.writeHead(200, {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      Connection: 'keep-alive',
+      'Access-Control-Allow-Origin': '*',
     });
-  });
-}
 
-io.on('connection', (viewerSocket) => {
-  logger.info('Viewer connected');
-  viewers.add(viewerSocket);
+    viewers.add(res);
 
-  viewerSocket.on('disconnect', () => {
-    logger.info('Viewer disconnected');
-    viewers.delete(viewerSocket);
-  });
+    req.on('close', () => {
+      viewers.delete(res);
+      res.end();
+    });
 
-  viewerSocket.on('isReady', (socketId) => {
-    logIoListener.emit('isReady', socketId);
-  });
-
-  viewerSocket.on('replayConfigRequest', (socketId) => {
-    logIoListener.emit('replayConfigRequest', socketId);
-  });
-});
-
-function randomizePos(log) {
-  const randomizedLog = log;
-  randomizedLog['geoip-latitude'] = parseFloat(log['geoip-latitude']) + 0.4 * (Math.random() - 0.5);
-  randomizedLog['geoip-longitude'] = parseFloat(log['geoip-longitude']) + 0.4 * (Math.random() - 0.5);
-  return randomizedLog;
-}
-
-let paarseQueue;
-
-logIoListener.on('+log', async (streamName, node, type, log) => {
-  nbLogs += 1;
-  if (nbLogs % 100 === 0) {
-    console.log(`${new Date().toISOString()}: Received ${nbLogs} logs`);
-    nbLogs = 0;
-  }
-  if (!paarseQueue) {
-    paarseQueue = new PaarseQueue(
-      (data) => {
-        if (viewers && viewers.size) [...viewers].map((s) => s.emit('log', randomizePos(data)));
-      },
-      () => {
-        paarseQueue = null;
-      },
-    );
-  }
-  paarseQueue.push(log);
-});
-
-logIoListener.on('+exported_log', (streamName, node, type, log) => {
-  if (viewers && viewers.size) [...viewers].map((s) => s.emit('log', randomizePos(log)));
-});
-
-logIoListener.on('ready', (socketId) => {
-  if (!socketId) {
-    io.emit('ready');
     return;
   }
-  const socket = [...viewers].filter((s) => s.id === socketId);
-  if (socket) io.to(socket).emit('ready');
+  res.writeHead(404);
+  res.end();
 });
 
-logIoListener.on('timeUpdate', (time) => io.emit('timeUpdate', time));
+server.listen(config.port, () => {
+  console.log('[enricher]: is running on port', config.port);
+});
 
-logIoListener.on('replayConfig', (socketId, replayConfig) => {
-  if(!socketId) {
-    return io.emit('replayConfig', replayConfig);
+/**
+ * send data to all connected viewers
+ * @param {*} data one EC from ezPAARSE
+ */
+function sendData(data) {
+  const payload = `data: ${JSON.stringify(data)}\n\n`;
+  for (const res of viewers) {
+    res.write(payload);
   }
-  const socket = [...viewers].find((s) => s.id === socketId);
-  if (socket) {
-    socket.emit('replayConfig', replayConfig);
-  } else {
-    console.warn(`Socket with ID ${socketId} not found in viewers set`);
+}
+
+function loadEzpaarseHeaders() {
+  try {
+    const raw = fs.readFileSync(headersPath, 'utf8');
+    return JSON.parse(raw);
+  } catch (err) {
+    throw new Error(`Impossible de charger ${headersPath} : ${err.message}`);
   }
+}
+
+/**
+ * blur Location of EC from ezPAARSE
+ * @param {number} lat
+ * @param {number} lng
+ * @param {number} maxOffset
+ * @returns
+ */
+function blurLocation(lat, lng, maxOffset = 0.01) {
+  const offsetLat = (Math.random() * 2 - 1) * maxOffset;
+  const offsetLng = (Math.random() * 2 - 1) * maxOffset;
+
+  const newLat = lat + offsetLat;
+  const newLng = lng + offsetLng;
+
+  return {
+    lat: parseFloat(newLat.toFixed(6)),
+    lng: parseFloat(newLng.toFixed(6)),
+  };
+}
+
+function handleEzpaarseData(data) {
+  let parsedData;
+  try {
+    parsedData = JSON.parse(data);
+  } catch (err) {
+    console.error('[ezpaarse]: Cannot parse data', data);
+    return;
+  }
+  // filter data to send to bibliomap
+  const outputData = {};
+  broadcastedFields.forEach((field) => {
+    outputData[field] = parsedData[field];
+  });
+  outputData.datetime = parsedData.datetime;
+  // add ezproxyName to data, this will incremente the counter in viewer
+  outputData.ezproxyName = parsedData['bib-groups'];
+  // blur location
+  const newLocation = blurLocation(parseFloat(parsedData['geoip-latitude']), parseFloat(parsedData['geoip-longitude']));
+  outputData['geoip-latitude'] = newLocation.lat;
+  outputData['geoip-longitude'] = newLocation.lng;
+
+  console.log('[ezpaarse]: receive data', JSON.stringify(outputData));
+  // send data to http stream for bibliomap viewer
+  sendData(outputData);
+}
+
+/**
+ * start ezPAARSE job, get ECs, filter data, blur data, send data to viewers
+ * In demo, read demo file line by line with no stop and send it to ezPAARSE job.
+ * In live, read line by line from Redis and send it to ezPAARSE job.
+ * @returns {PassThrough} le stream d'entrée du job ezPAARSE
+ */
+function createEzpaarseConnection() {
+  let activeStream = null;
+  let reconnecting = false;
+
+  const retryDelayMs = 1000;
+
+  function scheduleReconnect(reason) {
+    if (reconnecting) return;
+    reconnecting = true;
+    console.warn(`[ezPAARSE]: interrupt connection to ezPAARSE, reason:(${reason}), restart in ${retryDelayMs}ms`);
+    setTimeout(() => {
+      reconnecting = false;
+      connect();
+    }, retryDelayMs);
+  }
+
+  function connect() {
+    console.log('[ezPAARSE]: start job on', config.ezpaarseURL);
+
+    const ezpaarseStream = new PassThrough();
+    activeStream = ezpaarseStream;
+
+    ezpaarseStream.on('error', (err) => {
+      scheduleReconnect(`input stream error: ${err.message}`);
+    });
+
+    const headers = loadEzpaarseHeaders();
+    // TODO 2026-08-13 : use async await
+    fetch(config.ezpaarseURL, {
+      method: 'POST',
+      headers,
+      body: ezpaarseStream,
+      duplex: 'half',
+      bodyTimeout: 120000,
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`[ezPAARSE]: Failed to start job: ${res.status} ${res.statusText}`);
+        }
+
+        console.log('[ezPAARSE]: job started');
+
+        const nodeReadable = Readable.fromWeb(res.body);
+
+        nodeReadable.on('data', handleEzpaarseData);
+
+        nodeReadable.on('end', () => {
+          scheduleReconnect('response stream ended');
+        });
+
+        nodeReadable.on('error', (err) => {
+          scheduleReconnect(`response stream error: ${err.message}`);
+        });
+      })
+      .catch((err) => {
+        console.error('[ezPAARSE]: Erreur lors de la requête fetch:', err.message);
+        scheduleReconnect('fetch failed');
+      });
+  }
+
+  connect();
+
+  return {
+    write(line) {
+      if (!activeStream || activeStream.destroyed || activeStream.writableEnded) {
+        console.warn('[ezPAARSE]: pas de job actif pour le moment, ligne ignorée');
+        return;
+      }
+      activeStream.write(line);
+    },
+  };
+}
+
+async function startEnricherProcess() {
+  if (config.mode === 'demo') {
+    console.log('[enricher]: is in demo mode');
+
+    const logFilepath = path.resolve(dirname, '..', 'log', 'demo.log');
+    const ezpaarseStream = createEzpaarseConnection();
+
+    const lines = fs.readFileSync(logFilepath, 'utf-8').split('\n').filter(Boolean);
+
+    // read demo file line by line with no stop and send it to ezPAARSE job
+    while (true) {
+      for (const line of lines) {
+        await sleep(1000);
+        console.log('[ezpaarse]: send line', line);
+        ezpaarseStream.write(`${line}\n`);
+      }
+    }
+  }
+  if (config.mode === 'live') {
+    console.log('[enricher]: is in live mode');
+
+    const ezpaarseStream = createEzpaarseConnection();
+    await consumeEzproxyLogs(ezpaarseStream);
+  }
+}
+
+startEnricherProcess().catch((err) => {
+  console.error('Error in startEnricherProcess():', err.message);
 });

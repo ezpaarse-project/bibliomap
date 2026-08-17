@@ -8,10 +8,12 @@
     "install:enricher": "npm --prefix services/enricher install",
     "install:harvester": "npm --prefix services/harvester install",
     "install:viewer": "npm --prefix services/viewer install",
+    "install:player": "npm --prefix services/player install",
     "lint": "run-p -ls lint:*",
-    "lint:admin": "npm --prefix services/admin run lint",
-    "lint:enrich": "npm --prefix services/enrich run lint",
-    "lint:frontend": "npm --prefix services/frontend run lint"
+    "lint:enricher": "npm --prefix services/enricher run lint",
+    "lint:harvester": "npm --prefix services/harvester run lint",
+    "lint:viewer": "npm --prefix services/viewer run lint",
+    "lint:player": "npm --prefix services/player run lint"
   },
   "license": "CeCILL",
   "dependencies": {
