@@ -67,7 +67,7 @@ class SseClient {
 }
 
 export const useSocketStore = defineStore('socket', () => {
-  const socket = new SseClient(`${import.meta.env.VITE_ENRICHER_WEBSOCKET_URL}/events`);
+  const socket = new SseClient('/events');
   socket.connect();
 
   return { socket };
