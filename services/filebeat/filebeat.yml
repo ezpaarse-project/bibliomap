@@ -1,0 +1,39 @@
+filebeat.inputs:
+  - type: log
+    enabled: true
+    paths:
+      - /var/log/ezproxy/*.log
+    # read only new lines come from the log file
+    tail_files: true
+    fields:
+      app: ezproxy
+      log_type: apache_combined
+    fields_under_root: true
+    harvester_buffer_size: 32768
+
+processors:
+  - drop_fields:
+      fields: ["agent", "ecs", "input", "log.offset"]
+      ignore_missing: true
+
+queue.mem:
+  events: 4096
+  flush.min_events: 0
+  flush.timeout: 0s 
+
+output.redis:
+  hosts: ["${REDIS_HOST}:${REDIS_PORT}"]
+  password: "${REDIS_PASSWORD}"
+  key: "${REDIS_KEY}"
+  db: 0
+  timeout: 5
+  datatype: list
+  codec.json:
+    pretty: false
+
+  max_retries: 5
+  backoff.init: 100ms
+  backoff.max: 1s
+
+logging.level: info
+logging.to_stderr: true
