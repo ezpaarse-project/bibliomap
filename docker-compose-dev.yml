@@ -5,7 +5,7 @@ services:
     image: node:22.14.0
     container_name: bibliomap-viewer-dev
     environment:
-      VITE_ENRICHER_WEBSOCKET_URL: http://localhost:59780
+      ENRICHER_WEBSOCKET_URL: http://localhost:59780
     command: "npm run dev"
     working_dir: /usr/src/app
     volumes: 
@@ -28,11 +28,6 @@ services:
     container_name: bibliomap-enricher-dev
     command: "npm run dev"
     working_dir: /usr/src/app
-    environment:
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
-      - REDIS_KEY=ezproxy-logs
     volumes: 
       - ./services/enricher:/usr/src/app
     restart: unless-stopped
@@ -87,7 +82,7 @@ services:
 
   ezpaarse:
     container_name: bibliomap-ezpaarse-dev
-    image: ezpaarseproject/ezpaarse:3.10.9
+    image: ezpaarseproject/ezpaarse:3.12.0
     environment:
       http_proxy:  ${http_proxy}
       https_proxy: ${https_proxy}
