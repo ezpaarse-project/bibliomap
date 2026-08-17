@@ -6,11 +6,6 @@ services:
       context: ./services/enricher
     container_name: bibliomap-enricher
 
-  harvester:
-    build:
-      context: ./services/harvester
-    container_name: bibliomap-harvester
-
   player:
     build:
       context: ./services/player
