@@ -26,6 +26,13 @@ const broadcastedFields = [
 const viewers = new Set();
 
 const server = http.createServer((req, res) => {
+  // healthcheck
+  if (req.url === '/healthcheck') {
+    res.writeHead(204);
+    res.end();
+    return;
+  }
+  // ezPAARSE events
   if (req.url === '/events') {
     res.writeHead(200, {
       'Content-Type': 'text/event-stream',
