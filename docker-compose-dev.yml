@@ -5,7 +5,7 @@ services:
     image: node:22.14.0
     container_name: bibliomap-viewer-dev
     environment:
-      ENRICHER_WEBSOCKET_URL: http://localhost:59780
+      VITE_ENRICHER_WEBSOCKET_URL: http://localhost:59780/events
     command: "npm run dev"
     working_dir: /usr/src/app
     volumes: 
