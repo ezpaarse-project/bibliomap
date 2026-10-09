@@ -7,7 +7,7 @@ const { redis } = config;
  * Create Redis client
  * @returns Redis client
  */
-function createRedisClient() {
+export function createRedisClient() {
   const redisClient = new Redis({
     host: redis.host,
     port: redis.port,
@@ -25,7 +25,7 @@ const bibcnrsRegex = /^(\S+) (\S+) (\S+) (\S+) \[([^\]]+)\] "(\S+) (.*?) (\S+)" 
  * and forwards them to the ezPAARSE job (ezpaarseStream) provided by app.js.
  * @param {import('stream').Writable} ezpaarseStream Input stream of the current ezPAARSE job
  */
-export default async function consumeEzproxyLogs(ezpaarseStream) {
+export async function consumeEzproxyLogs(ezpaarseStream) {
   const redisClient = createRedisClient();
   console.log(`[redis]: listening on ${redis.key} (${redis.host}:${redis.port})`);
   while (true) {

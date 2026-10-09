@@ -76,7 +76,6 @@ services:
     restart: unless-stopped
     volumes:
       - ./services/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
-      # Adapte ce chemin vers le dossier réel contenant tes 10 fichiers de logs
       - ./services/filebeat/log:/var/log/ezproxy:ro
     command: ["--strict.perms=false"]
 

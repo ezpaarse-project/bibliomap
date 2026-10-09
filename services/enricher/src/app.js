@@ -5,7 +5,9 @@ import { fileURLToPath } from 'url';
 import config from 'config';
 import { PassThrough, Readable } from 'stream';
 import { setTimeout as sleep } from 'timers/promises';
-import consumeEzproxyLogs from './live.js';
+import { createRedisClient, consumeEzproxyLogs } from './live.js';
+const { redis } = config;
+
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -203,30 +205,49 @@ function createEzpaarseConnection() {
   };
 }
 
-async function startEnricherProcess() {
-  if (config.mode === 'demo') {
-    console.log('[enricher]: is in demo mode');
+/**
+ * Simulates Filebeat: reads the demo log file in a loop and pushes each line
+ * into Redis, wrapped in the same JSON shape ({ message }) as in live mode.
+ * @param {string} logFilepath path of the demo log file
+ */
+export default async function produceDemoLogs(logFilepath) {
+  const redisClient = createRedisClient();
+  const lines = fs.readFileSync(logFilepath, 'utf-8').split('\n').filter(Boolean);
 
-    const logFilepath = path.resolve(dirname, '..', 'log', 'demo.log');
-    const ezpaarseStream = createEzpaarseConnection();
+  console.log(`[demo]: pushing ${lines.length} lines in a loop to ${redis.key}`);
+  const MAX_QUEUE_LENGTH = 1000;
 
-    const lines = fs.readFileSync(logFilepath, 'utf-8').split('\n').filter(Boolean);
 
-    // read demo file line by line with no stop and send it to ezPAARSE job
-    while (true) {
-      for (const line of lines) {
-        await sleep(1000);
-        console.log('[ezpaarse]: send line', line);
-        ezpaarseStream.write(`${line}\n`);
+  while (true) {
+    for (const line of lines) {
+      await sleep(1000);
+      try {
+        console.log('[demo]: push line to redis:', line);
+        await redisClient.lpush(redis.key, JSON.stringify({ message: line }));
+        await redisClient.ltrim(redis.key, 0, MAX_QUEUE_LENGTH - 1);
+      } catch (err) {
+        console.error('[demo]: redis error:', err.message);
       }
     }
   }
-  if (config.mode === 'live') {
-    console.log('[enricher]: is in live mode');
+}
 
-    const ezpaarseStream = createEzpaarseConnection();
-    await consumeEzproxyLogs(ezpaarseStream);
+async function startEnricherProcess() {
+  const ezpaarseStream = createEzpaarseConnection();
+
+  if (config.mode === 'demo') {
+    console.log('[enricher]: demo mode');
+    const logFilepath = path.resolve(dirname, '..', 'log', 'demo.log');
+
+    produceDemoLogs(logFilepath).catch((err) => {
+      console.error('Error in produceDemoLogs():', err.message);
+    });
   }
+  if (config.mode === 'live') {
+    console.log('[enricher]: live mode');
+  }
+
+  await consumeEzproxyLogs(ezpaarseStream);
 }
 
 startEnricherProcess().catch((err) => {
