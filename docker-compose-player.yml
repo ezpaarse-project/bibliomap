@@ -1,7 +1,6 @@
 services:
-
   player:
-    image: node:22.14.0
+    image: node:26.12.1
     container_name: bibliomap-player-dev
     command: "npm run dev"
     working_dir: /usr/src/app

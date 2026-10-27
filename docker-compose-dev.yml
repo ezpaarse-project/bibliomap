@@ -1,8 +1,6 @@
-version: "3.3"
-
 services:
   harvester:
-    image: node:22.14.0
+    image: node:26.12.1
     container_name: bibliomap-harvester-dev
     environment:
       ENRICHER_URL: "enricher:27777"
@@ -15,7 +13,7 @@ services:
     restart: unless-stopped
 
   viewer:
-    image: node:22.14.0
+    image: node:26.12.1
     container_name: bibliomap-viewer-dev
     environment:
       VITE_ENRICHER_WEBSOCKET_URL: localhost:27780
@@ -40,7 +38,7 @@ services:
       retries: 10
 
   enricher:
-    image: node:22.14.0
+    image: node:26.12.1
     container_name: bibliomap-enricher-dev
     environment:
       NODE_ENV: "development"
@@ -69,7 +67,7 @@ services:
       retries: 10
 
   player:
-    image: node:22.14.0
+    image: node:26.12.1
     container_name: bibliomap-player-dev
     command: "npm run dev"
     working_dir: /usr/src/app
@@ -90,7 +88,7 @@ services:
 
   ezpaarse:
     container_name: bibliomap-ezpaarse-dev
-    image: ezpaarseproject/ezpaarse:3.10.9
+    image: ezpaarseproject/ezpaarse:3.13.0
     environment:
       http_proxy:  ${http_proxy}
       https_proxy: ${https_proxy}
@@ -118,7 +116,7 @@ services:
     #restart: unless-stopped
 
   ezpaarse_db:
-    image: mongo:7.0.20
+    image: mongo:7.0.45
     container_name: bibliomap-ezpaarse-db-dev
     restart: unless-stopped
     healthcheck:
@@ -128,7 +126,7 @@ services:
       retries: 10
 
   nginx:
-    image: nginx:1.29.1
+    image: nginx:1.31.8
     container_name: bibliomap-nginx-dev
     environment:
       # host of service
