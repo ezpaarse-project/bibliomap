@@ -1,26 +1,27 @@
 services:
   enricher:
+    container_name: bibliomap-enricher
     build:
       context: ./services/enricher
-    container_name: bibliomap-enricher
 
   harvester:
+    container_name: bibliomap-harvester
     build:
       context: ./services/harvester
-    container_name: bibliomap-harvester
 
   player:
+    container_name: bibliomap-player
     build:
       context: ./services/player
-    container_name: bibliomap-player
 
   viewer:
+    container_name: bibliomap-viewer
     build:
       context: ./services/viewer
-    container_name: bibliomap-viewer
-  
+
   nginx:
+    container_name: bibliomap-nginx
     build:
       context: ./services/nginx
-    container_name: bibliomap-nginx
+
 
